@@ -367,14 +367,8 @@ html, body, #root {
   }
   @media (min-width: 672px) {
     .page-padding {
-      padding-left: var(--spacing-16);
-      padding-right: var(--spacing-16);
-    }
-  }
-  @media (min-width: 1056px) {
-    .page-padding {
-      padding-left: var(--spacing-16);
-      padding-right: var(--spacing-16);
+      padding-left: var(--spacing-32);
+      padding-right: var(--spacing-32);
     }
   }
 
@@ -397,26 +391,38 @@ html, body, #root {
     }
   }
 
-  /* Column spans */
+  /* Column spans -- mobile first (4 columns) */
   .col-full { grid-column: 1 / -1; }
-
-  /* Mobile: 4 columns */
-  .col-half { grid-column: span 4; }
+  .col-half { grid-column: 1 / -1; }
+  .col-third { grid-column: 1 / -1; }
   .col-kpi { grid-column: span 2; }
+  .col-trains { grid-column: 1 / -1; }
 
-  /* Tablet: 8 columns */
+  /* Tablet (8 columns) */
   @media (min-width: 672px) {
     .col-half { grid-column: span 4; }
     .col-third { grid-column: span 4; }
     .col-kpi { grid-column: span 2; }
+    .col-trains { grid-column: span 4; }
   }
 
-  /* Desktop: 16 columns */
+  /* Desktop (16 columns) */
   @media (min-width: 1056px) {
     .col-half { grid-column: span 8; }
-    .col-third { grid-column: span 5; }
     .col-kpi { grid-column: span 3; }
     .col-trains { grid-column: span 4; }
+  }
+
+  /* Three-column layout: use auto-fit instead of fixed spans */
+  .grid-thirds {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-24);
+  }
+  @media (min-width: 672px) {
+    .grid-thirds {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
 

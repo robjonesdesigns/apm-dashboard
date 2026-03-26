@@ -47,16 +47,10 @@ export default function PlantOverview({ onNavigate }) {
       {/* Steps 4-5: Correlate + Identify — "Which assets need attention?" */}
       <section>
         <p className="section-header">Assets Requiring Attention</p>
-        <div className="grid-12">
-          <div className="col-third">
-            <RiskMatrix onCellClick={(cell) => console.log('Risk cell:', cell)} />
-          </div>
-          <div className="col-third">
-            <EventSummary />
-          </div>
-          <div className="col-third">
-            <BadActors onAssetClick={handleAssetClick} />
-          </div>
+        <div className="grid-thirds">
+          <RiskMatrix onCellClick={(cell) => console.log('Risk cell:', cell)} />
+          <EventSummary />
+          <BadActors onAssetClick={handleAssetClick} />
         </div>
       </section>
 
