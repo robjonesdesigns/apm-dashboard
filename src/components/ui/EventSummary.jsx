@@ -93,7 +93,7 @@ export default function EventSummary() {
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-        <span className="type-heading-01">Event Summary</span>
+        <span className="type-heading-02">Event Summary</span>
         <div style={{ display: 'flex', gap: 'var(--spacing-8)' }}>
           <button
             className={`chip${activeTab === 'events' ? ' chip-active' : ''}`}
@@ -122,7 +122,7 @@ export default function EventSummary() {
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            margin={{ top: 8, right: 16, bottom: 0, left: 0 }}
           >
             <XAxis type="number" hide />
             <YAxis type="category" hide />

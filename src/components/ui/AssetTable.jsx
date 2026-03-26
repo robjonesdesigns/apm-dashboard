@@ -138,14 +138,14 @@ function AssetRow({ asset, onAssetClick }) {
 export default function AssetTable({ onAssetClick }) {
   return (
     <div className="grid-16">
-      <div className="card col-full" style={{ padding: 0 }}>
-        {/* Card header */}
-        <div style={{ padding: 'var(--spacing-16) var(--spacing-24) var(--spacing-12)' }}>
-          <span className="type-heading-01">All Assets</span>
+      <div className="card col-full">
+        {/* Card header — benefits from natural .card 24px padding */}
+        <div style={{ marginBottom: 'var(--spacing-12)' }}>
+          <span className="type-heading-02">All Assets</span>
         </div>
 
-        {/* Scrollable table area */}
-        <div style={{ overflowX: 'auto' }}>
+        {/* Scrollable table area — pull to card edges with negative margin */}
+        <div style={{ overflowX: 'auto', margin: '0 calc(-1 * var(--spacing-24))' }}>
           {/* Sticky header */}
           <div
             style={{

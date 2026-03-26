@@ -114,7 +114,7 @@ export default function WhatChanged({ onAssetClick, onEventClick }) {
       <div className="card col-full">
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-16)' }}>
-          <span className="type-heading-01">What Changed</span>
+          <span className="type-heading-02">What Changed</span>
           <span className="type-label">Last 24 hours</span>
         </div>
 

@@ -68,7 +68,7 @@ export default function BadActors({ onAssetClick }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-heading-01">Bad Actors</span>
+      <span className="type-heading-02">Bad Actors</span>
 
       {/* Horizontal bar chart */}
       <div style={{ height: chartHeight }}>
@@ -76,7 +76,7 @@ export default function BadActors({ onAssetClick }) {
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 0, right: 32, bottom: 0, left: 0 }}
+            margin={{ top: 8, right: 16, bottom: 0, left: 0 }}
             onClick={(e) => {
               if (e?.activePayload?.[0]) handleClick(e.activePayload[0].payload)
             }}
