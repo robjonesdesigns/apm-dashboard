@@ -22,7 +22,21 @@
 
 ---
 
-## Next Session -- Priority Order
+## Next Session -- START HERE
+
+### 0. Interview Rob about the engineer's decision flow
+Before touching any code, interview Rob about:
+- What is the first question an engineer asks when they open the dashboard?
+- What makes them decide to drill down vs move on?
+- What action do they take when they find a problem?
+- What information do they need to make that decision?
+- What is the sequence of decisions from "how's my plant?" to "what do I do about it?"
+
+Use the answers to redesign the layout around the decision chain, not around stakeholder metric requests. Every card earns its place by answering a specific question.
+
+THIS MUST HAPPEN BEFORE ANY CODE CHANGES.
+
+---
 
 ### 1. KPI cards polish
 - Add colored left borders per metric (ADR-003)
