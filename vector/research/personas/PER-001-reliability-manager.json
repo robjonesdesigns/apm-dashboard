@@ -1,0 +1,50 @@
+{
+  "id": "PER-001",
+  "version": "0.1",
+  "created": "2026-03-26",
+  "status": "confirmed",
+  "name": "Carlos -- Reliability Manager",
+  "role": "Reliability Manager at a Gulf Coast refinery. Mechanical engineer with 15 years in rotating equipment. Reports to the Plant Manager. Manages 2 reliability engineers.",
+  "goals": [
+    "Prevent unplanned failures before they happen by catching degradation trends early",
+    "Reduce unplanned downtime below 2% (currently at 3.1%)",
+    "Eliminate the top 10 bad actors by cost and failure frequency this year",
+    "Improve the planned vs unplanned maintenance ratio from 72% to 85%+",
+    "Build a data-driven case for capital replacement of chronically failing assets"
+  ],
+  "frustrations": [
+    "Vibration alerts fire but nobody acts on them until the asset trips. Three days of warnings on K-101 and it still tripped.",
+    "Alarm thresholds are set wrong. Some too high (miss real problems), some too low (cry wolf). No systematic way to review and calibrate them.",
+    "Work order closeout data is garbage. Techs write 'fixed pump' with no failure codes. Can't do MTBF analysis on bad data.",
+    "Spends 30 minutes every morning piecing together what happened overnight from three different systems (APM, CMMS, email).",
+    "RCA investigations take months because corrective actions stall in the work order backlog.",
+    "The dashboard shows current state but not the trend. A number without 'compared to what' is useless."
+  ],
+  "behaviors": [
+    "First thing every morning: checks overnight alarms and condition monitoring alerts",
+    "Reviews bad actor list weekly, updates it monthly",
+    "Opens cases for any failure on a criticality A or B asset",
+    "Reads the dashboard BACKWARD in time: starts at the failure, traces what led to it",
+    "Compares KPI trends across 90-day, 6-month, and annual windows",
+    "Correlates KPI drops with specific asset events to find the cause",
+    "Creates asset strategies that change how maintenance is done on specific equipment",
+    "Presents unplanned downtime and bad actor progress to plant leadership monthly"
+  ],
+  "tools_used": [
+    "APM platform (asset health, condition monitoring, RCA, asset strategy)",
+    "CMMS/EAM (reads work order history for failure analysis, does not manage work orders)",
+    "Vibration analysis software (CSI, Emerson AMS)",
+    "Excel/Power BI for reporting to leadership",
+    "NotebookLM or similar for organizing RCA findings"
+  ],
+  "primary_screens": [
+    "Plant Overview (daily morning check)",
+    "Asset Inspection (investigating specific assets)",
+    "Root Cause Analysis (tracing failure chains)",
+    "Trends (attribute analysis over weeks/months)"
+  ],
+  "time_horizon": "90 days to years. Strategic. Looking at patterns not just today's problems.",
+  "core_question": "Why does this keep failing, and how do I eliminate the failure mode permanently?",
+  "reports_to": "Plant Manager / VP Operations",
+  "quote": "I had three days of vibration alerts on K-101. Three days. And it still tripped at 2 AM because the alarm was set at 7.1 mm/s, which is basically waiting for the trip. If I had an alert at 4.5 I would have caught it on Wednesday and done a planned shutdown instead."
+}

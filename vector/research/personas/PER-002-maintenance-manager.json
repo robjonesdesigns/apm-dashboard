@@ -1,0 +1,48 @@
+{
+  "id": "PER-002",
+  "version": "0.1",
+  "created": "2026-03-26",
+  "status": "confirmed",
+  "name": "Diane -- Maintenance Manager",
+  "role": "Maintenance Manager at a Gulf Coast refinery. Mechanical engineering background with 12 years in maintenance execution. Reports to the Plant Manager. Manages 4 maintenance supervisors and ~30 technicians across mechanical, electrical, and instrumentation crafts.",
+  "goals": [
+    "Hit 90%+ schedule compliance this quarter (currently at 81%)",
+    "Keep the PM backlog under 2 weeks of work per technician",
+    "Reduce emergency/reactive work from 18% to below 10% of total work",
+    "Get work orders closed with proper failure codes so reliability can do their analysis",
+    "Keep overtime under budget while covering both scheduled and emergency work"
+  ],
+  "frustrations": [
+    "K-101 trips at 2 AM and now the entire day's schedule is blown. Three people pulled off planned work for emergency response.",
+    "Two critical work orders open for K-101 and one is unassigned because the only bearing specialist is already on T-401's combustion inspection.",
+    "Parts availability. The lube oil filter for K-101 should have been in stock but it was consumed 3 months ago and never reordered.",
+    "Reliability opens cases and investigations but the corrective actions turn into work orders that land on her already overloaded schedule.",
+    "Technicians close work orders with 'fixed it' and no details. She has to chase them down to get proper failure codes and notes.",
+    "Does not need MTBF charts or root cause trees. Needs to know: who is available, what's the priority, and do we have the parts."
+  ],
+  "behaviors": [
+    "Runs the 7:00 AM morning meeting with supervisors, operations, and planning",
+    "First thing: checks what emergency work orders came in overnight",
+    "Reviews today's schedule against available craft resources",
+    "Reassigns people when emergencies disrupt the plan",
+    "Checks PM compliance weekly (are PMs getting done on time?)",
+    "Monitors backlog size and aging (overdue work orders are a red flag)",
+    "Approves overtime and contractor callouts when resources are short",
+    "Tracks maintenance budget spend vs plan monthly"
+  ],
+  "tools_used": [
+    "CMMS/EAM (work order management, scheduling, backlog, resource allocation)",
+    "APM platform (reads Plant Overview for overnight events, does not use RCA or asset strategy modules)",
+    "Scheduling board / Gantt (weekly maintenance schedule)",
+    "Radio/phone (coordinating with supervisors and techs in the field)"
+  ],
+  "primary_screens": [
+    "Plant Overview (morning check: what broke overnight, what's scheduled today)",
+    "Work Orders (her primary screen: open, in progress, overdue, assignments)",
+    "Investigations (reads case status to anticipate incoming work orders from reliability)"
+  ],
+  "time_horizon": "Today to next week. Tactical. Execution-focused.",
+  "core_question": "Who is fixing it, do they have what they need, and when will it be done?",
+  "reports_to": "Plant Manager / Reliability Manager (dotted line)",
+  "quote": "I do not need to know why K-101 keeps failing. That is Carlos's job. I need to know that Sarah is on the bearing inspection, the lube oil filter is in the warehouse, and she will be done by noon. If she is not, I need to know now so I can get someone else."
+}

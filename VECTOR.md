@@ -178,3 +178,34 @@ on dark surfaces. Raw Tailwind colors are too saturated for dark mode.
 - Status indicators use multiple visual channels (color + shape + position)
 - Consistent 4px grid spacing throughout
 - No em dashes in any user-facing copy
+- All pixel values must be even numbers
+- 12-column grid layout system enforced (ARCHITECTURE.md)
+- Components must not exceed 400 lines
+
+---
+
+## Target Users
+
+**Primary:** Reliability Manager (PER-001) -- strategic, prevents failures, analyzes trends, runs RCA investigations, manages bad actor programs. Time horizon: 90 days to years.
+
+**Secondary:** Maintenance Manager (PER-002) -- tactical, executes repairs, manages schedules and resources, tracks work order completion. Time horizon: today to next week.
+
+**Not a user:** Technicians/craftspeople (use CMMS mobile for work orders only, not APM analytics).
+
+Both personas use Plant Overview as their morning entry point but look at different sections. See DESK-RESEARCH-003 for the full role comparison.
+
+---
+
+## Research Status
+
+| Type | Location | Status |
+|------|----------|--------|
+| Personas | `vector/research/personas/` | PER-001 (reliability manager), PER-002 (maintenance manager) -- confirmed |
+| Interviews | `vector/research/` | INTERVIEW-001 (product walkthrough), INTERVIEW-002 (engineer decision flow) -- complete |
+| Desk research | `vector/research/` | DESK-RESEARCH-001 (dashboard design), DESK-RESEARCH-002 (engineering data), DESK-RESEARCH-003 (user roles) -- complete |
+| Figma review | `vector/research/` | FIGMA-REVIEW-001 (gap analysis) -- complete |
+| Interaction spec | `vector/research/` | INTERACTION-SPEC-001 -- complete |
+| Story/data | `vector/research/` | STORY-001 (Baytown Refinery, 10 assets) -- complete |
+| Implementation | `vector/research/` | IMPLEMENTATION-PLAN-001 -- in progress |
+| Decisions | `vector/decisions/` | ADR-001 through ADR-009 -- accepted |
+| Architecture audit | `vector/audits/` | invest-architecture.md -- health POOR, rebuild needed |
