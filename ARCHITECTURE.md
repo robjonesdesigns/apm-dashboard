@@ -35,57 +35,61 @@
 
 ### 16-Column Grid (Carbon standard)
 
-All layouts use a 12-column grid system.
+Based on IBM Carbon 2x Grid. All layouts use a 16-column grid at desktop.
 
-| Viewport | Columns | Margins | Gutters |
-|----------|---------|---------|---------|
-| Mobile (<768px) | 4 columns | 16px | 16px |
-| Tablet (768-1279px) | 8 columns | 24px | 24px |
-| Desktop (1280px+) | 12 columns | 32px | 24px |
+| Viewport | Min Width | Columns | Gutters | Margins |
+|----------|-----------|---------|---------|---------|
+| sm | 320px | 4 | 24px | 16px |
+| md | 672px | 8 | 24px | 16px |
+| lg | 1056px | 16 | 24px | 16px |
 
-Gutters are the same horizontally and vertically (24px desktop, 16px mobile). Equal gaps = equal visual relationship between cards (Gestalt proximity).
+Gutters are 24px both horizontally and vertically at all breakpoints.
 
-**Implementation:** Use CSS grid with `grid-template-columns: repeat(12, 1fr)` and `gap: 24px` for desktop gutters. Cards span column counts.
+**Implementation:** CSS class `grid-16` in global.css. Cards use `col-*` span classes.
 
-**Column spans (desktop):**
-- KPI cards: span 2 (six KPI cards = 12 columns)
-- Analysis cards (Risk Matrix, Event Summary, Bad Actors): span 4 (three cards = 12 columns)
-- Half-width cards (Work Orders, Cases): span 6
-- Full width (Asset Summary table, Timeline): span 12
-- On tablet (8 columns): KPI cards span 2, analysis cards span 4, half-width cards span 4
+**Column spans (desktop, 16 columns):**
+- KPI cards: span 3 (4 KPI cards + 1 trains card = ~16 columns)
+- Analysis cards (Risk Matrix, Event Summary, Bad Actors): span 5 (three cards + gutter)
+- Half-width cards (Work Orders, Cases): span 8
+- Full width (Asset Summary table, Timeline): span 16
+- On tablet (8 columns): KPI span 2, analysis span 4, half span 4
 - On mobile (4 columns): all cards span 4 (full width)
 
-**Notifications panel behavior:** When the notifications panel opens, the content viewport compresses (push, not overlay). The 12-column grid recalculates within the narrower viewport. Cards maintain their column spans but become narrower. Panel width: 320px.
+**Notifications panel behavior:** Push, not overlay. 320px wide. 16-column grid recalculates within the narrower viewport. Mutually exclusive with expanded sidebar (ADR-009).
+
+### Navigation
+
+| Element | Size | Notes |
+|---------|------|-------|
+| Header (TopBar) | 48px tall | Fixed, full width, z-index 10000 |
+| Sidebar rail | 48px wide | Icons only, default state |
+| Sidebar expanded | 256px wide | Icons + labels |
+| Nav item height | 48px | Matches header height |
+| Notifications panel | 320px wide | Push, slides from right |
 
 ### Page Container
 
 ```css
 .page-padding {
-  padding-left: 16px;   /* mobile */
-  padding-left: 24px;   /* tablet (768px+) */
-  padding-left: 32px;   /* desktop (1280px+) */
+  padding-left: 16px;   /* all breakpoints */
+  padding-right: 16px;
 }
 ```
+
+Content area uses margin-left to offset from sidebar (48px rail or 256px expanded).
 
 ### Section Spacing
 
 - Between major sections: 32px (`--spacing-32`)
 - Between section header and content: 16px (`--spacing-16`)
-- Between cards (gutters): 24px desktop, 16px mobile (same horizontal and vertical)
-- Inside cards (padding): 24px desktop (`--spacing-24`), 16px mobile (`--spacing-16`)
+- Between cards (gutters): 24px (same horizontal and vertical, all breakpoints)
+- Inside cards (padding): 24px (`--spacing-24`) on all breakpoints
 - Between elements inside a card: 16px (`--spacing-16`)
 - Between small metadata items: 8px (`--spacing-8`)
 
-### Top Navigation Bar
-
-- Height: 60px, fixed at top
-- Content scrolls independently below
-- Contains: hamburger menu (site map), breadcrumb, date selector, help, settings, notification bell
-- Notification bell: red dot when new events exist, opens notifications panel
-
 ### Alignment Rules
 
-- All card content aligns to a consistent inner padding (20px on all sides)
+- All card content aligns to a consistent inner padding (24px on all sides)
 - Labels, values, and charts inside cards align to the same left edge
 - No element should break the card's inner padding boundary
 - Charts extend to the card's inner edges (full bleed within the padding)

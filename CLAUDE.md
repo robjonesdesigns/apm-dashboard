@@ -25,9 +25,9 @@ Not a production app. Not Honeywell's actual product.
 
 | Component | Purpose |
 |-----------|---------|
-| Sidebar.jsx | Collapsible sidebar (64px collapsed / 320px expanded with labels). Push, not overlay. Mutually exclusive with NotificationsPanel (ADR-009). |
-| TopBar.jsx | Logo + "ASSET PERFORMANCE MANAGEMENT" + breadcrumb + help + settings avatar + notification bell. 60px height, full width. |
-| NotificationsPanel.jsx | Push panel (320px), compresses viewport. Filterable by asset, severity badges. Mutually exclusive with Sidebar. |
+| Sidebar.jsx | Collapsible sidebar (48px rail / 256px expanded). Carbon UI Shell pattern. Mutually exclusive with NotificationsPanel (ADR-009). |
+| TopBar.jsx | 48px fixed header. Logo + "APM" + divider + breadcrumb. Right: Help + Avatar + Bell. Z-index 10000. |
+| NotificationsPanel.jsx | Push panel (320px), compresses viewport. Filterable by asset. Mutually exclusive with Sidebar. |
 
 ## Sidebar Icons
 
