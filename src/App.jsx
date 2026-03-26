@@ -42,7 +42,7 @@ export default function App() {
           notificationsOpen={notificationsOpen}
         />
         <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
-          <div className="p-lg">
+          <div className="page-padding" style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}>
             <View
               onNavigate={navigate}
               selectedAsset={selectedAsset}

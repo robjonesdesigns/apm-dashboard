@@ -77,18 +77,18 @@
   /* ── Font ──────────────────────────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, sans-serif;
 
-  /* ── Type scale (all even, semantic names) ─────────────────────────── */
-  --text-h1: 28px;
-  --text-h2: 22px;
-  --text-h3: 18px;
+  /* ── Type scale (fluid clamp, even numbers, ADR-006) ───────────────── */
+  --text-h1: clamp(22px, 2vw + 14px, 28px);
+  --text-h2: clamp(18px, 1.5vw + 12px, 22px);
+  --text-h3: clamp(16px, 1vw + 12px, 18px);
   --text-h4: 14px;
-  --text-body: 14px;
+  --text-body: clamp(13px, 0.8vw + 8px, 14px);
   --text-body-sm: 12px;
-  --text-label: 12px;
+  --text-label: clamp(10px, 0.8vw + 6px, 12px);
   --text-meta: 10px;
-  --text-kpi: 28px;
-  --text-kpi-lg: 36px;
-  --text-callout: 32px;
+  --text-kpi: clamp(24px, 2vw + 14px, 28px);
+  --text-kpi-lg: clamp(30px, 2.5vw + 16px, 36px);
+  --text-callout: clamp(26px, 2vw + 16px, 32px);
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────── */
@@ -288,6 +288,96 @@ html, body, #root {
   .badge-info {
     color: var(--color-info);
     background: var(--color-info-bg);
+  }
+
+  /* ── Filter chip (interactive badge variant) ───────────────────── */
+  .chip {
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .chip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text-primary);
+  }
+  .chip-active {
+    border-color: var(--color-accent);
+    background: var(--color-accent-muted);
+    color: var(--color-accent);
+  }
+
+  /* ── Badge group ───────────────────────────────────────────────── */
+  .badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-6);
+    align-items: center;
+  }
+
+  /* ── Layout: page container ────────────────────────────────────── */
+  .page-padding {
+    padding-left: var(--spacing-16);
+    padding-right: var(--spacing-16);
+  }
+  @media (min-width: 768px) {
+    .page-padding {
+      padding-left: var(--spacing-24);
+      padding-right: var(--spacing-24);
+    }
+  }
+  @media (min-width: 1280px) {
+    .page-padding {
+      padding-left: var(--spacing-32);
+      padding-right: var(--spacing-32);
+    }
+  }
+
+  /* ── Layout: section spacing ───────────────────────────────────── */
+  .section-gap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-24);
+  }
+  .card-gap {
+    gap: var(--spacing-8);
+  }
+
+  /* ── Layout: content grid patterns ─────────────────────────────── */
+  .grid-kpi {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-8);
+  }
+  @media (min-width: 1024px) {
+    .grid-kpi {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+  @media (min-width: 1024px) {
+    .grid-2col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .grid-3col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+  @media (min-width: 1024px) {
+    .grid-3col {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
 
