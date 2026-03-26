@@ -14,21 +14,35 @@ Not a production app. Not Honeywell's actual product.
 
 | Screen | Component | Purpose |
 |--------|-----------|---------|
-| Asset Health | AssetHealth.jsx | Plant-wide overview: KPIs, Risk Matrix, Event Summary, Bad Actors, Asset Summary table |
-| Asset Details | AssetDetails.jsx | Single asset deep dive: Reliability, Maintenance, Performance rows |
+| Asset Health | AssetHealth.jsx | Plant overview: KPIs, Today's Activity, What Changed, Risk/Bad Actors, Asset Summary |
+| Asset Details | AssetDetails.jsx | Single asset deep dive: Reliability, Maintenance, Performance rows + tab bar |
+| Fault Tree | FaultTree.jsx | Causal chain from top event to root causes. Leaf nodes link to Trends. |
 | Trends | Trends.jsx | Attribute trend analysis with overlay/separate modes |
 
 ## Shell Components
 
 | Component | Purpose |
 |-----------|---------|
-| Sidebar.jsx | 64px icon-only navigation |
-| TopBar.jsx | Breadcrumb navigation + notification bell |
-| NotificationsPanel.jsx | Slide-out notification list, filterable by asset |
+| Sidebar.jsx | Collapsible sidebar (64px icons / 200px with labels) |
+| TopBar.jsx | Breadcrumb navigation + notification bell + date selector |
+| NotificationsPanel.jsx | Fixed overlay, filterable by asset, severity badges |
 
-## Navigation Flow
+## Navigation Flow (10-step engineer decision chain)
 
-Asset Health > click asset row > Asset Details > click performance attribute > Trends
+```
+1. ORIENT      Asset Health > KPIs at a glance
+2. PLAN        Asset Health > Today's Activity (work orders, cases)
+3. DETECT      Asset Health > What Changed (overnight events timeline)
+4. CORRELATE   Asset Health > KPI trend overlaid with asset events
+5. IDENTIFY    Asset Health > Asset Summary table > click row
+6. INVESTIGATE Asset Details > three-level deep dive
+7. TRACE       Fault Tree > causal chain from event to root cause
+8. DEEP DIVE   Trends > attribute data over time
+9. ACT         Create case or work order (contextual modal)
+10. VERIFY     Asset running without anomalies, case closed
+```
+
+See INTERVIEW-002 and INTERACTION-SPEC-001 for full details.
 Notifications panel available on all screens via bell icon.
 Breadcrumbs in TopBar allow back-navigation.
 

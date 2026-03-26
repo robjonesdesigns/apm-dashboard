@@ -9,7 +9,7 @@
 ## Completed
 
 - [x] Project scaffold (React + Recharts + Tailwind + Vite)
-- [x] Investiture doctrine (VECTOR.md, CLAUDE.md, 5 ADRs, desk research, interview)
+- [x] Investiture doctrine (VECTOR.md, CLAUDE.md, 7 ADRs, desk research, 2 interviews, Figma gap analysis, interaction spec)
 - [x] Three screens built (Asset Health, Asset Details, Trends)
 - [x] Shell components (Sidebar, TopBar, NotificationsPanel)
 - [x] Desaturated chart colors (ADR-002)
@@ -19,6 +19,11 @@
 - [x] Fixed notifications panel (no horizontal scroll)
 - [x] Responsive card stacking
 - [x] Figma gap analysis (FIGMA-REVIEW-001)
+- [x] Engineer decision flow interview (INTERVIEW-002, 10-step chain)
+- [x] Token system rebuild (semantic typography, even numbers, utility classes)
+- [x] Interaction spec (INTERACTION-SPEC-001, all screens)
+- [x] Fault tree decision (ADR-007)
+- [x] Fluid typography decision (ADR-006)
 
 ---
 
