@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
-import AssetHealth from './components/AssetHealth'
-import AssetDetails from './components/AssetDetails'
+import PlantOverview from './components/PlantOverview'
+import AssetInspection from './components/AssetInspection'
 import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
 
 const VIEWS = {
-  health: AssetHealth,
-  details: AssetDetails,
+  health: PlantOverview,
+  details: AssetInspection,
   trends: Trends,
 }
 
