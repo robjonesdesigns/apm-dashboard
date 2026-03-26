@@ -7,19 +7,28 @@ import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
 
 const VIEWS = {
-  health: PlantOverview,
-  details: AssetInspection,
-  trends: Trends,
+  // Current screens
+  health:   PlantOverview,
+  details:  AssetInspection,
+  trends:   Trends,
+  // New screen IDs (map to same components until dedicated screens are built)
+  overview:       PlantOverview,
+  inspection:     AssetInspection,
+  rootcause:      PlantOverview,   // placeholder
+  workorders:     PlantOverview,   // placeholder
+  investigations: PlantOverview,   // placeholder
+  settings:       PlantOverview,   // placeholder
 }
 
 export default function App() {
-  const [view, setView] = useState('health')
-  const [selectedAsset, setSelectedAsset] = useState(null)
+  const [view, setView]                     = useState('health')
+  const [selectedAsset, setSelectedAsset]   = useState(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
+  const [sidebarExpanded, setSidebarExpanded]     = useState(false)
 
   const navigate = (target, options = {}) => {
-    if (target === 'details' && options.asset) {
+    if ((target === 'details' || target === 'inspection') && options.asset) {
       setSelectedAsset(options.asset)
     }
     if (target === 'trends' && options.attribute) {
@@ -28,22 +37,58 @@ export default function App() {
     setView(target)
   }
 
-  const View = VIEWS[view]
+  const View = VIEWS[view] ?? PlantOverview
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar view={view} onNavigate={navigate} />
-      <div className="flex-1 flex flex-col min-w-0">
-        <TopBar
+    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      {/* Fixed top bar — rendered at z-index 10000 */}
+      <TopBar
+        view={view}
+        selectedAsset={selectedAsset}
+        onNavigate={navigate}
+        onToggleNotifications={() => setNotificationsOpen((prev) => !prev)}
+        notificationsOpen={notificationsOpen}
+        onToggleSidebar={() => setSidebarExpanded((prev) => !prev)}
+      />
+
+      {/* Body below fixed top bar */}
+      <div
+        style={{
+          display: 'flex',
+          flex: '1 1 auto',
+          overflow: 'hidden',
+          marginTop: 'var(--header-height)',
+        }}
+      >
+        {/* Fixed sidebar — leaves a matching space via the margin-left on the content */}
+        <Sidebar
           view={view}
-          selectedAsset={selectedAsset}
           onNavigate={navigate}
-          onToggleNotifications={() => setNotificationsOpen(!notificationsOpen)}
-          notificationsOpen={notificationsOpen}
+          expanded={sidebarExpanded}
+          onToggle={() => setSidebarExpanded((prev) => !prev)}
         />
-        <div className="flex-1 flex overflow-hidden">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden" style={{ transition: 'flex 0.2s ease' }}>
-            <div className="page-padding" style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}>
+
+        {/* Scrollable content — pushes right by the sidebar width */}
+        <div
+          style={{
+            flex: '1 1 auto',
+            display: 'flex',
+            overflow: 'hidden',
+            marginLeft: sidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-rail)',
+            transition: `margin-left var(--motion-moderate) var(--ease-productive)`,
+          }}
+        >
+          <div
+            style={{
+              flex: '1 1 auto',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            }}
+          >
+            <div
+              className="page-padding"
+              style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}
+            >
               <View
                 onNavigate={navigate}
                 selectedAsset={selectedAsset}
@@ -51,10 +96,11 @@ export default function App() {
               />
             </div>
           </div>
+
           <NotificationsPanel
             open={notificationsOpen}
             onClose={() => setNotificationsOpen(false)}
-            assetFilter={view === 'details' ? selectedAsset?.name : null}
+            assetFilter={(view === 'details' || view === 'inspection') ? selectedAsset?.name : null}
           />
         </div>
       </div>

@@ -3,25 +3,25 @@ import { TIMELINE } from '../../data/assets'
 
 // Map event type to status-dot variant
 function dotVariant(type) {
-  if (type === 'critical') return 'status-dot-critical'
-  if (type === 'warning')  return 'status-dot-warning'
-  if (type === 'healthy')  return 'status-dot-healthy'
-  return 'status-dot-info'
+  if (type === 'critical') return 'status-dot dot-error'
+  if (type === 'warning')  return 'status-dot dot-warning'
+  if (type === 'healthy')  return 'status-dot dot-success'
+  return 'status-dot dot-info'
 }
 
-// KPI impact pill — negative = critical-bg, positive = healthy-bg
+// KPI impact pill — negative = error-bg, positive = success-bg
 function KpiPill({ impact }) {
   if (!impact) return null
   const isNegative = impact.includes('-')
-  const bg  = isNegative ? 'var(--color-critical-bg)' : 'var(--color-healthy-bg)'
-  const col = isNegative ? 'var(--color-critical)'    : 'var(--color-healthy)'
+  const bg  = isNegative ? 'var(--color-error-bg)'   : 'var(--color-success-bg)'
+  const col = isNegative ? 'var(--color-error)'       : 'var(--color-success)'
   return (
     <span
-      className="type-meta"
+      className="type-helper"
       style={{
         background:   bg,
         color:        col,
-        padding:      '2px var(--spacing-6)',
+        padding:      '2px var(--spacing-8)',
         borderRadius: 'var(--radius-4)',
         whiteSpace:   'nowrap',
         flexShrink:   0,
@@ -49,16 +49,16 @@ function TimelineRow({ event, onAssetClick, onEventClick }) {
         alignItems:      'flex-start',
         gap:             'var(--spacing-12)',
         padding:         'var(--spacing-8) var(--spacing-12)',
-        borderRadius:    'var(--radius-6)',
-        background:      hovered ? 'var(--color-surface-hover)' : 'transparent',
-        transition:      'background 0.15s ease',
+        borderRadius:    'var(--radius-4)',
+        background:      hovered ? 'var(--color-hover-01)' : 'transparent',
+        transition:      'background var(--motion-fast) var(--ease-productive)',
         cursor:          onEventClick ? 'pointer' : 'default',
         position:        'relative',
       }}
     >
       {/* Timestamp */}
       <span
-        className="type-body-sm"
+        className="type-label"
         style={{
           width:      60,
           flexShrink: 0,
@@ -78,20 +78,20 @@ function TimelineRow({ event, onAssetClick, onEventClick }) {
           paddingTop:     6,
         }}
       >
-        <span className={`status-dot ${dotVariant(event.type)}`} />
+        <span className={dotVariant(event.type)} />
       </div>
 
       {/* Event text */}
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--spacing-6)' }}>
-        <span className="type-body">
+      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--spacing-8)' }}>
+        <span className="type-body-01">
           {event.event}{' '}
           <span
-            className="type-body"
+            className="type-body-01"
             onClick={e => { e.stopPropagation(); onAssetClick && onAssetClick(event.assetId) }}
             style={{
-              color:  'var(--color-accent)',
-              cursor: 'pointer',
-              transition: 'opacity 0.15s ease',
+              color:      'var(--color-accent)',
+              cursor:     'pointer',
+              transition: 'opacity var(--motion-fast) var(--ease-productive)',
             }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -110,12 +110,12 @@ export default function WhatChanged({ onAssetClick, onEventClick }) {
   const reversed = [...TIMELINE].reverse()
 
   return (
-    <div className="grid-12">
+    <div className="grid-16">
       <div className="card col-full">
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-16)' }}>
-          <span className="type-h4">What Changed</span>
-          <span className="type-body-sm">Last 24 hours</span>
+          <span className="type-heading-01">What Changed</span>
+          <span className="type-label">Last 24 hours</span>
         </div>
 
         {/* Vertical timeline */}
@@ -149,12 +149,12 @@ export default function WhatChanged({ onAssetClick, onEventClick }) {
         <div
           style={{
             marginTop:    'var(--spacing-16)',
-            background:   'var(--color-accent-subtle)',
+            background:   'var(--color-accent-bg)',
             borderRadius: 'var(--radius-8)',
             padding:      'var(--spacing-12) var(--spacing-16)',
           }}
         >
-          <span className="type-body-sm">
+          <span className="type-label">
             Availability dropped 12.1% at 2:03 AM, correlating with K-101 compressor trip
           </span>
         </div>

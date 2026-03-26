@@ -4,9 +4,9 @@ import { BAD_ACTORS } from '../../data/assets'
 import { colors, chartStyle } from '../../styles/tokens'
 
 function barColor(criticality) {
-  if (criticality === 'A') return colors.critical
+  if (criticality === 'A') return colors.error
   if (criticality === 'B') return colors.warning
-  return colors.healthy
+  return colors.success
 }
 
 function CustomTooltip({ active, payload }) {
@@ -68,7 +68,7 @@ export default function BadActors({ onAssetClick }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-h4">Bad Actors</span>
+      <span className="type-heading-01">Bad Actors</span>
 
       {/* Horizontal bar chart */}
       <div style={{ height: chartHeight }}>
@@ -110,7 +110,7 @@ export default function BadActors({ onAssetClick }) {
                   key={entry.assetId}
                   fill={barColor(entry.criticality)}
                   opacity={hoveredIndex !== null && hoveredIndex !== index ? 0.4 : 1}
-                  style={{ transition: 'opacity 0.15s ease' }}
+                  style={{ transition: `opacity var(--motion-fast) var(--ease-productive)` }}
                 />
               ))}
               <LabelList
@@ -136,14 +136,14 @@ export default function BadActors({ onAssetClick }) {
             overflow: 'hidden',
           }}
         >
-          <div style={{ flex: 1, background: 'var(--color-critical)' }} />
+          <div style={{ flex: 1, background: 'var(--color-error)' }} />
           <div style={{ flex: 1, background: 'var(--color-warning)' }} />
-          <div style={{ flex: 1, background: 'var(--color-healthy)' }} />
+          <div style={{ flex: 1, background: 'var(--color-success)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className="type-meta">High</span>
-          <span className="type-meta">Medium</span>
-          <span className="type-meta">Low</span>
+          <span className="type-helper">High</span>
+          <span className="type-helper">Medium</span>
+          <span className="type-helper">Low</span>
         </div>
       </div>
     </div>

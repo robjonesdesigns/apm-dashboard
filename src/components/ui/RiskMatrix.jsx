@@ -4,9 +4,9 @@ import { RISK_MATRIX } from '../../data/assets'
 const ROW_CONFIG = [
   {
     priority: 'High',
-    bg: 'var(--color-critical-bg)',
-    color: 'var(--color-critical)',
-    border: 'var(--color-critical)',
+    bg: 'var(--color-error-bg)',
+    color: 'var(--color-error)',
+    border: 'var(--color-error)',
   },
   {
     priority: 'Medium',
@@ -16,9 +16,9 @@ const ROW_CONFIG = [
   },
   {
     priority: 'Low',
-    bg: 'var(--color-healthy-bg)',
-    color: 'var(--color-healthy)',
-    border: 'var(--color-healthy)',
+    bg: 'var(--color-success-bg)',
+    color: 'var(--color-success)',
+    border: 'var(--color-success)',
   },
 ]
 
@@ -34,14 +34,14 @@ function MatrixCell({ count, bg, color, isHovered, onClick, onMouseEnter, onMous
         padding: 'var(--spacing-12)',
         border: `1px solid ${isHovered ? 'var(--color-accent)' : 'transparent'}`,
         cursor: 'pointer',
-        transition: 'all 0.15s ease',
+        transition: 'all var(--motion-fast) var(--ease-productive)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
       }}
     >
-      <span className="type-h3" style={{ color, fontVariantNumeric: 'tabular-nums' }}>
+      <span className="type-heading-02" style={{ color, fontVariantNumeric: 'tabular-nums' }}>
         {count}
       </span>
     </button>
@@ -66,7 +66,7 @@ export default function RiskMatrix({ onCellClick }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-h4">Risk Matrix</span>
+      <span className="type-heading-01">Risk Matrix</span>
 
       {/* Grid */}
       <div
@@ -92,7 +92,7 @@ export default function RiskMatrix({ onCellClick }) {
               {/* Row label */}
               <span
                 key={`label-${row.priority}`}
-                className="type-body"
+                className="type-body-01"
                 style={{ fontWeight: 600, color: config.color }}
               >
                 {row.priority}
@@ -136,14 +136,14 @@ export default function RiskMatrix({ onCellClick }) {
             overflow: 'hidden',
           }}
         >
-          <div style={{ flex: 1, background: 'var(--color-critical)' }} />
+          <div style={{ flex: 1, background: 'var(--color-error)' }} />
           <div style={{ flex: 1, background: 'var(--color-warning)' }} />
-          <div style={{ flex: 1, background: 'var(--color-healthy)' }} />
+          <div style={{ flex: 1, background: 'var(--color-success)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className="type-meta">High</span>
-          <span className="type-meta">Medium</span>
-          <span className="type-meta">Low</span>
+          <span className="type-helper">High</span>
+          <span className="type-helper">Medium</span>
+          <span className="type-helper">Low</span>
         </div>
       </div>
     </div>

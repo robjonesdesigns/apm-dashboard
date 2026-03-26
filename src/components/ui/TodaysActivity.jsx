@@ -3,18 +3,18 @@ import { WORK_ORDERS, CASES } from '../../data/assets'
 // ── Priority → status dot mapping ────────────────────────────────────────────
 
 const PRIORITY_DOT = {
-  critical: 'status-dot-critical',
-  high: 'status-dot-warning',
-  medium: 'status-dot-info',
-  low: 'status-dot-info',
+  critical: 'status-dot dot-error',
+  high: 'status-dot dot-warning',
+  medium: 'status-dot dot-info',
+  low: 'status-dot dot-info',
 }
 
 // ── Case status → dot mapping ─────────────────────────────────────────────────
 
 const CASE_STATUS_DOT = {
-  investigating: 'status-dot-critical',
-  open: 'status-dot-warning',
-  closed: 'status-dot-healthy',
+  investigating: 'status-dot dot-error',
+  open: 'status-dot dot-warning',
+  closed: 'status-dot dot-success',
 }
 
 // ── Summary counts ────────────────────────────────────────────────────────────
@@ -38,8 +38,8 @@ const rowStyle = {
   alignItems: 'flex-start',
   gap: 'var(--spacing-8)',
   padding: 'var(--spacing-12) 0',
-  borderBottom: '1px solid var(--color-border)',
-  transition: 'background 0.15s ease, border-left 0.15s ease',
+  borderBottom: '1px solid var(--color-border-subtle)',
+  transition: 'background var(--motion-fast) var(--ease-productive)',
 }
 
 // ── Inline dot helper ─────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ const rowStyle = {
 function Dot({ variant }) {
   return (
     <span
-      className={`status-dot ${variant}`}
+      className={variant}
       style={{ marginTop: 4, flexShrink: 0 }}
     />
   )
@@ -69,8 +69,8 @@ function WorkOrdersCard({ onAssetClick }) {
           marginBottom: 'var(--spacing-4)',
         }}
       >
-        <span className="type-h4">Work Orders</span>
-        <span className="badge badge-critical">{WORK_ORDERS.length}</span>
+        <span className="type-heading-01">Work Orders</span>
+        <span className="badge badge-error">{WORK_ORDERS.length}</span>
       </div>
 
       {/* Summary line */}
@@ -84,28 +84,28 @@ function WorkOrdersCard({ onAssetClick }) {
       >
         {summary.critical > 0 && (
           <span
-            className="type-body-sm"
+            className="type-label"
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
           >
-            <Dot variant="status-dot-critical" />
+            <Dot variant="status-dot dot-error" />
             {summary.critical} Critical
           </span>
         )}
         {summary.high > 0 && (
           <span
-            className="type-body-sm"
+            className="type-label"
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
           >
-            <Dot variant="status-dot-warning" />
+            <Dot variant="status-dot dot-warning" />
             {summary.high} High
           </span>
         )}
         {summary.medium > 0 && (
           <span
-            className="type-body-sm"
+            className="type-label"
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
           >
-            <Dot variant="status-dot-info" />
+            <Dot variant="status-dot dot-info" />
             {summary.medium} Medium
           </span>
         )}
@@ -126,7 +126,7 @@ function WorkOrdersCard({ onAssetClick }) {
                 }}
               >
                 <span
-                  className="type-body"
+                  className="type-body-01"
                   style={{ color: 'var(--color-accent)', cursor: 'pointer' }}
                   onClick={() => onAssetClick(wo.assetId)}
                 >
@@ -134,19 +134,19 @@ function WorkOrdersCard({ onAssetClick }) {
                 </span>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   {wo.assignee ? (
-                    <span className="type-body-sm">{wo.assignee}</span>
+                    <span className="type-label">{wo.assignee}</span>
                   ) : (
-                    <span className="type-body-sm" style={{ color: 'var(--color-warning)' }}>
+                    <span className="type-label" style={{ color: 'var(--color-warning)' }}>
                       Unassigned
                     </span>
                   )}
                   <div>
-                    <span className="type-meta">{wo.created}</span>
+                    <span className="type-helper">{wo.created}</span>
                   </div>
                 </div>
               </div>
               <div style={{ marginTop: 'var(--spacing-4)' }}>
-                <span className="type-body-secondary">{wo.task}</span>
+                <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>{wo.task}</span>
               </div>
             </div>
           </div>
@@ -177,7 +177,7 @@ function CasesCard({ onAssetClick }) {
           marginBottom: 'var(--spacing-4)',
         }}
       >
-        <span className="type-h4">Investigations</span>
+        <span className="type-heading-01">Investigations</span>
         <span className="badge badge-warning">{CASES.length}</span>
       </div>
 
@@ -192,19 +192,19 @@ function CasesCard({ onAssetClick }) {
       >
         {summary.investigating > 0 && (
           <span
-            className="type-body-sm"
+            className="type-label"
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
           >
-            <Dot variant="status-dot-critical" />
+            <Dot variant="status-dot dot-error" />
             {summary.investigating} Investigating
           </span>
         )}
         {summary.open > 0 && (
           <span
-            className="type-body-sm"
+            className="type-label"
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
           >
-            <Dot variant="status-dot-warning" />
+            <Dot variant="status-dot dot-warning" />
             {summary.open} Open
           </span>
         )}
@@ -214,7 +214,7 @@ function CasesCard({ onAssetClick }) {
       <div>
         {CASES.map((c) => (
           <div key={c.id} style={rowStyle}>
-            <Dot variant={CASE_STATUS_DOT[c.status] || 'status-dot-info'} />
+            <Dot variant={CASE_STATUS_DOT[c.status] || 'status-dot dot-info'} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
@@ -225,7 +225,7 @@ function CasesCard({ onAssetClick }) {
                 }}
               >
                 <span
-                  className="type-body"
+                  className="type-body-01"
                   style={{ color: 'var(--color-accent)', cursor: 'pointer' }}
                   onClick={() => onAssetClick(c.assetId)}
                 >
@@ -233,22 +233,22 @@ function CasesCard({ onAssetClick }) {
                 </span>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <span
-                    className="type-body-sm"
+                    className="type-label"
                     style={{ textTransform: 'capitalize' }}
                   >
                     {c.status}
                   </span>
                   <div>
-                    <span className="type-meta">{c.opened}</span>
+                    <span className="type-helper">{c.opened}</span>
                   </div>
                 </div>
               </div>
               <div style={{ marginTop: 'var(--spacing-4)' }}>
-                <span className="type-body-secondary">{c.description}</span>
+                <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>{c.description}</span>
               </div>
               {c.linkedWorkOrders.length > 0 && (
                 <div style={{ marginTop: 'var(--spacing-4)' }}>
-                  <span className="type-meta">
+                  <span className="type-helper">
                     {c.linkedWorkOrders.length} linked work order{c.linkedWorkOrders.length !== 1 ? 's' : ''}
                     {' '}({c.linkedWorkOrders.join(', ')})
                   </span>
@@ -271,12 +271,9 @@ function CasesCard({ onAssetClick }) {
 
 export default function TodaysActivity({ onAssetClick }) {
   return (
-    <div>
-      <div className="section-header">Today's Activity</div>
-      <div className="grid-12">
-        <WorkOrdersCard onAssetClick={onAssetClick} />
-        <CasesCard onAssetClick={onAssetClick} />
-      </div>
+    <div className="grid-16">
+      <WorkOrdersCard onAssetClick={onAssetClick} />
+      <CasesCard onAssetClick={onAssetClick} />
     </div>
   )
 }

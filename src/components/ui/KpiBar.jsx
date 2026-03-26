@@ -91,8 +91,8 @@ function KpiCard({ config, onClick }) {
   const { pct } = calcDelta(config.current, config.previous)
   const isPositive = pct >= 0
   const changeColor = isPositive
-    ? 'var(--color-healthy)'
-    : 'var(--color-critical)'
+    ? 'var(--color-success)'
+    : 'var(--color-error)'
   const sign = isPositive ? '+' : ''
 
   return (
@@ -121,7 +121,7 @@ function KpiCard({ config, onClick }) {
       </div>
 
       <div>
-        <span className="type-body-sm" style={{ color: changeColor }}>
+        <span className="type-label" style={{ color: changeColor }}>
           {sign}{pct}% vs last month
         </span>
       </div>
@@ -150,17 +150,17 @@ function TrainsCard() {
         <span className="type-kpi-lg">{PLANT.trains} Trains</span>
       </div>
       <div>
-        <span className="type-body-secondary">Active assets: </span>
+        <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>Active assets: </span>
         <span
-          className="type-body"
+          className="type-body-01"
           style={{ color: 'var(--color-accent)' }}
         >
           {PLANT.activeAssets}
         </span>
-        <span className="type-body-secondary"> / {PLANT.totalAssets}</span>
+        <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}> / {PLANT.totalAssets}</span>
       </div>
       <div>
-        <span className="type-meta">Last refreshed {PLANT.lastRefreshed}</span>
+        <span className="type-helper">Last refreshed {PLANT.lastRefreshed}</span>
       </div>
     </div>
   )
@@ -170,14 +170,11 @@ function TrainsCard() {
 
 export default function KpiBar({ onKpiClick }) {
   return (
-    <div>
-      <div className="section-header">Plant Health</div>
-      <div className="grid-12">
-        {KPI_CONFIG.map((config) => (
-          <KpiCard key={config.key} config={config} onClick={onKpiClick} />
-        ))}
-        <TrainsCard />
-      </div>
+    <div className="grid-16">
+      {KPI_CONFIG.map((config) => (
+        <KpiCard key={config.key} config={config} onClick={onKpiClick} />
+      ))}
+      <TrainsCard />
     </div>
   )
 }

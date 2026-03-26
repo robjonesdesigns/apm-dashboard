@@ -61,7 +61,7 @@ function CustomTooltip({ active, payload }) {
 
 function LegendItem({ label, color, count, pct }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-6)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
       <div
         style={{
           width: 8,
@@ -71,14 +71,14 @@ function LegendItem({ label, color, count, pct }) {
           flexShrink: 0,
         }}
       />
-      <span className="type-body-sm">{label}</span>
+      <span className="type-label">{label}</span>
       <span
-        className="type-body-sm"
+        className="type-label"
         style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}
       >
         {count}
       </span>
-      <span className="type-body-sm" style={{ color: 'var(--color-text-muted)' }}>
+      <span className="type-helper">
         {pct}%
       </span>
     </div>
@@ -93,8 +93,8 @@ export default function EventSummary() {
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-        <span className="type-h4">Event Summary</span>
-        <div style={{ display: 'flex', gap: 'var(--spacing-6)' }}>
+        <span className="type-heading-01">Event Summary</span>
+        <div style={{ display: 'flex', gap: 'var(--spacing-8)' }}>
           <button
             className={`chip${activeTab === 'events' ? ' chip-active' : ''}`}
             onClick={() => setActiveTab('events')}
@@ -160,8 +160,7 @@ export default function EventSummary() {
 
       {/* Legend */}
       <div
-        className="badge-group"
-        style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}
       >
         {SEGMENTS.map((seg) => {
           const count = EVENT_SUMMARY[seg.key]

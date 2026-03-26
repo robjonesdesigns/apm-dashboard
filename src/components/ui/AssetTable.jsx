@@ -3,24 +3,24 @@ import { ASSETS } from '../../data/assets'
 
 // Status dot variant from asset status
 function statusDotVariant(status) {
-  if (status === 'tripped')       return 'status-dot-critical'
-  if (status === 'degraded')      return 'status-dot-warning'
-  if (status === 'planned-outage') return 'status-dot-info'
-  return 'status-dot-healthy'
+  if (status === 'tripped')        return 'status-dot dot-error'
+  if (status === 'degraded')       return 'status-dot dot-warning'
+  if (status === 'planned-outage') return 'status-dot dot-info'
+  return 'status-dot dot-success'
 }
 
 // Priority badge variant
 function priorityBadgeVariant(priority) {
-  if (priority === 'high')   return 'badge-critical'
-  if (priority === 'medium') return 'badge-warning'
-  return 'badge-healthy'
+  if (priority === 'high')   return 'badge badge-error'
+  if (priority === 'medium') return 'badge badge-warning'
+  return 'badge badge-success'
 }
 
 // OEE color
 function oeeColor(oee) {
-  if (oee > 85) return 'var(--color-healthy)'
+  if (oee > 85) return 'var(--color-success)'
   if (oee > 70) return 'var(--color-warning)'
-  return 'var(--color-critical)'
+  return 'var(--color-error)'
 }
 
 const COL_STYLES = {
@@ -41,8 +41,8 @@ const ROW_STYLE = {
   gap:           'var(--spacing-16)',
   padding:       'var(--spacing-8) var(--spacing-12)',
   cursor:        'pointer',
-  transition:    'all 0.15s ease',
-  borderBottom:  '1px solid var(--color-border)',
+  transition:    'all var(--motion-fast) var(--ease-productive)',
+  borderBottom:  '1px solid var(--color-border-subtle)',
   borderLeft:    '2px solid transparent',
 }
 
@@ -56,39 +56,39 @@ function AssetRow({ asset, onAssetClick }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         ...ROW_STYLE,
-        background:  hovered ? 'var(--color-surface-hover)' : 'transparent',
+        background:  hovered ? 'var(--color-hover-01)' : 'transparent',
         borderLeft:  hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
       }}
     >
       {/* Status */}
       <div style={{ ...COL_STYLES.status, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <span className={`status-dot ${statusDotVariant(asset.status)}`} />
+        <span className={statusDotVariant(asset.status)} />
       </div>
 
       {/* Asset name + type */}
       <div style={COL_STYLES.asset}>
         <div
-          className="type-body"
+          className="type-body-01"
           style={{
             color:      hovered ? 'var(--color-accent)' : undefined,
-            transition: 'color 0.15s ease',
+            transition: `color var(--motion-fast) var(--ease-productive)`,
           }}
         >
           {asset.name}
         </div>
-        <div className="type-meta">{asset.type}</div>
+        <div className="type-helper">{asset.type}</div>
       </div>
 
       {/* Priority */}
       <div style={COL_STYLES.priority}>
-        <span className={`badge ${priorityBadgeVariant(asset.priority)}`}>
+        <span className={priorityBadgeVariant(asset.priority)}>
           {asset.priority}
         </span>
       </div>
 
       {/* OEE */}
       <div
-        className="type-body"
+        className="type-body-01"
         style={{ ...COL_STYLES.oee, color: oeeColor(asset.oee) }}
       >
         {asset.oee}%
@@ -96,10 +96,10 @@ function AssetRow({ asset, onAssetClick }) {
 
       {/* Events */}
       <div
-        className="type-body"
+        className="type-body-01"
         style={{
           ...COL_STYLES.events,
-          color: asset.activeEvents > 0 ? 'var(--color-critical)' : undefined,
+          color: asset.activeEvents > 0 ? 'var(--color-error)' : undefined,
         }}
       >
         {asset.activeEvents}
@@ -107,7 +107,7 @@ function AssetRow({ asset, onAssetClick }) {
 
       {/* Repetitive events */}
       <div
-        className="type-body"
+        className="type-body-01"
         title={asset.repetitiveEvents > 0 ? 'Possible chattering' : undefined}
         style={{
           ...COL_STYLES.repetitive,
@@ -118,17 +118,17 @@ function AssetRow({ asset, onAssetClick }) {
       </div>
 
       {/* Downtime */}
-      <div className="type-body" style={COL_STYLES.downtime}>
+      <div className="type-body-01" style={COL_STYLES.downtime}>
         {asset.downtime}
       </div>
 
       {/* Work Orders */}
-      <div className="type-body" style={COL_STYLES.workOrders}>
+      <div className="type-body-01" style={COL_STYLES.workOrders}>
         {asset.workOrders}
       </div>
 
       {/* RUL */}
-      <div className="type-body" style={COL_STYLES.rul}>
+      <div className="type-body-01" style={COL_STYLES.rul}>
         {asset.rul}
       </div>
     </div>
@@ -137,11 +137,11 @@ function AssetRow({ asset, onAssetClick }) {
 
 export default function AssetTable({ onAssetClick }) {
   return (
-    <div className="grid-12">
+    <div className="grid-16">
       <div className="card col-full" style={{ padding: 0 }}>
         {/* Card header */}
         <div style={{ padding: 'var(--spacing-16) var(--spacing-24) var(--spacing-12)' }}>
-          <span className="type-h4">All Assets</span>
+          <span className="type-heading-01">All Assets</span>
         </div>
 
         {/* Scrollable table area */}
@@ -153,9 +153,9 @@ export default function AssetTable({ onAssetClick }) {
               alignItems:      'center',
               gap:             'var(--spacing-16)',
               padding:         'var(--spacing-8) var(--spacing-12)',
-              background:      'var(--color-surface-raised)',
-              borderTop:       '1px solid var(--color-border)',
-              borderBottom:    '1px solid var(--color-border)',
+              background:      'var(--color-layer-02)',
+              borderTop:       '1px solid var(--color-border-subtle)',
+              borderBottom:    '1px solid var(--color-border-subtle)',
               position:        'sticky',
               top:             0,
               zIndex:          1,
