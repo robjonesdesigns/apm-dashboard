@@ -1,5 +1,7 @@
 // ── Sidebar ───────────────────────────────────────────────────────────────────
-// Narrow icon-only navigation. 64px wide. Dark bg, teal accent on active item.
+// Collapsible navigation. Collapsed: 64px icons only. Expanded: 200px icon + label.
+
+import { useState } from 'react'
 
 const NAV_ITEMS = [
   {
@@ -61,42 +63,93 @@ const SettingsIcon = () => (
   </svg>
 )
 
+// Chevron pointing right (collapsed state) or left (expanded state)
+function ChevronIcon({ expanded }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ transition: 'transform 0.2s ease', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+    >
+      <path
+        d="M6 3l5 5-5 5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export default function Sidebar({ view, onNavigate }) {
+  const [expanded, setExpanded] = useState(false)
+
   return (
     <aside
-      className="flex flex-col items-center bg-[var(--color-bg)] border-r border-[var(--color-border)] w-16 shrink-0 h-full py-4"
+      className="flex flex-col bg-[var(--color-bg)] border-r border-[var(--color-border)] shrink-0 h-full py-4"
       role="navigation"
       aria-label="Main navigation"
+      style={{
+        width: expanded ? '200px' : '64px',
+        transition: 'width 0.2s ease',
+        overflow: 'hidden',
+      }}
     >
       {/* Logo */}
-      <div className="flex items-center justify-center w-9 h-9 rounded-full bg-[var(--color-accent-muted)] mb-6 shrink-0">
-        <span
-          className="text-[var(--color-accent)] font-semibold leading-none"
-          style={{ fontSize: '10px', letterSpacing: '0.04em' }}
-        >
-          APM
-        </span>
+      <div
+        className="flex items-center shrink-0 mb-6 px-3"
+        style={{ height: '36px' }}
+      >
+        <div className="flex items-center justify-center w-9 h-9 rounded-full bg-[var(--color-accent-muted)] shrink-0">
+          <span
+            className="text-[var(--color-accent)] font-semibold leading-none"
+            style={{ fontSize: '10px', letterSpacing: '0.04em' }}
+          >
+            APM
+          </span>
+        </div>
+        {expanded && (
+          <span
+            className="text-[var(--color-text-secondary)] font-semibold ml-3 whitespace-nowrap"
+            style={{ fontSize: '13px' }}
+          >
+            APM Dashboard
+          </span>
+        )}
       </div>
 
       {/* Primary nav items */}
-      <nav className="flex flex-col items-center gap-1 w-full px-2">
+      <nav className="flex flex-col gap-1 w-full px-2">
         {NAV_ITEMS.map((item) => {
           const isActive = view === item.id
           return (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              title={item.label}
+              title={!expanded ? item.label : undefined}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
               className={[
-                'flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] transition-colors duration-150 cursor-pointer',
+                'flex items-center h-10 rounded-[var(--radius-md)] transition-colors duration-150 cursor-pointer',
+                expanded ? 'px-3 gap-3 w-full' : 'justify-center w-10',
                 isActive
                   ? 'bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
                   : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]',
               ].join(' ')}
             >
-              {item.icon}
+              <span className="shrink-0">{item.icon}</span>
+              {expanded && (
+                <span
+                  className="whitespace-nowrap overflow-hidden"
+                  style={{ fontSize: '13px', fontWeight: isActive ? 600 : 400 }}
+                >
+                  {item.label}
+                </span>
+              )}
             </button>
           )
         })}
@@ -106,20 +159,42 @@ export default function Sidebar({ view, onNavigate }) {
       <div className="flex-1" />
 
       {/* Settings at bottom */}
-      <div className="flex flex-col items-center w-full px-2">
+      <div className="flex flex-col gap-1 w-full px-2">
         <button
           onClick={() => onNavigate('settings')}
-          title="Settings"
+          title={!expanded ? 'Settings' : undefined}
           aria-label="Settings"
           aria-current={view === 'settings' ? 'page' : undefined}
           className={[
-            'flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] transition-colors duration-150 cursor-pointer',
+            'flex items-center h-10 rounded-[var(--radius-md)] transition-colors duration-150 cursor-pointer',
+            expanded ? 'px-3 gap-3 w-full' : 'justify-center w-10',
             view === 'settings'
               ? 'bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
               : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]',
           ].join(' ')}
         >
-          <SettingsIcon />
+          <span className="shrink-0"><SettingsIcon /></span>
+          {expanded && (
+            <span
+              className="whitespace-nowrap overflow-hidden"
+              style={{ fontSize: '13px', fontWeight: view === 'settings' ? 600 : 400 }}
+            >
+              Settings
+            </span>
+          )}
+        </button>
+
+        {/* Toggle button */}
+        <button
+          onClick={() => setExpanded((prev) => !prev)}
+          aria-label={expanded ? 'Collapse sidebar' : 'Expand sidebar'}
+          className={[
+            'flex items-center justify-center h-10 rounded-[var(--radius-md)] transition-colors duration-150 cursor-pointer',
+            expanded ? 'px-3 w-full' : 'w-10',
+            'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-secondary)]',
+          ].join(' ')}
+        >
+          <ChevronIcon expanded={expanded} />
         </button>
       </div>
     </aside>

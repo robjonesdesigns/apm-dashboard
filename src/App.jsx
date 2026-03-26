@@ -41,7 +41,7 @@ export default function App() {
           onToggleNotifications={() => setNotificationsOpen(!notificationsOpen)}
           notificationsOpen={notificationsOpen}
         />
-        <div className="flex-1 overflow-y-auto relative">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
           <div className="p-lg">
             <View
               onNavigate={navigate}

@@ -187,7 +187,7 @@ function KpiCard({ label, value, unit }) {
 
 function KpiBar() {
   return (
-    <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'stretch' }}>
       {KPI_ITEMS.map((kpi) => (
         <KpiCard key={kpi.label} {...kpi} />
       ))}
@@ -854,7 +854,7 @@ export default function AssetHealth({ onNavigate }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: 20,
           }}
         >

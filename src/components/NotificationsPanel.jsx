@@ -72,7 +72,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter }) {
       {/* Backdrop — transparent, just captures outside clicks */}
       {open && (
         <div
-          className="absolute inset-0 z-10"
+          className="fixed inset-0 z-10"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -84,12 +84,12 @@ export default function NotificationsPanel({ open, onClose, assetFilter }) {
         aria-label="Notifications"
         aria-modal="false"
         className={[
-          'absolute top-0 right-0 h-full z-20 flex flex-col',
+          'fixed right-0 z-20 flex flex-col',
           'bg-[var(--color-surface)] border-l border-[var(--color-border)]',
           'transition-transform duration-200 ease-in-out',
           open ? 'translate-x-0' : 'translate-x-full',
         ].join(' ')}
-        style={{ width: '320px' }}
+        style={{ width: '320px', top: '56px', height: 'calc(100vh - 56px)' }}
       >
         {/* Header */}
         <div
