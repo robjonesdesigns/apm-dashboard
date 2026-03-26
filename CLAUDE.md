@@ -12,34 +12,47 @@ Not a production app. Not Honeywell's actual product.
 
 ## Screens
 
-| Screen | Component | Purpose |
-|--------|-----------|---------|
-| Asset Health | AssetHealth.jsx | Plant overview: KPIs, Today's Activity, What Changed, Risk/Bad Actors, Asset Summary |
-| Asset Details | AssetDetails.jsx | Single asset deep dive: Reliability, Maintenance, Performance rows + tab bar |
-| Fault Tree | FaultTree.jsx | Causal chain from top event to root causes. Leaf nodes link to Trends. |
-| Trends | Trends.jsx | Attribute trend analysis with overlay/separate modes |
+| Screen | Component | Nav label | Purpose |
+|--------|-----------|-----------|---------|
+| Plant Overview | PlantOverview.jsx | Plant Overview | KPIs, Today's Activity, What Changed, Risk/Bad Actors, Asset Summary |
+| Asset Inspection | AssetInspection.jsx | Asset Inspection | Single asset deep dive: Reliability, Maintenance, Performance rows + tab bar |
+| Root Cause Analysis | RootCauseAnalysis.jsx | Root Cause | Causal chain from top event to root causes. Leaf nodes link to Trends. |
+| Trends | Trends.jsx | Trends | Attribute trend analysis with overlay/separate modes |
+| Work Orders | WorkOrders.jsx | Work Orders | Task management dashboard |
+| Investigations | Investigations.jsx | Investigations | Case/investigation management dashboard |
 
 ## Shell Components
 
 | Component | Purpose |
 |-----------|---------|
-| Sidebar.jsx | Collapsible sidebar (64px icons / 200px with labels) |
-| TopBar.jsx | Breadcrumb navigation + notification bell + date selector |
-| NotificationsPanel.jsx | Fixed overlay, filterable by asset, severity badges |
+| Sidebar.jsx | Collapsible sidebar (64px collapsed / 320px expanded with labels). Push, not overlay. Mutually exclusive with NotificationsPanel (ADR-009). |
+| TopBar.jsx | Logo + "ASSET PERFORMANCE MANAGEMENT" + breadcrumb + help + settings avatar + notification bell. 60px height, full width. |
+| NotificationsPanel.jsx | Push panel (320px), compresses viewport. Filterable by asset, severity badges. Mutually exclusive with Sidebar. |
+
+## Sidebar Icons
+
+| Screen | Icon description |
+|--------|-----------------|
+| Plant Overview | Factory/plant building |
+| Asset Inspection | Machine/gear |
+| Root Cause | Node tree (branching) |
+| Trends | Line graph |
+| Work Orders | Checklist with checkboxes |
+| Investigations | Briefcase |
 
 ## Navigation Flow (10-step engineer decision chain)
 
 ```
-1. ORIENT      Asset Health > KPIs at a glance
-2. PLAN        Asset Health > Today's Activity (work orders, cases)
-3. DETECT      Asset Health > What Changed (overnight events timeline)
-4. CORRELATE   Asset Health > KPI trend overlaid with asset events
-5. IDENTIFY    Asset Health > Asset Summary table > click row
-6. INVESTIGATE Asset Details > three-level deep dive
-7. TRACE       Fault Tree > causal chain from event to root cause
+1. ORIENT      Plant Overview > KPIs at a glance
+2. PLAN        Plant Overview > Today's Activity (work orders, cases)
+3. DETECT      Plant Overview > What Changed (overnight events timeline)
+4. CORRELATE   Plant Overview > KPI trend overlaid with asset events
+5. IDENTIFY    Plant Overview > Asset Summary table > click row
+6. INVESTIGATE Asset Inspection > three-level deep dive
+7. TRACE       Root Cause Analysis > causal chain from event to root cause
 8. DEEP DIVE   Trends > attribute data over time
-9. ACT         Create case or work order (contextual modal)
-10. VERIFY     Asset running without anomalies, case closed
+9. ACT         Create investigation or work order (contextual modal)
+10. VERIFY     Asset running without anomalies, investigation closed
 ```
 
 See INTERVIEW-002 and INTERACTION-SPEC-001 for full details.
