@@ -1,9 +1,28 @@
 import { useState } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  Cell, ResponsiveContainer,
+  Cell, ResponsiveContainer, AreaChart, Area,
 } from 'recharts'
-import { PLANT, RISK_MATRIX, EVENT_SUMMARY, BAD_ACTORS, ASSET_SUMMARY } from '../data/assets'
+import { PLANT, RISK_MATRIX, EVENT_SUMMARY, BAD_ACTORS, ASSET_SUMMARY, OEE_TREND } from '../data/assets'
+
+// ── Section header ─────────────────────────────────────────────────────────────
+
+function SectionHeader({ label }) {
+  return (
+    <p
+      style={{
+        fontSize: '11px',
+        fontWeight: 600,
+        color: 'var(--color-text-muted)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        marginBottom: '12px',
+      }}
+    >
+      {label}
+    </p>
+  )
+}
 
 // ── Shared tooltip ────────────────────────────────────────────────────────────
 
@@ -34,27 +53,46 @@ function DarkTooltip({ active, payload, label, formatter }) {
   )
 }
 
+// ── KPI sparkline + period-over-period ────────────────────────────────────────
+
+// Derive month-over-month change from OEE_TREND (Mar = current, Feb = previous)
+const TREND_CURRENT  = OEE_TREND[OEE_TREND.length - 1]   // Mar
+const TREND_PREVIOUS = OEE_TREND[OEE_TREND.length - 2]   // Feb
+
+function calcChange(current, previous) {
+  return parseFloat((current - previous).toFixed(1))
+}
+
+const KPI_META = {
+  OEE:          { field: 'oee',          change: calcChange(TREND_CURRENT.oee,          TREND_PREVIOUS.oee) },
+  Availability: { field: 'availability', change: calcChange(TREND_CURRENT.availability, TREND_PREVIOUS.availability) },
+  Performance:  { field: 'performance',  change: calcChange(TREND_CURRENT.performance,  TREND_PREVIOUS.performance) },
+  Quality:      { field: 'quality',      change: calcChange(TREND_CURRENT.quality,      TREND_PREVIOUS.quality) },
+}
+
+// Build sparkline data arrays from OEE_TREND
+function sparkData(field) {
+  return OEE_TREND.map((row) => ({ v: row[field] }))
+}
+
 // ── KPI card ──────────────────────────────────────────────────────────────────
 
 const KPI_ITEMS = [
-  { label: 'OEE',          value: PLANT.oee,          unit: '%', trend: 'up' },
-  { label: 'Availability', value: PLANT.availability,  unit: '%', trend: 'up' },
-  { label: 'Performance',  value: PLANT.performance,   unit: '%', trend: 'up' },
-  { label: 'Quality',      value: PLANT.quality,       unit: '%', trend: 'up' },
+  { label: 'OEE',          value: PLANT.oee,          unit: '%' },
+  { label: 'Availability', value: PLANT.availability,  unit: '%' },
+  { label: 'Performance',  value: PLANT.performance,   unit: '%' },
+  { label: 'Quality',      value: PLANT.quality,       unit: '%' },
 ]
 
-function TrendArrow({ direction }) {
-  // up = good (teal), down = bad (red), stable = neutral
-  const color =
-    direction === 'up'   ? 'var(--color-accent)'    :
-    direction === 'down' ? 'var(--color-critical)'  :
-                           'var(--color-text-muted)'
-  const symbol = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '—'
-  return <span style={{ color, fontSize: 10, marginLeft: 4 }}>{symbol}</span>
-}
-
-function KpiCard({ label, value, unit, trend }) {
+function KpiCard({ label, value, unit }) {
   const [hovered, setHovered] = useState(false)
+  const meta   = KPI_META[label]
+  const change = meta?.change ?? 0
+  const data   = sparkData(meta?.field ?? 'oee')
+
+  const changeColor  = change >= 0 ? 'var(--color-healthy)' : 'var(--color-critical)'
+  const changePrefix = change >= 0 ? '+' : ''
+
   return (
     <button
       onMouseEnter={() => setHovered(true)}
@@ -71,11 +109,12 @@ function KpiCard({ label, value, unit, trend }) {
         minWidth: 0,
       }}
     >
+      {/* Label */}
       <p
         style={{
           fontSize: 11,
-          fontWeight: 500,
-          letterSpacing: '0.06em',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: 'var(--color-text-muted)',
           marginBottom: 6,
@@ -83,19 +122,64 @@ function KpiCard({ label, value, unit, trend }) {
       >
         {label}
       </p>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-        <span
-          style={{
-            fontSize: 24,
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            lineHeight: 1,
-          }}
-        >
-          {value}
-        </span>
-        <span style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>{unit}</span>
-        <TrendArrow direction={trend} />
+
+      {/* Value row + sparkline */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
+        <div>
+          {/* Big number */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
+            <span
+              style={{
+                fontSize: 24,
+                fontWeight: 700,
+                color: 'var(--color-text-primary)',
+                lineHeight: 1,
+              }}
+            >
+              {value}
+            </span>
+            <span style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>{unit}</span>
+          </div>
+
+          {/* Period-over-period change */}
+          <p
+            style={{
+              fontSize: 11,
+              color: changeColor,
+              marginTop: 4,
+              lineHeight: 1,
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {changePrefix}{change}% vs last month
+          </p>
+        </div>
+
+        {/* Sparkline */}
+        <div style={{ width: 60, height: 24, flexShrink: 0 }}>
+          <AreaChart
+            width={60}
+            height={24}
+            data={data}
+            margin={{ top: 2, right: 0, bottom: 0, left: 0 }}
+          >
+            <defs>
+              <linearGradient id={`spark-${label}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--color-accent)" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="var(--color-accent)" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <Area
+              type="monotone"
+              dataKey="v"
+              stroke="var(--color-accent)"
+              strokeWidth={1.5}
+              fill={`url(#spark-${label})`}
+              dot={false}
+              isAnimationActive={false}
+            />
+          </AreaChart>
+        </div>
       </div>
     </button>
   )
@@ -126,8 +210,8 @@ function KpiBar() {
           <p
             style={{
               fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: '0.06em',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: 'var(--color-text-muted)',
               marginBottom: 4,
@@ -143,8 +227,8 @@ function KpiBar() {
           <p
             style={{
               fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: '0.06em',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: 'var(--color-text-muted)',
               marginBottom: 4,
@@ -209,8 +293,7 @@ function Card({ title, subtitle, children, style }) {
 
 // ── Risk Matrix ───────────────────────────────────────────────────────────────
 
-// Cell color by priority + column
-function riskCellStyle(priority, col) {
+function riskCellStyle(priority) {
   if (priority === 'High')   return { bg: 'var(--color-critical-bg)',  text: 'var(--color-critical)' }
   if (priority === 'Medium') return { bg: 'var(--color-warning-bg)',   text: 'var(--color-warning)' }
   return                            { bg: 'var(--color-healthy-bg)',   text: 'var(--color-healthy)' }
@@ -384,15 +467,8 @@ function EventSummaryCard() {
             horizontal={false}
             stroke="rgba(255,255,255,0.04)"
           />
-          <XAxis
-            type="number"
-            hide
-          />
-          <YAxis
-            type="category"
-            dataKey="name"
-            hide
-          />
+          <XAxis type="number" hide />
+          <YAxis type="category" dataKey="name" hide />
           <Tooltip content={<EventTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
           {SEGMENT_META.map(({ key, label, color }) => (
             <Bar key={key} dataKey={key} name={label} stackId="a" fill={color} radius={0} />
@@ -522,7 +598,7 @@ function BadActorsCard() {
                 key={`cell-${index}`}
                 fill={CRITICALITY_COLOR[entry.criticality]}
                 opacity={hoveredIndex === null || hoveredIndex === index ? 1 : 0.4}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               />
@@ -555,12 +631,12 @@ const TABLE_COLS = [
 ]
 
 function PriorityBadge({ priority }) {
-  const colors = {
+  const badgeColors = {
     High:   { bg: 'var(--color-critical-bg)',  text: 'var(--color-critical)' },
     Medium: { bg: 'var(--color-warning-bg)',   text: 'var(--color-warning)' },
     Low:    { bg: 'var(--color-healthy-bg)',   text: 'var(--color-healthy)' },
   }
-  const { bg, text } = colors[priority] || colors.Low
+  const { bg, text } = badgeColors[priority] || badgeColors.Low
   return (
     <span
       style={{
@@ -596,8 +672,9 @@ function AssetRow({ asset, onNavigate }) {
       style={{
         background: hovered ? 'var(--color-surface-hover)' : 'transparent',
         cursor: 'pointer',
-        transition: 'background 0.1s ease',
+        transition: 'all 0.15s ease',
         borderBottom: '1px solid var(--color-border)',
+        borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
       }}
     >
       {/* Status */}
@@ -620,7 +697,7 @@ function AssetRow({ asset, onNavigate }) {
           fontSize: 13,
           fontWeight: 500,
           color: hovered ? 'var(--color-accent)' : 'var(--color-text-primary)',
-          transition: 'color 0.1s ease',
+          transition: 'all 0.15s ease',
           whiteSpace: 'nowrap',
         }}
       >
@@ -766,23 +843,32 @@ export default function AssetHealth({ onNavigate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Row 1: KPI Bar */}
-      <KpiBar />
+      <div>
+        <SectionHeader label="Overview" />
+        <KpiBar />
+      </div>
 
       {/* Row 2: Three analysis cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 20,
-        }}
-      >
-        <RiskMatrixCard />
-        <EventSummaryCard />
-        <BadActorsCard />
+      <div>
+        <SectionHeader label="Analysis" />
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 20,
+          }}
+        >
+          <RiskMatrixCard />
+          <EventSummaryCard />
+          <BadActorsCard />
+        </div>
       </div>
 
       {/* Row 3: Asset Summary Table */}
-      <AssetSummaryTable onNavigate={onNavigate} />
+      <div>
+        <SectionHeader label="Assets" />
+        <AssetSummaryTable onNavigate={onNavigate} />
+      </div>
     </div>
   )
 }

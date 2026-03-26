@@ -26,25 +26,25 @@
   --color-accent-muted: rgba(45, 212, 191, 0.15);
   --color-accent-subtle: rgba(45, 212, 191, 0.08);
 
-  /* Semantic status */
-  --color-critical: #ef4444;
-  --color-critical-bg: rgba(239, 68, 68, 0.12);
-  --color-warning: #f59e0b;
-  --color-warning-bg: rgba(245, 158, 11, 0.12);
-  --color-healthy: #22c55e;
-  --color-healthy-bg: rgba(34, 197, 94, 0.12);
-  --color-info: #3b82f6;
-  --color-info-bg: rgba(59, 130, 246, 0.12);
+  /* Semantic status (desaturated for dark mode per ADR-002) */
+  --color-critical: #E57373;
+  --color-critical-bg: rgba(229, 115, 115, 0.12);
+  --color-warning: #FFB74D;
+  --color-warning-bg: rgba(255, 183, 77, 0.12);
+  --color-healthy: #81C784;
+  --color-healthy-bg: rgba(129, 199, 132, 0.12);
+  --color-info: #64B5F6;
+  --color-info-bg: rgba(100, 181, 246, 0.12);
 
-  /* Chart palette */
+  /* Chart palette (desaturated for dark backgrounds per ADR-002) */
   --color-chart-1: #2dd4bf;
-  --color-chart-2: #3b82f6;
-  --color-chart-3: #a78bfa;
-  --color-chart-4: #f59e0b;
-  --color-chart-5: #ef4444;
-  --color-chart-6: #ec4899;
-  --color-chart-7: #22c55e;
-  --color-chart-8: #6366f1;
+  --color-chart-2: #64B5F6;
+  --color-chart-3: #B39DDB;
+  --color-chart-4: #FFB74D;
+  --color-chart-5: #E57373;
+  --color-chart-6: #F48FB1;
+  --color-chart-7: #81C784;
+  --color-chart-8: #7986CB;
 
   /* Spacing (4px grid) */
   --spacing-xs: 4px;
@@ -82,6 +82,13 @@ html, body, #root {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle atmosphere gradient behind content area */
+#root > div > div:last-child {
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 10%, rgba(45, 212, 191, 0.03) 0%, transparent 70%),
+    var(--color-bg);
 }
 
 /* Scrollbar */

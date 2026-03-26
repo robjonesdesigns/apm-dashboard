@@ -27,22 +27,23 @@ export const colors = {
   // Semantic status
   critical: '#ef4444',
   criticalBg: 'rgba(239, 68, 68, 0.12)',
-  warning: '#f59e0b',
-  warningBg: 'rgba(245, 158, 11, 0.12)',
-  healthy: '#22c55e',
-  healthyBg: 'rgba(34, 197, 94, 0.12)',
-  info: '#3b82f6',
-  infoBg: 'rgba(59, 130, 246, 0.12)',
+  // Semantic status (desaturated for dark mode per ADR-002)
+  warning: '#FFB74D',
+  warningBg: 'rgba(255, 183, 77, 0.12)',
+  healthy: '#81C784',
+  healthyBg: 'rgba(129, 199, 132, 0.12)',
+  info: '#64B5F6',
+  infoBg: 'rgba(100, 181, 246, 0.12)',
 
-  // Chart palette (accessible on dark, distinguishable)
-  chart1: '#2dd4bf', // teal (primary)
-  chart2: '#3b82f6', // blue
-  chart3: '#a78bfa', // purple
-  chart4: '#f59e0b', // amber
-  chart5: '#ef4444', // red
-  chart6: '#ec4899', // pink
-  chart7: '#22c55e', // green
-  chart8: '#6366f1', // indigo
+  // Chart palette (desaturated for dark backgrounds per ADR-002)
+  chart1: '#2dd4bf', // teal (primary accent, already correct saturation)
+  chart2: '#64B5F6', // blue
+  chart3: '#B39DDB', // purple
+  chart4: '#FFB74D', // amber
+  chart5: '#E57373', // red
+  chart6: '#F48FB1', // pink
+  chart7: '#81C784', // green
+  chart8: '#7986CB', // indigo
 }
 
 export const fonts = {
