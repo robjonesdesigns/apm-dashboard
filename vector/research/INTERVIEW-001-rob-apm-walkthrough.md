@@ -89,10 +89,25 @@ The tab navigation was a last-minute decision because stakeholders didn't want a
 
 ---
 
+## Gap Period (2023-2024, ~5-6 months)
+
+Between the APM dashboard work and the Warehouse Operations platform, Rob worked
+on an executive-level operations platform. It was designed for leadership above the
+plant engineer level to monitor KPIs across multiple plants and facilities. An
+eagle-eye view of the entire operation rather than a single plant.
+
+The product never got traction. The team was in between two senior directors during
+this period with no clear leadership or direction. Rob describes it as "a blur."
+This is not included in the portfolio case study because there is nothing concrete
+to show from it, but it is part of the three-year timeline at Honeywell.
+
+---
+
 ## Product Tiers
 
 - Asset Health and Asset Details: part of the base APM product
 - Compressor Performance dashboard (load analysis, surge detection, efficiency curves): part of a higher tier for more specialized asset monitoring
+- Executive operations platform (cross-plant KPI monitoring): never shipped, no traction
 
 ---
 
