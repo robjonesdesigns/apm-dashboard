@@ -1,5 +1,5 @@
 // ── TopBar ────────────────────────────────────────────────────────────────────
-// 56px top bar. Left: breadcrumb. Right: notification bell with badge.
+// 60px top bar. Left: breadcrumb. Right: notification bell with badge.
 
 import { PLANT, NOTIFICATIONS } from '../data/assets.js'
 
@@ -45,17 +45,32 @@ export default function TopBar({ view, selectedAsset, onNavigate, onToggleNotifi
   return (
     <header
       className="flex items-center justify-between px-6 bg-[var(--color-bg)] border-b border-[var(--color-border)] shrink-0"
-      style={{ height: '56px' }}
+      style={{ height: '60px' }}
     >
-      {/* Left: breadcrumb */}
-      <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-2 list-none">
-          {/* Plant name — always present */}
-          <li>
-            <span className="text-[var(--color-text-secondary)] font-medium" style={{ fontSize: '13px' }}>
-              {PLANT.name}
-            </span>
-          </li>
+      {/* Left: logo + breadcrumb */}
+      <div className="flex items-center" style={{ gap: 'var(--spacing-16)' }}>
+        {/* Logo */}
+        <div className="flex items-center" style={{ gap: 'var(--spacing-8)' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="6" fill="var(--color-accent)" />
+            <path d="M7 12h4v5H7zM13 8h4v9h-4zM10 7h4v3h-4z" fill="var(--color-bg)" />
+          </svg>
+          <span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--color-text-primary)', textTransform: 'uppercase' }}>
+            ASSET PERFORMANCE MANAGEMENT
+          </span>
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: '1px', height: '24px', background: 'var(--color-border-strong)' }} />
+
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb">
+          <ol className="flex items-center gap-2 list-none">
+            <li>
+              <span className="type-body-secondary" style={{ fontWeight: 500 }}>
+                {PLANT.name}
+              </span>
+            </li>
 
           {/* View breadcrumb */}
           {view && (
@@ -89,8 +104,9 @@ export default function TopBar({ view, selectedAsset, onNavigate, onToggleNotifi
               </li>
             </>
           )}
-        </ol>
-      </nav>
+          </ol>
+        </nav>
+      </div>
 
       {/* Right: notification bell */}
       <div className="flex items-center gap-3">

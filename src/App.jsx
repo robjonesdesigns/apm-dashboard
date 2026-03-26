@@ -41,13 +41,15 @@ export default function App() {
           onToggleNotifications={() => setNotificationsOpen(!notificationsOpen)}
           notificationsOpen={notificationsOpen}
         />
-        <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
-          <div className="page-padding" style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}>
-            <View
-              onNavigate={navigate}
-              selectedAsset={selectedAsset}
-              selectedAttribute={selectedAttribute}
-            />
+        <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden" style={{ transition: 'flex 0.2s ease' }}>
+            <div className="page-padding" style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}>
+              <View
+                onNavigate={navigate}
+                selectedAsset={selectedAsset}
+                selectedAttribute={selectedAttribute}
+              />
+            </div>
           </div>
           <NotificationsPanel
             open={notificationsOpen}
