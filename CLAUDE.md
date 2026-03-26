@@ -63,3 +63,24 @@ H2 Recycle Gas service, API 617 class).
 - KPI cards must show: value, label, sparkline, period-over-period context
 - Every interactive element needs hover + focus states with transitions
 - 4px grid spacing, no arbitrary pixel values outside the grid
+
+---
+
+## Figma Reference
+
+Three original Figma frames are on Rob's desktop:
+- `Asset-Health.svg` (light theme)
+- `Asset-Health-Dark-Theme.svg` (dark theme)
+- `Asset-Details.svg` (light theme)
+
+The recreation should match the layout and interactions from these frames
+while using the dark theme tokens and unbranded styling. See
+`vector/research/FIGMA-REVIEW-001-gap-analysis.md` for the full gap analysis.
+
+### Key patterns from Figma to match:
+- KPI cards: colored left borders per metric
+- Risk Matrix: interactive grid cells, priority gradient bar below
+- Event Summary: large callout count + Event/Case toggle
+- Asset Summary table: asset type subtitle, event timestamps, link-styled names
+- Notifications: time range filters, severity badges, structured cards
+- Asset Details header: running status, duration, last shutdown, tab bar
