@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+/* ─── APM Dashboard Design Tokens ────────────────────────────────────── */
+/* Dark theme enterprise monitoring dashboard.                            */
+/* Teal/cyan accent. Blue reserved for informational semantic states.     */
+
+@theme {
+  /* Backgrounds */
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-surface-raised: #252830;
+  --color-surface-hover: #2e313b;
+
+  /* Text */
+  --color-text-primary: #e8eaf0;
+  --color-text-secondary: #9ba1b0;
+  --color-text-muted: #6b7280;
+  --color-text-disabled: #4a4f5c;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Accent (teal/cyan) */
+  --color-accent: #2dd4bf;
+  --color-accent-muted: rgba(45, 212, 191, 0.15);
+  --color-accent-subtle: rgba(45, 212, 191, 0.08);
+
+  /* Semantic status */
+  --color-critical: #ef4444;
+  --color-critical-bg: rgba(239, 68, 68, 0.12);
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgba(245, 158, 11, 0.12);
+  --color-healthy: #22c55e;
+  --color-healthy-bg: rgba(34, 197, 94, 0.12);
+  --color-info: #3b82f6;
+  --color-info-bg: rgba(59, 130, 246, 0.12);
+
+  /* Chart palette */
+  --color-chart-1: #2dd4bf;
+  --color-chart-2: #3b82f6;
+  --color-chart-3: #a78bfa;
+  --color-chart-4: #f59e0b;
+  --color-chart-5: #ef4444;
+  --color-chart-6: #ec4899;
+  --color-chart-7: #22c55e;
+  --color-chart-8: #6366f1;
+
+  /* Spacing (4px grid) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────── */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Recharts overrides */
+.recharts-tooltip-wrapper { outline: none; }
