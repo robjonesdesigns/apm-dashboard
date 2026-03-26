@@ -1,94 +1,122 @@
 @import "tailwindcss";
 
 /* ─── APM Dashboard Design Tokens ────────────────────────────────────── */
-/* Dark theme enterprise monitoring dashboard.                            */
-/* Teal/cyan accent. Blue reserved for informational semantic states.     */
-/* All numbers are even. 4px spacing grid. Inter font.                    */
+/* Based on IBM Carbon g100 dark theme, adapted for APM dashboard.       */
+/* See: vector/research/DESK-RESEARCH-004-carbon-design-system.md        */
+/* Font: Inter (not IBM Plex). Accent: teal (not blue).                  */
+/* All spacing on 8px base grid. All font sizes even.                    */
 
 @theme {
-  /* ── Backgrounds ──────────────────────────────────────────────────── */
-  --color-bg: #0f1117;
-  --color-surface: #1a1d27;
-  --color-surface-raised: #252830;
-  --color-surface-hover: #2e313b;
+  /* ── Backgrounds (Carbon layered system) ──────────────────────────── */
+  --color-bg: #161616;
+  --color-layer-01: #262626;
+  --color-layer-02: #393939;
+  --color-layer-03: #525252;
+  --color-hover-01: #333333;
+  --color-hover-02: #474747;
+  --color-selected: rgba(141, 141, 141, 0.24);
+  --color-overlay: rgba(0, 0, 0, 0.6);
 
   /* ── Text ─────────────────────────────────────────────────────────── */
-  --color-text-primary: #e8eaf0;
-  --color-text-secondary: #9ba1b0;
-  --color-text-muted: #6b7280;
-  --color-text-disabled: #4a4f5c;
+  --color-text-primary: #f4f4f4;
+  --color-text-secondary: #c6c6c6;
+  --color-text-helper: #a8a8a8;
+  --color-text-disabled: rgba(244, 244, 244, 0.25);
+  --color-text-on-color: #ffffff;
+  --color-text-inverse: #161616;
 
-  /* ── Borders ──────────────────────────────────────────────────────── */
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.12);
+  /* ── Icons ────────────────────────────────────────────────────────── */
+  --color-icon-primary: #f4f4f4;
+  --color-icon-secondary: #c6c6c6;
+  --color-icon-disabled: rgba(244, 244, 244, 0.25);
 
-  /* ── Accent (teal/cyan) ───────────────────────────────────────────── */
+  /* ── Borders (Carbon subtle/strong system) ────────────────────────── */
+  --color-border-subtle: #393939;
+  --color-border-strong: #525252;
+  --color-border-tile: #525252;
+  --color-border-interactive: #2dd4bf;
+  --color-border-disabled: rgba(141, 141, 141, 0.5);
+
+  /* ── Accent (teal, our adaptation of Carbon's interactive blue) ──── */
   --color-accent: #2dd4bf;
-  --color-accent-muted: rgba(45, 212, 191, 0.15);
-  --color-accent-subtle: rgba(45, 212, 191, 0.06);
+  --color-accent-hover: #5de0cf;
+  --color-accent-bg: rgba(45, 212, 191, 0.16);
 
-  /* ── Semantic status (desaturated for dark mode, ADR-002) ─────────── */
-  --color-critical: #E57373;
-  --color-critical-bg: rgba(229, 115, 115, 0.10);
-  --color-warning: #FFB74D;
-  --color-warning-bg: rgba(255, 183, 77, 0.10);
-  --color-healthy: #81C784;
-  --color-healthy-bg: rgba(129, 199, 132, 0.10);
-  --color-info: #64B5F6;
-  --color-info-bg: rgba(100, 181, 246, 0.10);
+  /* ── Links (keep blue per Carbon convention) ──────────────────────── */
+  --color-link: #78a9ff;
+  --color-link-hover: #a6c8ff;
 
-  /* ── Chart palette (desaturated, ADR-002) ─────────────────────────── */
+  /* ── Status (Carbon support colors) ───────────────────────────────── */
+  --color-error: #fa4d56;
+  --color-error-bg: rgba(250, 77, 86, 0.16);
+  --color-success: #42be65;
+  --color-success-bg: rgba(66, 190, 101, 0.16);
+  --color-warning: #f1c21b;
+  --color-warning-bg: rgba(241, 194, 27, 0.16);
+  --color-info: #4589ff;
+  --color-info-bg: rgba(69, 137, 255, 0.16);
+  --color-caution: #ff832b;
+
+  /* ── Chart palette (Carbon dark theme categorical) ────────────────── */
   --color-chart-1: #2dd4bf;
-  --color-chart-2: #64B5F6;
-  --color-chart-3: #B39DDB;
-  --color-chart-4: #FFB74D;
-  --color-chart-5: #E57373;
-  --color-chart-6: #F48FB1;
-  --color-chart-7: #81C784;
-  --color-chart-8: #7986CB;
+  --color-chart-2: #4589ff;
+  --color-chart-3: #a56eff;
+  --color-chart-4: #f1c21b;
+  --color-chart-5: #fa4d56;
+  --color-chart-6: #ff7eb6;
+  --color-chart-7: #42be65;
+  --color-chart-8: #33b1ff;
 
-  /* ── KPI identity colors (per-metric left borders, ADR-003) ───────── */
-  --color-kpi-oee: #64B5F6;
-  --color-kpi-availability: #E57373;
-  --color-kpi-performance: #FFB74D;
+  /* ── KPI identity colors ──────────────────────────────────────────── */
+  --color-kpi-oee: #4589ff;
+  --color-kpi-availability: #fa4d56;
+  --color-kpi-performance: #f1c21b;
   --color-kpi-quality: #2dd4bf;
 
-  /* ── Spacing (4px grid, all even) ─────────────────────────────────── */
+  /* ── Spacing (Carbon scale, 8px base) ─────────────────────────────── */
   --spacing-2: 2px;
   --spacing-4: 4px;
-  --spacing-6: 6px;
   --spacing-8: 8px;
   --spacing-12: 12px;
   --spacing-16: 16px;
-  --spacing-20: 20px;
   --spacing-24: 24px;
   --spacing-32: 32px;
   --spacing-40: 40px;
   --spacing-48: 48px;
   --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
 
-  /* ── Radius (even) ────────────────────────────────────────────────── */
+  /* ── Radius ───────────────────────────────────────────────────────── */
+  --radius-0: 0px;
   --radius-4: 4px;
-  --radius-6: 6px;
   --radius-8: 8px;
-  --radius-12: 12px;
   --radius-full: 9999px;
 
   /* ── Font ──────────────────────────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, sans-serif;
 
-  /* ── Type scale (fluid clamp, even numbers, ADR-006) ───────────────── */
-  --text-h1: clamp(22px, 2vw + 14px, 28px);
-  --text-h2: clamp(18px, 1.5vw + 12px, 22px);
-  --text-h3: clamp(16px, 1vw + 12px, 18px);
-  --text-h4: 14px;
-  --text-body: clamp(13px, 0.8vw + 8px, 14px);
-  --text-body-sm: 12px;
-  --text-label: clamp(10px, 0.8vw + 6px, 12px);
-  --text-meta: 10px;
-  --text-kpi: clamp(24px, 2vw + 14px, 28px);
-  --text-kpi-lg: clamp(30px, 2.5vw + 16px, 36px);
-  --text-callout: clamp(26px, 2vw + 16px, 32px);
+  /* ── Type scale (Carbon-aligned, all even) ────────────────────────── */
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-20: 20px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-48: 48px;
+
+  /* ── Motion (Carbon curves) ───────────────────────────────────────── */
+  --motion-fast: 110ms;
+  --motion-moderate: 150ms;
+  --motion-slow: 300ms;
+  --ease-productive: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-expressive: cubic-bezier(0.4, 0.14, 0.3, 1);
+
+  /* ── Layout ───────────────────────────────────────────────────────── */
+  --header-height: 48px;
+  --sidebar-width: 256px;
+  --sidebar-rail: 48px;
+  --nav-item-height: 48px;
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────── */
@@ -104,297 +132,299 @@ html, body, #root {
   background: var(--color-bg);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-body);
-  line-height: 1.5;
+  font-size: var(--text-14);
+  line-height: 1.429;
+  letter-spacing: 0.16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle atmosphere gradient */
-#root > div > div:last-child {
-  background:
-    radial-gradient(ellipse 60% 40% at 10% 10%, rgba(45, 212, 191, 0.03) 0%, transparent 70%),
-    var(--color-bg);
-}
-
 /* ─── Typography composition classes ──────────────────────────────────── */
-/* Use these instead of raw font-size/weight/color combinations.          */
+/* Matches Carbon type styles adapted for Inter.                          */
 
 @layer components {
-  .type-h1 {
-    font-size: var(--text-h1);
-    font-weight: 700;
-    color: var(--color-text-primary);
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-  }
-  .type-h2 {
-    font-size: var(--text-h2);
+
+  /* ── Headings ──────────────────────────────────────────────────── */
+  .type-heading-01 {
+    font-size: var(--text-14);
     font-weight: 600;
+    line-height: 1.286;
+    letter-spacing: 0.16px;
     color: var(--color-text-primary);
-    line-height: 1.3;
   }
-  .type-h3 {
-    font-size: var(--text-h3);
+  .type-heading-02 {
+    font-size: var(--text-16);
     font-weight: 600;
+    line-height: 1.375;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
+  }
+  .type-heading-03 {
+    font-size: var(--text-20);
+    font-weight: 400;
     line-height: 1.4;
-  }
-  .type-h4 {
-    font-size: var(--text-h4);
-    font-weight: 600;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
-    line-height: 1.4;
   }
-  .type-body {
-    font-size: var(--text-body);
+  .type-heading-04 {
+    font-size: var(--text-28);
     font-weight: 400;
+    line-height: 1.286;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
-    line-height: 1.5;
   }
-  .type-body-secondary {
-    font-size: var(--text-body);
+
+  /* ── Body ──────────────────────────────────────────────────────── */
+  .type-body-01 {
+    font-size: var(--text-14);
     font-weight: 400;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+    line-height: 1.429;
+    letter-spacing: 0.16px;
+    color: var(--color-text-primary);
   }
-  .type-body-sm {
-    font-size: var(--text-body-sm);
+  .type-body-compact {
+    font-size: var(--text-14);
     font-weight: 400;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+    line-height: 1.286;
+    letter-spacing: 0.16px;
+    color: var(--color-text-primary);
   }
+  .type-body-02 {
+    font-size: var(--text-16);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0px;
+    color: var(--color-text-primary);
+  }
+
+  /* ── Labels / Captions / Helpers ───────────────────────────────── */
   .type-label {
-    font-size: var(--text-label);
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    line-height: 1.4;
-  }
-  .type-meta {
-    font-size: var(--text-meta);
+    font-size: var(--text-12);
     font-weight: 400;
-    color: var(--color-text-muted);
-    line-height: 1.4;
+    line-height: 1.333;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
   }
+  .type-label-semibold {
+    font-size: var(--text-12);
+    font-weight: 600;
+    line-height: 1.333;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
+  }
+  .type-helper {
+    font-size: var(--text-12);
+    font-weight: 400;
+    line-height: 1.333;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
+  }
+
+  /* ── Data display ─────────────────────────────────────────────── */
   .type-kpi {
-    font-size: var(--text-kpi);
-    font-weight: 700;
+    font-size: var(--text-28);
+    font-weight: 400;
+    line-height: 1.286;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
-    line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
   .type-kpi-lg {
-    font-size: var(--text-kpi-lg);
-    font-weight: 700;
+    font-size: var(--text-32);
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
-    line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
   .type-callout {
-    font-size: var(--text-callout);
-    font-weight: 700;
+    font-size: var(--text-48);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: 0px;
     color: var(--color-text-primary);
-    line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
+
+  /* ── Links ─────────────────────────────────────────────────────── */
   .type-link {
-    font-size: var(--text-body-sm);
-    font-weight: 500;
-    color: var(--color-accent);
+    font-size: var(--text-14);
+    font-weight: 400;
+    line-height: 1.286;
+    letter-spacing: 0.16px;
+    color: var(--color-link);
+    text-decoration: none;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition: color var(--motion-fast) var(--ease-productive);
   }
   .type-link:hover {
-    opacity: 0.8;
+    color: var(--color-link-hover);
   }
 
-  /* ── Card base ──────────────────────────────────────────────────── */
+  /* ── Section header (uppercase label above groups) ─────────────── */
+  .section-header {
+    font-size: var(--text-12);
+    font-weight: 600;
+    line-height: 1.333;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-16);
+  }
+
+  /* ── Card ──────────────────────────────────────────────────────── */
   .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-12);
-    padding: var(--spacing-16);
-    transition: border-color 0.15s ease;
-  }
-  @media (min-width: 1280px) {
-    .card {
-      padding: var(--spacing-24);
-    }
-  }
-  .card:hover {
-    border-color: var(--color-border-strong);
+    background: var(--color-layer-01);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-4);
+    padding: var(--spacing-24);
+    transition: border-color var(--motion-fast) var(--ease-productive);
   }
   .card-interactive {
     cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: border-color var(--motion-fast) var(--ease-productive),
+                background var(--motion-fast) var(--ease-productive);
   }
   .card-interactive:hover {
-    border-color: var(--color-accent);
-    background: var(--color-surface-hover);
+    background: var(--color-hover-01);
+    border-color: var(--color-border-interactive);
   }
 
-  /* ── Section header ─────────────────────────────────────────────── */
-  .section-header {
-    font-size: var(--text-label);
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: var(--spacing-12);
-  }
-
-  /* ── Status dot ─────────────────────────────────────────────────── */
+  /* ── Status dots ───────────────────────────────────────────────── */
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: var(--radius-full);
     flex-shrink: 0;
+    display: inline-block;
   }
-  .status-dot-critical {
-    background: var(--color-critical);
-    box-shadow: 0 0 6px rgba(229, 115, 115, 0.4);
-  }
-  .status-dot-warning {
-    background: var(--color-warning);
-    box-shadow: 0 0 6px rgba(255, 183, 77, 0.4);
-  }
-  .status-dot-healthy {
-    background: var(--color-healthy);
-    box-shadow: 0 0 6px rgba(129, 199, 132, 0.4);
-  }
-  .status-dot-info {
-    background: var(--color-info);
-    box-shadow: 0 0 6px rgba(100, 181, 246, 0.4);
-  }
+  .dot-error { background: var(--color-error); }
+  .dot-warning { background: var(--color-warning); }
+  .dot-success { background: var(--color-success); }
+  .dot-info { background: var(--color-info); }
 
-  /* ── Badge ──────────────────────────────────────────────────────── */
+  /* ── Badge ─────────────────────────────────────────────────────── */
   .badge {
-    font-size: var(--text-meta);
+    font-size: var(--text-12);
     font-weight: 600;
-    padding: 2px 8px;
-    border-radius: var(--radius-4);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.32px;
+    display: inline-flex;
+    align-items: center;
   }
-  .badge-critical {
-    color: var(--color-critical);
-    background: var(--color-critical-bg);
+  .badge-error {
+    color: var(--color-error);
+    background: var(--color-error-bg);
   }
   .badge-warning {
     color: var(--color-warning);
     background: var(--color-warning-bg);
   }
-  .badge-healthy {
-    color: var(--color-healthy);
-    background: var(--color-healthy-bg);
+  .badge-success {
+    color: var(--color-success);
+    background: var(--color-success-bg);
   }
   .badge-info {
     color: var(--color-info);
     background: var(--color-info-bg);
   }
 
-  /* ── Filter chip (interactive badge variant) ───────────────────── */
+  /* ── Chip (interactive filter pill) ────────────────────────────── */
   .chip {
-    font-size: var(--text-body-sm);
-    font-weight: 500;
-    padding: 4px 12px;
+    font-size: var(--text-14);
+    font-weight: 400;
+    line-height: 1;
+    padding: 8px 16px;
     border-radius: var(--radius-full);
     border: 1px solid var(--color-border-strong);
     background: transparent;
     color: var(--color-text-secondary);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--motion-fast) var(--ease-productive);
   }
   .chip:hover {
-    border-color: var(--color-accent);
+    background: var(--color-hover-01);
     color: var(--color-text-primary);
   }
   .chip-active {
     border-color: var(--color-accent);
-    background: var(--color-accent-muted);
+    background: var(--color-accent-bg);
     color: var(--color-accent);
   }
 
-  /* ── Badge group ───────────────────────────────────────────────── */
-  .badge-group {
+  /* ── Layout ────────────────────────────────────────────────────── */
+  .section-gap {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-6);
-    align-items: center;
+    flex-direction: column;
+    gap: var(--spacing-32);
   }
 
-  /* ── Layout: 12-column grid system ──────────────────────────────── */
-  .grid-12 {
+  .page-padding {
+    padding-left: var(--spacing-16);
+    padding-right: var(--spacing-16);
+  }
+  @media (min-width: 672px) {
+    .page-padding {
+      padding-left: var(--spacing-16);
+      padding-right: var(--spacing-16);
+    }
+  }
+  @media (min-width: 1056px) {
+    .page-padding {
+      padding-left: var(--spacing-16);
+      padding-right: var(--spacing-16);
+    }
+  }
+
+  /* ── 16-column grid (Carbon standard) ─────────────────────────── */
+  .grid-16 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-16);
+    gap: var(--spacing-24);
   }
-  @media (min-width: 768px) {
-    .grid-12 {
+  @media (min-width: 672px) {
+    .grid-16 {
       grid-template-columns: repeat(8, 1fr);
       gap: var(--spacing-24);
     }
   }
-  @media (min-width: 1280px) {
-    .grid-12 {
-      grid-template-columns: repeat(12, 1fr);
+  @media (min-width: 1056px) {
+    .grid-16 {
+      grid-template-columns: repeat(16, 1fr);
       gap: var(--spacing-24);
     }
   }
 
-  /* Column spans -- mobile (4 col) */
+  /* Column spans */
   .col-full { grid-column: 1 / -1; }
-  .col-half { grid-column: span 2; }
 
-  /* Column spans -- tablet (8 col) */
-  @media (min-width: 768px) {
+  /* Mobile: 4 columns */
+  .col-half { grid-column: span 4; }
+  .col-kpi { grid-column: span 2; }
+
+  /* Tablet: 8 columns */
+  @media (min-width: 672px) {
     .col-half { grid-column: span 4; }
     .col-third { grid-column: span 4; }
     .col-kpi { grid-column: span 2; }
   }
 
-  /* Column spans -- desktop (12 col) */
-  @media (min-width: 1280px) {
-    .col-half { grid-column: span 6; }
-    .col-third { grid-column: span 4; }
-    .col-two-thirds { grid-column: span 8; }
-    .col-quarter { grid-column: span 3; }
-    .col-kpi { grid-column: span 2; }
-  }
-
-  /* ── Layout: page container ────────────────────────────────────── */
-  .page-padding {
-    padding-left: var(--spacing-16);
-    padding-right: var(--spacing-16);
-  }
-  @media (min-width: 768px) {
-    .page-padding {
-      padding-left: var(--spacing-24);
-      padding-right: var(--spacing-24);
-    }
-  }
-  @media (min-width: 1280px) {
-    .page-padding {
-      padding-left: var(--spacing-32);
-      padding-right: var(--spacing-32);
-    }
-  }
-
-  /* ── Layout: section spacing ───────────────────────────────────── */
-  .section-gap {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-32);
+  /* Desktop: 16 columns */
+  @media (min-width: 1056px) {
+    .col-half { grid-column: span 8; }
+    .col-third { grid-column: span 5; }
+    .col-kpi { grid-column: span 3; }
+    .col-trains { grid-column: span 4; }
   }
 }
 
 /* ─── Scrollbar ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.16); }
+::-webkit-scrollbar-thumb { background: var(--color-border-subtle); border-radius: var(--radius-4); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-strong); }
 
-/* ─── Recharts overrides ──────────────────────────────────────────────── */
+/* ─── Recharts ────────────────────────────────────────────────────────── */
 .recharts-tooltip-wrapper { outline: none; }

@@ -1,78 +1,68 @@
-// ── APM Dashboard Design Tokens (JS reference) ─────────────────────────────
-// Mirrors the CSS custom properties in global.css.
-// Use CSS classes (type-h1, card, badge-critical) when possible.
-// Use these JS tokens only when Recharts or inline styles require them.
-// All numbers are even. 4px spacing grid.
+// ── APM Dashboard Tokens (JS) ────────────────────────────────────────────────
+// Based on IBM Carbon g100 dark theme, adapted.
+// Use CSS classes when possible. Use these only for Recharts inline styles.
+// See: vector/research/DESK-RESEARCH-004-carbon-design-system.md
 
 export const colors = {
   // Backgrounds
-  bg: '#0f1117',
-  surface: '#1a1d27',
-  surfaceRaised: '#252830',
-  surfaceHover: '#2e313b',
+  bg: '#161616',
+  layer01: '#262626',
+  layer02: '#393939',
+  layer03: '#525252',
+  hover01: '#333333',
+  hover02: '#474747',
 
   // Text
-  textPrimary: '#e8eaf0',
-  textSecondary: '#9ba1b0',
-  textMuted: '#6b7280',
-  textDisabled: '#4a4f5c',
+  textPrimary: '#f4f4f4',
+  textSecondary: '#c6c6c6',
+  textHelper: '#a8a8a8',
 
   // Borders
-  border: 'rgba(255, 255, 255, 0.06)',
-  borderStrong: 'rgba(255, 255, 255, 0.12)',
+  borderSubtle: '#393939',
+  borderStrong: '#525252',
 
-  // Accent (teal/cyan)
+  // Accent
   accent: '#2dd4bf',
-  accentMuted: 'rgba(45, 212, 191, 0.15)',
-  accentSubtle: 'rgba(45, 212, 191, 0.06)',
 
-  // Semantic status (desaturated for dark mode, ADR-002)
-  critical: '#E57373',
-  criticalBg: 'rgba(229, 115, 115, 0.10)',
-  warning: '#FFB74D',
-  warningBg: 'rgba(255, 183, 77, 0.10)',
-  healthy: '#81C784',
-  healthyBg: 'rgba(129, 199, 132, 0.10)',
-  info: '#64B5F6',
-  infoBg: 'rgba(100, 181, 246, 0.10)',
+  // Status
+  error: '#fa4d56',
+  success: '#42be65',
+  warning: '#f1c21b',
+  info: '#4589ff',
+  caution: '#ff832b',
 
-  // Chart palette (desaturated, ADR-002)
+  // Chart palette (Carbon dark categorical, adapted)
   chart1: '#2dd4bf', // teal (accent)
-  chart2: '#64B5F6', // blue
-  chart3: '#B39DDB', // purple
-  chart4: '#FFB74D', // amber
-  chart5: '#E57373', // red
-  chart6: '#F48FB1', // pink
-  chart7: '#81C784', // green
-  chart8: '#7986CB', // indigo
+  chart2: '#4589ff', // blue
+  chart3: '#a56eff', // purple
+  chart4: '#f1c21b', // yellow
+  chart5: '#fa4d56', // red
+  chart6: '#ff7eb6', // pink
+  chart7: '#42be65', // green
+  chart8: '#33b1ff', // cyan
 
-  // KPI identity (left border per metric, ADR-003)
-  kpiOee: '#64B5F6',
-  kpiAvailability: '#E57373',
-  kpiPerformance: '#FFB74D',
+  // KPI identity
+  kpiOee: '#4589ff',
+  kpiAvailability: '#fa4d56',
+  kpiPerformance: '#f1c21b',
   kpiQuality: '#2dd4bf',
 }
 
-// Only used for Recharts inline styles that can't read CSS vars
+// Recharts-specific styling (can't use CSS vars)
 export const chartStyle = {
-  grid: 'rgba(255, 255, 255, 0.04)',
-  axisText: '#6b7280',
+  grid: '#393939',
+  axisLine: '#525252',
+  axisText: '#c6c6c6',
   axisFont: 12,
-  tooltipBg: '#252830',
-  tooltipBorder: 'rgba(255, 255, 255, 0.12)',
-  tooltipText: '#e8eaf0',
-  tooltipLabel: '#9ba1b0',
+  tooltipBg: '#393939',
+  tooltipBorder: '#525252',
+  tooltipText: '#f4f4f4',
+  tooltipLabel: '#c6c6c6',
+  tooltipRadius: 2,
+  tooltipPadding: 16,
+  tooltipShadow: '0 2px 6px rgba(0,0,0,0.3)',
   lineWidth: 2,
   barRadius: [4, 4, 0, 0],
-}
-
-// Spacing (only needed for Recharts margins/padding)
-export const spacing = {
-  4: 4,
-  8: 8,
-  12: 12,
-  16: 16,
-  20: 20,
-  24: 24,
-  32: 32,
+  animationDuration: 300,
+  animationEasing: 'ease-out',
 }

@@ -33,7 +33,7 @@
 
 ## Layout System
 
-### 12-Column Grid
+### 16-Column Grid (Carbon standard)
 
 All layouts use a 12-column grid system.
 
