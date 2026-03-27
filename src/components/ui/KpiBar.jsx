@@ -178,6 +178,7 @@ function HealthIndicator({ state, thresholdLabel }) {
 // ── KPI card ─────────────────────────────────────────────────────────────────
 
 function KpiCard({ config, onClick }) {
+  const [hovered, setHovered] = useState(false)
   const health = getHealthState(config.key, config.value)
   const delta = config.value - config.previous
   const deltaSign = delta >= 0 ? '+' : ''
@@ -197,14 +198,21 @@ function KpiCard({ config, onClick }) {
 
   return (
     <button
-      className="card card-interactive"
+      className="card"
       onClick={() => onClick(config.key)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
       style={{
-        borderTop: '3px solid var(--color-accent)',
-        borderLeft: 'none',
+        borderTop: hovered ? '3px solid var(--color-accent)' : '3px solid var(--color-accent)',
+        borderLeft: hovered ? '1px solid var(--color-accent)' : '1px solid var(--color-border-subtle)',
+        borderRight: hovered ? '1px solid var(--color-accent)' : '1px solid var(--color-border-subtle)',
+        borderBottom: hovered ? '1px solid var(--color-accent)' : '1px solid var(--color-border-subtle)',
+        background: hovered ? 'var(--color-hover-01)' : 'var(--color-layer-01)',
         textAlign: 'left',
         width: '100%',
+        cursor: 'pointer',
+        transition: 'all var(--motion-fast) var(--ease-productive)',
       }}
     >
       {/* Label + info */}
