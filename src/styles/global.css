@@ -142,9 +142,9 @@ html, body, #root {
 /* ─── Typography composition classes ──────────────────────────────────── */
 /* Matches Carbon type styles adapted for Inter.                          */
 
-@layer components {
+/* ── Component classes (outside @layer for proper specificity) ─────────── */
 
-  /* ── Headings ──────────────────────────────────────────────────── */
+/* ── Headings ──────────────────────────────────────────────────── */
   .type-heading-01 {
     font-size: var(--text-14);
     font-weight: 600;
@@ -424,7 +424,6 @@ html, body, #root {
       grid-template-columns: repeat(3, 1fr);
     }
   }
-}
 
 /* ─── Scrollbar ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
