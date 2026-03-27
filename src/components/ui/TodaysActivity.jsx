@@ -98,8 +98,14 @@ function WorkOrdersCard({ onAssetClick }) {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildWoSummary(WORK_ORDERS)
 
+  // Show top 6 max, sorted by priority (critical first)
+  const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
+  const visible = [...WORK_ORDERS]
+    .sort((a, b) => (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9))
+    .slice(0, 6)
+
   return (
-    <div className="card col-half">
+    <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
@@ -110,9 +116,9 @@ function WorkOrdersCard({ onAssetClick }) {
       {/* Summary */}
       <WoSummaryLine summary={summary} />
 
-      {/* Rows */}
-      <div>
-        {WORK_ORDERS.map((wo) => (
+      {/* Rows (max 6, no internal scroll) */}
+      <div style={{ flex: 1 }}>
+        {visible.map((wo) => (
           <div
             key={wo.id}
             style={rowBaseStyle(hoveredId === wo.id)}
@@ -157,9 +163,9 @@ function WorkOrdersCard({ onAssetClick }) {
         ))}
       </div>
 
-      {/* Footer */}
-      <div style={{ marginTop: 'var(--spacing-16)' }}>
-        <span className="type-link">View all work orders &rarr;</span>
+      {/* Footer -- pinned to bottom via margin-top: auto */}
+      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+        <span className="type-link">Go to Work Orders &rarr;</span>
       </div>
     </div>
   )
@@ -171,8 +177,10 @@ function InvestigationsCard({ onAssetClick }) {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildCaseSummary(CASES)
 
+  const visible = CASES.slice(0, 6)
+
   return (
-    <div className="card col-half">
+    <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
@@ -183,9 +191,9 @@ function InvestigationsCard({ onAssetClick }) {
       {/* Summary */}
       <CaseSummaryLine summary={summary} />
 
-      {/* Rows */}
-      <div>
-        {CASES.map((c) => (
+      {/* Rows (max 6, no internal scroll) */}
+      <div style={{ flex: 1 }}>
+        {visible.map((c) => (
           <div
             key={c.id}
             style={rowBaseStyle(hoveredId === c.id)}
@@ -232,9 +240,9 @@ function InvestigationsCard({ onAssetClick }) {
         ))}
       </div>
 
-      {/* Footer */}
-      <div style={{ marginTop: 'var(--spacing-16)' }}>
-        <span className="type-link">View all investigations &rarr;</span>
+      {/* Footer -- pinned to bottom via margin-top: auto */}
+      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+        <span className="type-link">Go to Investigations &rarr;</span>
       </div>
     </div>
   )
