@@ -59,7 +59,7 @@ function MinorDot({ event, style }) {
           cursor: 'pointer',
           transition: 'all var(--motion-fast) var(--ease-productive)',
           outline: 'none',
-          boxShadow: show ? '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' : 'none',
+          boxShadow: show ? '0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-border-strong)' : 'none',
         }}
       />
       {show && (
@@ -133,9 +133,13 @@ function HorizontalTimeline() {
           )
         })}
 
-        {/* Major dots -- centered on the line, focusable */}
+        {/* Major dots -- centered on the line, focusable, ring matches dot color */}
         {majorEvents.map((event, i) => {
           const pct = majorEvents.length === 1 ? 50 : (i / (majorEvents.length - 1)) * 100
+          const ringColor = event.type === 'critical' ? 'var(--color-error)' :
+                           event.type === 'warning' ? 'var(--color-warning)' :
+                           event.type === 'healthy' ? 'var(--color-success)' : 'var(--color-info)'
+          const ring = `0 0 0 3px var(--color-bg), 0 0 0 5px ${ringColor}`
           return (
             <button
               key={`dot-${i}`}
@@ -153,9 +157,9 @@ function HorizontalTimeline() {
                 cursor: 'pointer',
                 outline: 'none',
               }}
-              onFocus={(e) => { e.currentTarget.firstChild.style.boxShadow = '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' }}
+              onFocus={(e) => { e.currentTarget.firstChild.style.boxShadow = ring }}
               onBlur={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
-              onMouseEnter={(e) => { e.currentTarget.firstChild.style.boxShadow = '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' }}
+              onMouseEnter={(e) => { e.currentTarget.firstChild.style.boxShadow = ring }}
               onMouseLeave={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
             >
               <div
