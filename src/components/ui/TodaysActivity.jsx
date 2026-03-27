@@ -36,14 +36,17 @@ function rowBaseStyle(isHovered) {
     display: 'flex',
     flexDirection: 'column',
     gap: 'var(--spacing-4)',
-    padding: 'var(--spacing-12) var(--spacing-8)',
+    padding: 'var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-8)',
+    margin: '0 calc(-1 * var(--spacing-4))',
     borderBottom: '1px solid var(--color-border-subtle)',
     borderLeft: isHovered ? '2px solid var(--color-accent)' : '2px solid transparent',
+    borderRadius: isHovered ? 'var(--radius-4)' : '0',
     background: isHovered ? 'var(--color-hover-01)' : 'transparent',
     cursor: 'pointer',
     transition: [
       'background var(--motion-fast) var(--ease-productive)',
       'border-left-color var(--motion-fast) var(--ease-productive)',
+      'border-radius var(--motion-fast) var(--ease-productive)',
     ].join(', '),
   }
 }
@@ -243,23 +246,18 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 2: asset name | linked WO count + timestamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
+            {/* Line 2: asset name | linked WOs · timestamp (single line right side) */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
                 {c.asset}
               </span>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div>
-                  <span className="type-helper">
-                    {c.linkedWorkOrders.length > 0
-                      ? `${c.linkedWorkOrders.length} linked WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`
-                      : 'No linked WOs'}
-                  </span>
-                </div>
-                <div>
-                  <span className="type-helper">{c.opened}</span>
-                </div>
-              </div>
+              <span className="type-helper" style={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
+                {c.linkedWorkOrders.length > 0
+                  ? `${c.linkedWorkOrders.length} linked WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`
+                  : 'No linked WOs'}
+                {' · '}
+                {c.opened}
+              </span>
             </div>
           </div>
         ))}
