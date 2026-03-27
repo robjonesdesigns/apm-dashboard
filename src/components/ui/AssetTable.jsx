@@ -137,7 +137,7 @@ function AssetRow({ asset, onAssetClick }) {
 
 export default function AssetTable({ onAssetClick }) {
   return (
-    <div className="grid-16">
+    <div className="grid-12">
       <div className="card col-full">
         {/* Card header — benefits from natural .card 24px padding */}
         <div style={{ marginBottom: 'var(--spacing-12)' }}>

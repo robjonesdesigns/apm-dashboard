@@ -1,4 +1,14 @@
+import { useState } from 'react'
 import { PLANT } from '../../data/assets'
+
+// ── KPI descriptions (info tooltip content) ──────────────────────────────────
+
+const KPI_DESCRIPTIONS = {
+  oee: 'Overall Equipment Effectiveness. Combines availability, performance, and quality into a single metric showing how well equipment is being utilized.',
+  availability: 'The percentage of scheduled time the equipment is available to operate. Downtime from breakdowns and changeovers reduces this number.',
+  performance: 'How fast the equipment runs compared to its designed speed. Slow cycles and small stops reduce performance.',
+  quality: 'The percentage of output that meets quality standards without rework. Defects and scrap reduce this metric.',
+}
 
 // ── KPI card config ─────────────────────────────────────────────────────────
 
@@ -9,9 +19,21 @@ const KPI_CONFIG = [
   { key: 'quality',      label: 'Quality',       value: PLANT.quality,      borderVar: '--color-kpi-quality' },
 ]
 
+// ── Info icon ────────────────────────────────────────────────────────────────
+
+const InfoIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M8 7v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="8" cy="5" r="0.75" fill="currentColor" />
+  </svg>
+)
+
 // ── KPI card ─────────────────────────────────────────────────────────────────
 
 function KpiCard({ config, onClick }) {
+  const [showTooltip, setShowTooltip] = useState(false)
+
   return (
     <button
       className="card card-interactive"
@@ -22,14 +44,74 @@ function KpiCard({ config, onClick }) {
         borderLeft: 'none',
         textAlign: 'left',
         width: '100%',
+        position: 'relative',
       }}
     >
-      <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
-        {config.label}
-      </span>
+      {/* Label row with info icon */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 'var(--spacing-8)',
+        }}
+      >
+        <span className="type-label">{config.label}</span>
+        <span
+          style={{
+            color: 'var(--color-text-helper)',
+            cursor: 'help',
+            display: 'flex',
+            transition: 'color var(--motion-fast) var(--ease-productive)',
+          }}
+          onMouseEnter={(e) => {
+            e.stopPropagation()
+            setShowTooltip(true)
+            e.currentTarget.style.color = 'var(--color-text-primary)'
+          }}
+          onMouseLeave={(e) => {
+            setShowTooltip(false)
+            e.currentTarget.style.color = 'var(--color-text-helper)'
+          }}
+          onClick={(e) => {
+            e.stopPropagation()
+            setShowTooltip(!showTooltip)
+          }}
+          role="img"
+          aria-label={KPI_DESCRIPTIONS[config.key]}
+        >
+          <InfoIcon />
+        </span>
+      </div>
+
+      {/* Value */}
       <span className="type-kpi" style={{ display: 'block' }}>
         {config.value}%
       </span>
+
+      {/* Tooltip */}
+      {showTooltip && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: '0',
+            right: '0',
+            marginTop: 'var(--spacing-8)',
+            background: 'var(--color-layer-02)',
+            border: '1px solid var(--color-border-strong)',
+            borderRadius: 'var(--radius-4)',
+            padding: 'var(--spacing-12) var(--spacing-16)',
+            zIndex: 100,
+            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+          }}
+        >
+          <p className="type-body-compact" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+            {KPI_DESCRIPTIONS[config.key]}
+          </p>
+        </div>
+      )}
     </button>
   )
 }
@@ -38,14 +120,7 @@ function KpiCard({ config, onClick }) {
 
 export default function KpiBar({ onKpiClick }) {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 'var(--spacing-24)',
-      }}
-      className="kpi-grid"
-    >
+    <div className="kpi-grid">
       {/* 4 KPI cards */}
       {KPI_CONFIG.map((config) => (
         <KpiCard key={config.key} config={config} onClick={onKpiClick} />

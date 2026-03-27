@@ -271,7 +271,7 @@ function CasesCard({ onAssetClick }) {
 
 export default function TodaysActivity({ onAssetClick }) {
   return (
-    <div className="grid-16">
+    <div className="grid-12">
       <WorkOrdersCard onAssetClick={onAssetClick} />
       <CasesCard onAssetClick={onAssetClick} />
     </div>

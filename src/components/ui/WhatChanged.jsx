@@ -110,7 +110,7 @@ export default function WhatChanged({ onAssetClick, onEventClick }) {
   const reversed = [...TIMELINE].reverse()
 
   return (
-    <div className="grid-16">
+    <div className="grid-12">
       <div className="card col-full">
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-16)' }}>
