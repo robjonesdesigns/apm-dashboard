@@ -47,10 +47,9 @@ function MinorDot({ event, style }) {
         // Visual dot is 6px, but hit area is 30px for accessibility
         width: '30px',
         height: '30px',
-        // Re-center: the parent positions us by center of the dot,
-        // so offset by half the hit area minus half the dot
-        marginLeft: '-12px',
-        marginTop: '-12px',
+        // Center the 30px hit area on the dot position
+        marginLeft: '-15px',
+        marginTop: '-15px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -112,10 +111,12 @@ function MinorDot({ event, style }) {
 // ── Desktop horizontal timeline ─────────────────────────────────────────────
 
 function HorizontalTimeline() {
-  const allTimes = TIMELINE.map(e => timeToMinutes(e.time))
-  const minTime = Math.min(...allTimes)
-  const maxTime = Math.max(...allTimes)
-  const range = maxTime - minTime || 1
+  // Minor dots are positioned temporally between the first and last major events.
+  // This prevents dots from appearing outside the timeline's visual range.
+  const majorTimes = majorEvents.map(e => timeToMinutes(e.time))
+  const timeStart = Math.min(...majorTimes)
+  const timeEnd = Math.max(...majorTimes)
+  const timeRange = timeEnd - timeStart || 1
 
   return (
     <div style={{ position: 'relative' }}>
@@ -135,18 +136,24 @@ function HorizontalTimeline() {
           zIndex: 1,
         }} />
 
-        {/* Minor dots -- centered on the line */}
-        {minorEvents.map((event, i) => {
-          const t = timeToMinutes(event.time)
-          const pct = ((t - minTime) / range) * 100
-          return (
-            <MinorDot
-              key={`minor-${i}`}
-              event={event}
-              style={{ left: `${pct}%`, top: '50%', transform: 'translate(-50%, -50%)' }}
-            />
-          )
-        })}
+        {/* Minor dots -- only between first and last major event, centered on line */}
+        {minorEvents
+          .filter(e => {
+            const t = timeToMinutes(e.time)
+            return t >= timeStart && t <= timeEnd
+          })
+          .map((event, i) => {
+            const t = timeToMinutes(event.time)
+            const pct = Math.max(3, Math.min(97, ((t - timeStart) / timeRange) * 100))
+            return (
+              <MinorDot
+                key={`minor-${i}`}
+                event={event}
+                style={{ left: `${pct}%`, top: '50%' }}
+              />
+            )
+          })
+        }
 
         {/* Major dots -- centered on the line, focusable, ring matches dot color */}
         {majorEvents.map((event, i) => {
