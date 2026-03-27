@@ -53,13 +53,13 @@
   --color-link: #78a9ff;
   --color-link-hover: #a6c8ff;
 
-  /* ── Status (Carbon support colors) ───────────────────────────────── */
-  --color-error: #fa4d56;
-  --color-error-bg: rgba(250, 77, 86, 0.16);
+  /* ── Status (Pairing 1: coral-red + true amber, adapted from Carbon) ── */
+  --color-error: #f47174;
+  --color-error-bg: rgba(244, 113, 116, 0.16);
   --color-success: #42be65;
   --color-success-bg: rgba(66, 190, 101, 0.16);
-  --color-warning: #f1c21b;
-  --color-warning-bg: rgba(241, 194, 27, 0.16);
+  --color-warning: #e8914f;
+  --color-warning-bg: rgba(232, 145, 79, 0.16);
   --color-info: #4589ff;
   --color-info-bg: rgba(69, 137, 255, 0.16);
   --color-caution: #ff832b;

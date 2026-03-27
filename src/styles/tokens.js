@@ -24,10 +24,10 @@ export const colors = {
   // Accent
   accent: '#2dd4bf',
 
-  // Status
-  error: '#fa4d56',
+  // Status (Pairing 1: coral-red + true amber)
+  error: '#f47174',
   success: '#42be65',
-  warning: '#f1c21b',
+  warning: '#e8914f',
   info: '#4589ff',
   caution: '#ff832b',
 
@@ -36,14 +36,14 @@ export const colors = {
   chart2: '#4589ff', // blue
   chart3: '#a56eff', // purple
   chart4: '#f1c21b', // yellow
-  chart5: '#fa4d56', // red
+  chart5: '#f47174', // red
   chart6: '#ff7eb6', // pink
   chart7: '#42be65', // green
   chart8: '#33b1ff', // cyan
 
   // KPI identity
   kpiOee: '#4589ff',
-  kpiAvailability: '#fa4d56',
+  kpiAvailability: '#f47174',
   kpiPerformance: '#f1c21b',
   kpiQuality: '#2dd4bf',
 }
