@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { PLANT } from '../../data/assets'
 
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
@@ -33,6 +33,17 @@ const InfoIcon = () => (
 
 function KpiCard({ config, onClick }) {
   const [showTooltip, setShowTooltip] = useState(false)
+  const iconRef = useRef(null)
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 })
+
+  const updateTooltipPos = () => {
+    if (!iconRef.current) return
+    const rect = iconRef.current.getBoundingClientRect()
+    setTooltipPos({
+      top: rect.bottom + 8,
+      left: Math.max(8, rect.left + rect.width / 2 - 110),
+    })
+  }
 
   return (
     <button
@@ -44,7 +55,6 @@ function KpiCard({ config, onClick }) {
         borderLeft: 'none',
         textAlign: 'left',
         width: '100%',
-        position: 'relative',
       }}
     >
       {/* Label row with info icon */}
@@ -58,6 +68,7 @@ function KpiCard({ config, onClick }) {
       >
         <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>{config.label}</span>
         <span
+          ref={iconRef}
           style={{
             color: 'var(--color-text-helper)',
             cursor: 'help',
@@ -66,6 +77,7 @@ function KpiCard({ config, onClick }) {
           }}
           onMouseEnter={(e) => {
             e.stopPropagation()
+            updateTooltipPos()
             setShowTooltip(true)
             e.currentTarget.style.color = 'var(--color-text-primary)'
           }}
@@ -75,6 +87,7 @@ function KpiCard({ config, onClick }) {
           }}
           onClick={(e) => {
             e.stopPropagation()
+            updateTooltipPos()
             setShowTooltip(!showTooltip)
           }}
           role="img"
@@ -89,20 +102,20 @@ function KpiCard({ config, onClick }) {
         {config.value}%
       </span>
 
-      {/* Tooltip -- Carbon-style with caret */}
+      {/* Tooltip -- fixed position, appears below the info icon */}
       {showTooltip && (
         <div
           style={{
-            position: 'absolute',
-            top: 'var(--spacing-32)',
-            right: '0',
+            position: 'fixed',
+            top: tooltipPos.top,
+            left: tooltipPos.left,
             width: '220px',
-            zIndex: 100,
+            zIndex: 10001,
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
             pointerEvents: 'none',
           }}
         >
-          {/* Caret */}
+          {/* Caret pointing up toward the icon */}
           <div
             style={{
               width: '8px',
@@ -111,11 +124,12 @@ function KpiCard({ config, onClick }) {
               transform: 'rotate(45deg)',
               position: 'absolute',
               top: '-4px',
-              right: 'var(--spacing-12)',
-              zIndex: 101,
+              left: '50%',
+              marginLeft: '-4px',
+              zIndex: 10002,
             }}
           />
-          {/* Bubble -- inverted (light on dark) for differentiation */}
+          {/* Bubble */}
           <div
             style={{
               background: '#f4f4f4',
