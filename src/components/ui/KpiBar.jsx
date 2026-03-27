@@ -55,12 +55,12 @@ const TrendingDownIcon = () => (
   </svg>
 )
 
-// Critical: exclamation triangle (red) -- "act now, threshold crossed"
-const ExclamationIcon = () => (
+// Critical: solid filled diamond (red) -- "act now, threshold crossed"
+// Diamond has no directional confusion with chevron (warning) or delta arrows.
+// ISA-101 highest severity shape. Reads as "stop and look."
+const CriticalIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M8 1.5L1 14h14L8 1.5z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    <path d="M8 6v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    <circle cx="8" cy="12" r="0.75" fill="currentColor" />
+    <path d="M8 1L15 8L8 15L1 8Z" fill="currentColor" />
   </svg>
 )
 
@@ -84,7 +84,7 @@ function Tooltip({ show, pos, children }) {
         style={{
           width: '8px',
           height: '8px',
-          background: '#f4f4f4',
+          background: 'var(--color-tooltip-bg)',
           transform: 'rotate(45deg)',
           position: 'absolute',
           top: '-4px',
@@ -95,13 +95,13 @@ function Tooltip({ show, pos, children }) {
       />
       <div
         style={{
-          background: '#f4f4f4',
+          background: 'var(--color-tooltip-bg)',
           borderRadius: 'var(--radius-4)',
           padding: 'var(--spacing-12) var(--spacing-16)',
           boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
         }}
       >
-        <p className="type-body-compact" style={{ color: 'var(--color-bg)', margin: 0 }}>
+        <p className="type-body-compact" style={{ color: 'var(--color-tooltip-text)', margin: 0 }}>
           {children}
         </p>
       </div>
@@ -152,7 +152,7 @@ function HealthIndicator({ state, thresholdLabel }) {
 
   const isWarning = state === 'warning'
   const color = isWarning ? 'var(--color-warning)' : 'var(--color-error)'
-  const Icon = isWarning ? TrendingDownIcon : ExclamationIcon
+  const Icon = isWarning ? TrendingDownIcon : CriticalIcon
   const label = isWarning ? 'Below target' : 'Critical'
 
   return (
@@ -207,7 +207,7 @@ function KpiCard({ config, onClick }) {
     >
       {/* Label + info */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>{config.label}</span>
+        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>{config.label}</span>
         <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
       </div>
 
@@ -247,7 +247,7 @@ export default function KpiBar({ onKpiClick }) {
       {/* Trains */}
       <div className="card" style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Trains</span>
+          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Trains</span>
           <InfoButton description={KPI_DESCRIPTIONS.trains} />
         </div>
         <span className="type-kpi" style={{ display: 'block' }}>
@@ -258,13 +258,21 @@ export default function KpiBar({ onKpiClick }) {
       {/* Active Assets */}
       <div className="card" style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Active Assets</span>
+          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Active Assets</span>
           <InfoButton description={KPI_DESCRIPTIONS.activeAssets} />
         </div>
         <span style={{ display: 'block' }}>
           <span className="type-kpi">{PLANT.activeAssets}</span>
           <span className="type-kpi" style={{ color: 'var(--color-text-secondary)' }}>/{PLANT.totalAssets}</span>
         </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
+          <span className="type-label" style={{ color: 'var(--color-text-secondary)', textTransform: 'none', letterSpacing: 0 }}>
+            -4 vs yesterday
+          </span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+            <path d="M2 2L10 10M10 10H4M10 10V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-secondary)' }} />
+          </svg>
+        </div>
       </div>
     </div>
   )

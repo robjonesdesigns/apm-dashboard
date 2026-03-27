@@ -93,7 +93,7 @@ export default function EventSummary() {
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-        <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Event Summary</span>
+        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Event Summary</span>
         <div style={{ display: 'flex', gap: 'var(--spacing-8)' }}>
           <button
             className={`chip${activeTab === 'events' ? ' chip-active' : ''}`}

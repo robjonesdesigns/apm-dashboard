@@ -42,6 +42,13 @@
   --color-accent-hover: #5de0cf;
   --color-accent-bg: rgba(45, 212, 191, 0.16);
 
+  /* ── Tooltip (inverted for dark dashboards) ─────────────────────── */
+  --color-tooltip-bg: #f4f4f4;
+  --color-tooltip-text: #161616;
+
+  /* ── Card title (dimmed, not competing with data values) ────────── */
+  --color-card-title: #c6c6c6;
+
   /* ── Links (keep blue per Carbon convention) ──────────────────────── */
   --color-link: #78a9ff;
   --color-link-hover: #a6c8ff;

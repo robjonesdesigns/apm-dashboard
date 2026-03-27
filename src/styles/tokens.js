@@ -50,8 +50,8 @@ export const colors = {
 
 // Inverted tooltip (light on dark, stands out against dashboard)
 export const tooltipInverse = {
-  bg: '#f4f4f4',
-  text: '#161616',
+  bg: 'var(--color-tooltip-bg)',
+  text: 'var(--color-tooltip-text)',
   shadow: '0 4px 12px rgba(0,0,0,0.4)',
 }
 

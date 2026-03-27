@@ -69,7 +69,7 @@ function WorkOrdersCard({ onAssetClick }) {
           marginBottom: 'var(--spacing-4)',
         }}
       >
-        <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Work Orders</span>
+        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Work Orders</span>
         <span className="badge badge-error">{WORK_ORDERS.length}</span>
       </div>
 
@@ -177,7 +177,7 @@ function CasesCard({ onAssetClick }) {
           marginBottom: 'var(--spacing-4)',
         }}
       >
-        <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Investigations</span>
+        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Investigations</span>
         <span className="badge badge-warning">{CASES.length}</span>
       </div>
 

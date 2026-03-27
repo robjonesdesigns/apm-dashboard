@@ -68,7 +68,7 @@ export default function BadActors({ onAssetClick }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Bad Actors</span>
+      <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Bad Actors</span>
 
       {/* Horizontal bar chart */}
       <div style={{ height: chartHeight }}>

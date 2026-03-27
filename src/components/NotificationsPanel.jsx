@@ -77,7 +77,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Notifications</span>
+          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Notifications</span>
           {notifications.length > 0 && (
             <span className="badge badge-info">
               {notifications.length}
