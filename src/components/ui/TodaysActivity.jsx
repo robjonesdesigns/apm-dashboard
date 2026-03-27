@@ -159,7 +159,7 @@ function WorkOrdersCard() {
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
                 <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
                 <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body-01">{wo.task}</span>
+                <span className="type-body-01" style={{ color: 'inherit' }}>{wo.task}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
                 <span
@@ -233,7 +233,7 @@ function InvestigationsCard() {
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
                 <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
                 <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body-01">{c.description}</span>
+                <span className="type-body-01" style={{ color: 'inherit' }}>{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
                 <span
