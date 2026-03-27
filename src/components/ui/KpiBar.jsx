@@ -48,10 +48,12 @@ const InfoIcon = () => (
   </svg>
 )
 
-// Warning: trending down arrow (amber) -- "this is declining, monitor it"
-const TrendingDownIcon = () => (
+// Warning: solid inverted triangle (amber) -- "attention, declining"
+// Same geometric family as the critical diamond. No directional
+// confusion with delta arrows (which have tails).
+const WarningIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M3 5l5 6 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 14L1 3h14L8 14z" fill="currentColor" />
   </svg>
 )
 
@@ -152,7 +154,7 @@ function HealthIndicator({ state, thresholdLabel }) {
 
   const isWarning = state === 'warning'
   const color = isWarning ? 'var(--color-warning)' : 'var(--color-error)'
-  const Icon = isWarning ? TrendingDownIcon : CriticalIcon
+  const Icon = isWarning ? WarningIcon : CriticalIcon
   const label = isWarning ? 'Below target' : 'Critical'
 
   return (
