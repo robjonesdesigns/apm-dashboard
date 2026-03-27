@@ -103,7 +103,7 @@ function HorizontalTimeline() {
   const range = maxTime - minTime || 1
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', padding: '0 var(--spacing-24)' }}>
 
       {/* Timeline track -- dots are vertically centered on the line */}
       <div style={{ position: 'relative', height: '10px' }}>
