@@ -121,7 +121,10 @@ function InfoButton({ description }) {
   const updatePos = () => {
     if (!ref.current) return
     const r = ref.current.getBoundingClientRect()
-    setPos({ top: r.bottom + 8, left: Math.max(8, r.left + r.width / 2 - 110) })
+    const tooltipWidth = 220
+    const centered = r.left + r.width / 2 - tooltipWidth / 2
+    const rightEdge = window.innerWidth - tooltipWidth - 8
+    setPos({ top: r.bottom + 8, left: Math.max(8, Math.min(centered, rightEdge)) })
   }
 
   return (
