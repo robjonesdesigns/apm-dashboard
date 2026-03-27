@@ -48,19 +48,26 @@ export const colors = {
   kpiQuality: '#2dd4bf',
 }
 
+// Inverted tooltip (light on dark, stands out against dashboard)
+export const tooltipInverse = {
+  bg: '#f4f4f4',
+  text: '#161616',
+  shadow: '0 4px 12px rgba(0,0,0,0.4)',
+}
+
 // Recharts-specific styling (can't use CSS vars)
 export const chartStyle = {
   grid: '#393939',
   axisLine: '#525252',
   axisText: '#c6c6c6',
   axisFont: 12,
-  tooltipBg: '#393939',
-  tooltipBorder: '#525252',
-  tooltipText: '#f4f4f4',
-  tooltipLabel: '#c6c6c6',
-  tooltipRadius: 2,
+  tooltipBg: '#f4f4f4',
+  tooltipBorder: '#e0e0e0',
+  tooltipText: '#161616',
+  tooltipLabel: '#525252',
+  tooltipRadius: 4,
   tooltipPadding: 16,
-  tooltipShadow: '0 2px 6px rgba(0,0,0,0.3)',
+  tooltipShadow: '0 4px 12px rgba(0,0,0,0.4)',
   lineWidth: 2,
   barRadius: [4, 4, 0, 0],
   animationDuration: 300,

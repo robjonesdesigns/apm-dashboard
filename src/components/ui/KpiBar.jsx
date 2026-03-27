@@ -107,10 +107,7 @@ function KpiCard({ config, onClick }) {
             style={{
               width: '8px',
               height: '8px',
-              background: 'var(--color-layer-02)',
-              border: '1px solid var(--color-border-strong)',
-              borderBottom: 'none',
-              borderRight: 'none',
+              background: '#f4f4f4',
               transform: 'rotate(45deg)',
               position: 'absolute',
               top: '-4px',
@@ -118,17 +115,16 @@ function KpiCard({ config, onClick }) {
               zIndex: 101,
             }}
           />
-          {/* Bubble */}
+          {/* Bubble -- inverted (light on dark) for differentiation */}
           <div
             style={{
-              background: 'var(--color-layer-02)',
-              border: '1px solid var(--color-border-strong)',
+              background: '#f4f4f4',
               borderRadius: 'var(--radius-4)',
               padding: 'var(--spacing-12) var(--spacing-16)',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
             }}
           >
-            <p className="type-body-compact" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+            <p className="type-body-compact" style={{ color: 'var(--color-bg)', margin: 0 }}>
               {KPI_DESCRIPTIONS[config.key]}
             </p>
           </div>
