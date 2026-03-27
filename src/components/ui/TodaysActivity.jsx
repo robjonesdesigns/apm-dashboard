@@ -102,9 +102,9 @@ function WorkOrdersCard({ onAssetClick }) {
     <div className="card col-half">
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
         <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Work Orders</span>
-        <span className="badge badge-error">{WORK_ORDERS.length}</span>
+        <span className="type-label">{WORK_ORDERS.length}</span>
       </div>
 
       {/* Summary */}
@@ -175,9 +175,9 @@ function InvestigationsCard({ onAssetClick }) {
     <div className="card col-half">
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
         <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Investigations</span>
-        <span className="badge badge-warning">{CASES.length}</span>
+        <span className="type-label">{CASES.length}</span>
       </div>
 
       {/* Summary */}
