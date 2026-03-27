@@ -413,7 +413,24 @@ html, body, #root {
     .col-trains { grid-column: span 4; }
   }
 
-  /* Three-column layout: use auto-fit instead of fixed spans */
+  /* KPI bar: 2 on mobile, 3 on tablet, 6 on desktop */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-24);
+}
+@media (min-width: 672px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1056px) {
+  .kpi-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Three-column layout: use auto-fit instead of fixed spans */
   .grid-thirds {
     display: grid;
     grid-template-columns: 1fr;

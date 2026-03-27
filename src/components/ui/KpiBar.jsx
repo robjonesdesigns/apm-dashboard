@@ -1,168 +1,36 @@
-import { AreaChart, Area } from 'recharts'
-import { PLANT, OEE_TREND } from '../../data/assets'
-import { colors } from '../../styles/tokens'
+import { PLANT } from '../../data/assets'
 
-// ── KPI identity config ──────────────────────────────────────────────────────
+// ── KPI card config ─────────────────────────────────────────────────────────
 
 const KPI_CONFIG = [
-  {
-    key: 'oee',
-    label: 'OEE',
-    current: PLANT.oee,
-    previous: PLANT.previousOee,
-    unit: '%',
-    colorVar: '--color-kpi-oee',
-    colorHex: colors.kpiOee,
-    dataKey: 'oee',
-  },
-  {
-    key: 'availability',
-    label: 'Availability',
-    current: PLANT.availability,
-    previous: PLANT.previousAvailability,
-    unit: '%',
-    colorVar: '--color-kpi-availability',
-    colorHex: colors.kpiAvailability,
-    dataKey: 'availability',
-  },
-  {
-    key: 'performance',
-    label: 'Performance',
-    current: PLANT.performance,
-    previous: PLANT.previousPerformance,
-    unit: '%',
-    colorVar: '--color-kpi-performance',
-    colorHex: colors.kpiPerformance,
-    dataKey: 'performance',
-  },
-  {
-    key: 'quality',
-    label: 'Quality',
-    current: PLANT.quality,
-    previous: PLANT.previousQuality,
-    unit: '%',
-    colorVar: '--color-kpi-quality',
-    colorHex: colors.kpiQuality,
-    dataKey: 'quality',
-  },
+  { key: 'oee',          label: 'OEE',          value: PLANT.oee,          borderVar: '--color-kpi-oee' },
+  { key: 'availability', label: 'Availability',  value: PLANT.availability, borderVar: '--color-kpi-availability' },
+  { key: 'performance',  label: 'Performance',   value: PLANT.performance,  borderVar: '--color-kpi-performance' },
+  { key: 'quality',      label: 'Quality',       value: PLANT.quality,      borderVar: '--color-kpi-quality' },
 ]
-
-// ── Delta calculation ────────────────────────────────────────────────────────
-
-function calcDelta(current, previous) {
-  const diff = current - previous
-  const pct = ((diff / previous) * 100).toFixed(1)
-  return { diff, pct: parseFloat(pct) }
-}
-
-// ── Sparkline ────────────────────────────────────────────────────────────────
-
-function Sparkline({ dataKey, colorHex }) {
-  const gradientId = `spark-grad-${dataKey}`
-  return (
-    <AreaChart
-      width={60}
-      height={24}
-      data={OEE_TREND}
-      margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-    >
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor={colorHex} stopOpacity={0.2} />
-          <stop offset="95%" stopColor={colorHex} stopOpacity={0} />
-        </linearGradient>
-      </defs>
-      <Area
-        type="monotone"
-        dataKey={dataKey}
-        stroke={colorHex}
-        strokeWidth={1.5}
-        fill={`url(#${gradientId})`}
-        dot={false}
-        isAnimationActive={false}
-      />
-    </AreaChart>
-  )
-}
 
 // ── KPI card ─────────────────────────────────────────────────────────────────
 
 function KpiCard({ config, onClick }) {
-  const { pct } = calcDelta(config.current, config.previous)
-  const isPositive = pct >= 0
-  const changeColor = isPositive
-    ? 'var(--color-success)'
-    : 'var(--color-error)'
-  const sign = isPositive ? '+' : ''
-
   return (
-    <div
-      className="card card-interactive col-kpi"
-      style={{ borderLeft: `3px solid var(${config.colorVar})` }}
+    <button
+      className="card card-interactive"
       onClick={() => onClick(config.key)}
-    >
-      <div style={{ marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-label">{config.label}</span>
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          gap: 'var(--spacing-8)',
-          marginBottom: 'var(--spacing-8)',
-        }}
-      >
-        <span className="type-kpi">
-          {config.current}{config.unit}
-        </span>
-        <Sparkline dataKey={config.dataKey} colorHex={config.colorHex} />
-      </div>
-
-      <div>
-        <span className="type-label" style={{ color: changeColor }}>
-          {sign}{pct}% vs last month
-        </span>
-      </div>
-    </div>
-  )
-}
-
-// ── Trains / active assets card ───────────────────────────────────────────────
-
-function TrainsCard() {
-  return (
-    <div
-      className="card"
+      aria-label={`${config.label}: ${config.value}%. Click to view trend.`}
       style={{
-        gridColumn: 'span 4',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        gap: 'var(--spacing-8)',
+        borderTop: `3px solid var(${config.borderVar})`,
+        borderLeft: 'none',
+        textAlign: 'left',
+        width: '100%',
       }}
     >
-      <div>
-        <span className="type-label">Plant Status</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--spacing-16)' }}>
-        <span className="type-kpi-lg">{PLANT.trains} Trains</span>
-      </div>
-      <div>
-        <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>Active assets: </span>
-        <span
-          className="type-body-01"
-          style={{ color: 'var(--color-accent)' }}
-        >
-          {PLANT.activeAssets}
-        </span>
-        <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}> / {PLANT.totalAssets}</span>
-      </div>
-      <div>
-        <span className="type-helper">Last refreshed {PLANT.lastRefreshed}</span>
-      </div>
-    </div>
+      <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+        {config.label}
+      </span>
+      <span className="type-kpi" style={{ display: 'block' }}>
+        {config.value}%
+      </span>
+    </button>
   )
 }
 
@@ -170,11 +38,43 @@ function TrainsCard() {
 
 export default function KpiBar({ onKpiClick }) {
   return (
-    <div className="grid-16">
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: 'var(--spacing-24)',
+      }}
+      className="kpi-grid"
+    >
+      {/* 4 KPI cards */}
       {KPI_CONFIG.map((config) => (
         <KpiCard key={config.key} config={config} onClick={onKpiClick} />
       ))}
-      <TrainsCard />
+
+      {/* Trains */}
+      <div className="card" style={{ textAlign: 'left' }}>
+        <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+          Trains
+        </span>
+        <span className="type-kpi" style={{ display: 'block' }}>
+          {PLANT.trains}
+        </span>
+      </div>
+
+      {/* Active Assets */}
+      <div className="card" style={{ textAlign: 'left' }}>
+        <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+          Active Assets
+        </span>
+        <span style={{ display: 'block' }}>
+          <span className="type-kpi" style={{ color: 'var(--color-accent)' }}>
+            {PLANT.activeAssets}
+          </span>
+          <span className="type-kpi" style={{ color: 'var(--color-text-secondary)' }}>
+            /{PLANT.totalAssets}
+          </span>
+        </span>
+      </div>
     </div>
   )
 }
