@@ -89,27 +89,49 @@ function KpiCard({ config, onClick }) {
         {config.value}%
       </span>
 
-      {/* Tooltip */}
+      {/* Tooltip -- Carbon-style with caret */}
       {showTooltip && (
         <div
           style={{
             position: 'absolute',
-            top: '100%',
-            left: '0',
+            top: 'var(--spacing-32)',
             right: '0',
-            marginTop: 'var(--spacing-8)',
-            background: 'var(--color-layer-02)',
-            border: '1px solid var(--color-border-strong)',
-            borderRadius: 'var(--radius-4)',
-            padding: 'var(--spacing-12) var(--spacing-16)',
+            width: '220px',
             zIndex: 100,
-            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+            pointerEvents: 'none',
           }}
         >
-          <p className="type-body-compact" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
-            {KPI_DESCRIPTIONS[config.key]}
-          </p>
+          {/* Caret */}
+          <div
+            style={{
+              width: '8px',
+              height: '8px',
+              background: 'var(--color-layer-02)',
+              border: '1px solid var(--color-border-strong)',
+              borderBottom: 'none',
+              borderRight: 'none',
+              transform: 'rotate(45deg)',
+              position: 'absolute',
+              top: '-4px',
+              right: 'var(--spacing-12)',
+              zIndex: 101,
+            }}
+          />
+          {/* Bubble */}
+          <div
+            style={{
+              background: 'var(--color-layer-02)',
+              border: '1px solid var(--color-border-strong)',
+              borderRadius: 'var(--radius-4)',
+              padding: 'var(--spacing-12) var(--spacing-16)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            }}
+          >
+            <p className="type-body-compact" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+              {KPI_DESCRIPTIONS[config.key]}
+            </p>
+          </div>
         </div>
       )}
     </button>
