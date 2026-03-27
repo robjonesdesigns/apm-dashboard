@@ -70,11 +70,14 @@ function MinorDot({ event, style }) {
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
           }}
         >
-          <p style={{ margin: 0, fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)' }}>
-            <strong>{event.asset}</strong> · {event.event}
-          </p>
           <p style={{ margin: 0, fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', opacity: 0.6 }}>
             {event.time}
+          </p>
+          <p style={{ margin: '2px 0 0', fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
+            {event.asset}
+          </p>
+          <p style={{ margin: '2px 0 0', fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', opacity: 0.8 }}>
+            {event.event}
           </p>
         </div>
       )}
@@ -145,30 +148,36 @@ function HorizontalTimeline() {
       </div>
 
       {/* Major event details below the track */}
+      {/* First = left-aligned, middle = centered, last = right-aligned */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--spacing-12)' }}>
-        {majorEvents.map((event, i) => (
-          <div
-            key={`detail-${i}`}
-            style={{
-              flex: '1 1 0',
-              textAlign: 'left',
-              paddingRight: i < majorEvents.length - 1 ? 'var(--spacing-16)' : 0,
-            }}
-          >
-            <p className="type-helper" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-              {event.time}
-            </p>
-            <p className="type-body-compact" style={{ margin: '2px 0 0', color: 'var(--color-text-primary)' }}>
-              {event.asset}
-            </p>
-            <p className="type-helper" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
-              {event.event.length > 50 ? event.event.substring(0, 50) + '...' : event.event}
-            </p>
-            <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.kpiImpact) }}>
-              {event.kpiImpact}
-            </p>
-          </div>
-        ))}
+        {majorEvents.map((event, i) => {
+          const isFirst = i === 0
+          const isLast = i === majorEvents.length - 1
+          const alignment = isFirst ? 'left' : isLast ? 'right' : 'center'
+
+          return (
+            <div
+              key={`detail-${i}`}
+              style={{
+                flex: '1 1 0',
+                textAlign: alignment,
+              }}
+            >
+              <p className="type-helper" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
+                {event.time}
+              </p>
+              <p className="type-body-compact" style={{ margin: '2px 0 0', color: 'var(--color-text-primary)' }}>
+                {event.asset}
+              </p>
+              <p className="type-helper" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
+                {event.event.length > 50 ? event.event.substring(0, 50) + '...' : event.event}
+              </p>
+              <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.kpiImpact) }}>
+                {event.kpiImpact}
+              </p>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -218,13 +227,15 @@ export default function ImpactStrip() {
 
   return (
     <section>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-16)' }}>
-        <p className="section-header" style={{ margin: 0 }}>Key Events</p>
-        <span className="type-link">See full timeline &rarr;</span>
-      </div>
+      <p className="section-header">Key Events</p>
 
       {/* No card wrapper. Sits on page background. */}
       {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
+
+      {/* Link at bottom, following card pattern */}
+      <div style={{ marginTop: 'var(--spacing-16)' }}>
+        <span className="type-link">See full timeline &rarr;</span>
+      </div>
     </section>
   )
 }
