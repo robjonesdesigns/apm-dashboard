@@ -136,7 +136,8 @@ function HorizontalTimeline() {
           zIndex: 1,
         }} />
 
-        {/* Minor dots -- only between first and last major event, centered on line */}
+        {/* Minor dots -- positioned relative to the segment between the two
+            major events they fall between, proportional to actual time gaps */}
         {minorEvents
           .filter(e => {
             const t = timeToMinutes(e.time)
@@ -144,12 +145,36 @@ function HorizontalTimeline() {
           })
           .map((event, i) => {
             const t = timeToMinutes(event.time)
-            const pct = Math.max(3, Math.min(97, ((t - timeStart) / timeRange) * 100))
+
+            // Find which two major events this minor falls between
+            let segStart = 0, segEnd = majorEvents.length - 1
+            for (let j = 0; j < majorTimes.length - 1; j++) {
+              if (t >= majorTimes[j] && t <= majorTimes[j + 1]) {
+                segStart = j
+                segEnd = j + 1
+                break
+              }
+            }
+
+            // Major dots are evenly spaced, so segment j occupies:
+            // startPct to endPct of the visual timeline
+            const startPct = (segStart / (majorEvents.length - 1)) * 100
+            const endPct = (segEnd / (majorEvents.length - 1)) * 100
+
+            // Position within the segment proportional to time
+            const segTimeStart = majorTimes[segStart]
+            const segTimeEnd = majorTimes[segEnd]
+            const segTimeRange = segTimeEnd - segTimeStart || 1
+            const ratio = (t - segTimeStart) / segTimeRange
+
+            const pct = startPct + ratio * (endPct - startPct)
+            const clampedPct = Math.max(3, Math.min(97, pct))
+
             return (
               <MinorDot
                 key={`minor-${i}`}
                 event={event}
-                style={{ left: `${pct}%`, top: '50%' }}
+                style={{ left: `${clampedPct}%`, top: '50%' }}
               />
             )
           })
