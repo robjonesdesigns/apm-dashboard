@@ -50,8 +50,8 @@
   --color-card-title: #c6c6c6;
 
   /* ── Links (keep blue per Carbon convention) ──────────────────────── */
-  --color-link: #78a9ff;
-  --color-link-hover: #a6c8ff;
+  --color-link: #2dd4bf;
+  --color-link-hover: #5de0cf;
 
   /* ── Status (Pairing 1: coral-red + true amber, adapted from Carbon) ── */
   --color-error: #f47174;
