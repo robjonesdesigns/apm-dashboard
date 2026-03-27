@@ -156,10 +156,10 @@ function WorkOrdersCard() {
           >
             {/* Line 1: WO ID + task (clickable, truncated) | priority pill */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <span className="type-helper">{wo.id}</span>
-                <span className="type-helper"> · </span>
-                <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{wo.task}</span>
+              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
+                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
+                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                <span className="type-body-01">{wo.task}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
                 <span
@@ -230,10 +230,10 @@ function InvestigationsCard() {
           >
             {/* Line 1: Case ID + description (clickable, truncated) | status badge with dot */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <span className="type-helper">{c.id}</span>
-                <span className="type-helper"> · </span>
-                <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{c.description}</span>
+              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
+                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
+                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                <span className="type-body-01">{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
                 <span
