@@ -13,10 +13,10 @@ const KPI_DESCRIPTIONS = {
 // ── KPI card config ─────────────────────────────────────────────────────────
 
 const KPI_CONFIG = [
-  { key: 'oee',          label: 'OEE',          value: PLANT.oee,          borderVar: '--color-kpi-oee' },
-  { key: 'availability', label: 'Availability',  value: PLANT.availability, borderVar: '--color-kpi-availability' },
-  { key: 'performance',  label: 'Performance',   value: PLANT.performance,  borderVar: '--color-kpi-performance' },
-  { key: 'quality',      label: 'Quality',       value: PLANT.quality,      borderVar: '--color-kpi-quality' },
+  { key: 'oee',          label: 'OEE',          value: PLANT.oee          },
+  { key: 'availability', label: 'Availability',  value: PLANT.availability },
+  { key: 'performance',  label: 'Performance',   value: PLANT.performance  },
+  { key: 'quality',      label: 'Quality',       value: PLANT.quality      },
 ]
 
 // ── Info icon ────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ function KpiCard({ config, onClick }) {
       onClick={() => onClick(config.key)}
       aria-label={`${config.label}: ${config.value}%. Click to view trend.`}
       style={{
-        borderTop: `3px solid var(${config.borderVar})`,
+        borderTop: '3px solid var(--color-accent)',
         borderLeft: 'none',
         textAlign: 'left',
         width: '100%',
@@ -56,7 +56,7 @@ function KpiCard({ config, onClick }) {
           marginBottom: 'var(--spacing-8)',
         }}
       >
-        <span className="type-heading-02">{config.label}</span>
+        <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>{config.label}</span>
         <span
           style={{
             color: 'var(--color-text-helper)',
@@ -84,8 +84,8 @@ function KpiCard({ config, onClick }) {
         </span>
       </div>
 
-      {/* Value -- colored to match the card's identity border */}
-      <span className="type-kpi" style={{ display: 'block', color: `var(${config.borderVar})` }}>
+      {/* Value -- inherits text-primary white from type-kpi class */}
+      <span className="type-kpi" style={{ display: 'block' }}>
         {config.value}%
       </span>
 
@@ -150,7 +150,7 @@ export default function KpiBar({ onKpiClick }) {
 
       {/* Trains */}
       <div className="card" style={{ textAlign: 'left' }}>
-        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)', color: 'var(--color-text-secondary)' }}>
           Trains
         </span>
         <span className="type-kpi" style={{ display: 'block' }}>
@@ -160,7 +160,7 @@ export default function KpiBar({ onKpiClick }) {
 
       {/* Active Assets */}
       <div className="card" style={{ textAlign: 'left' }}>
-        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)', color: 'var(--color-text-secondary)' }}>
           Active Assets
         </span>
         <span style={{ display: 'block' }}>

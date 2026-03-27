@@ -141,7 +141,7 @@ export default function AssetTable({ onAssetClick }) {
       <div className="card col-full">
         {/* Card header — benefits from natural .card 24px padding */}
         <div style={{ marginBottom: 'var(--spacing-12)' }}>
-          <span className="type-heading-02">All Assets</span>
+          <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>All Assets</span>
         </div>
 
         {/* Scrollable table area — pull to card edges with negative margin */}

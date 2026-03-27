@@ -66,7 +66,7 @@ export default function RiskMatrix({ onCellClick }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-heading-02">Risk Matrix</span>
+      <span className="type-heading-02" style={{ color: 'var(--color-text-secondary)' }}>Risk Matrix</span>
 
       {/* Grid */}
       <div
