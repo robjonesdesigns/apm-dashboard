@@ -40,7 +40,21 @@ function MinorDot({ event, style }) {
 
   return (
     <div
-      style={{ position: 'absolute', ...style, zIndex: 2, width: '6px', height: '6px' }}
+      style={{
+        position: 'absolute',
+        ...style,
+        zIndex: 2,
+        // Visual dot is 6px, but hit area is 30px for accessibility
+        width: '30px',
+        height: '30px',
+        // Re-center: the parent positions us by center of the dot,
+        // so offset by half the hit area minus half the dot
+        marginLeft: '-12px',
+        marginTop: '-12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       onFocus={() => setShow(true)}
