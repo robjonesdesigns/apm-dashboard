@@ -104,7 +104,7 @@ function HorizontalTimeline() {
   const range = maxTime - minTime || 1
 
   return (
-    <div style={{ position: 'relative', padding: '0 var(--spacing-24)' }}>
+    <div style={{ position: 'relative' }}>
 
       {/* Timeline track -- dots are vertically centered on the line */}
       <div style={{ position: 'relative', height: '10px' }}>
@@ -252,14 +252,15 @@ export default function ImpactStrip() {
 
   return (
     <section>
-      <p className="section-header" style={{ marginBottom: 'var(--spacing-24)' }}>Key Events</p>
+      <p className="section-header">Key Events</p>
 
-      {/* No card wrapper. Sits on page background. */}
-      {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
+      <div className="card" style={{ overflow: 'visible' }}>
+        {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
 
-      {/* Link at bottom, following card pattern */}
-      <div style={{ marginTop: 'var(--spacing-16)' }}>
-        <span className="type-link">See full timeline &rarr;</span>
+        {/* Link at bottom of card */}
+        <div style={{ marginTop: 'var(--spacing-16)' }}>
+          <span className="type-link">See full timeline &rarr;</span>
+        </div>
       </div>
     </section>
   )
