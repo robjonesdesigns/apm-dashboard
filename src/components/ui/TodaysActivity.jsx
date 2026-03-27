@@ -1,23 +1,21 @@
 import { useState } from 'react'
 import { WORK_ORDERS, CASES } from '../../data/assets'
 
-// ── Badge maps ────────────────────────────────────────────────────────────────
+// ── Badge maps (ADR-011) ─────────────────────────────────────────────────────
+// Critical=red, High=amber, Medium=blue, Low=gray (visual intensity decreases)
 
 const PRIORITY_BADGE = {
   critical: 'badge badge-error',
   high:     'badge badge-warning',
   medium:   'badge badge-info',
-  low:      'badge badge-info',
 }
-
-// Case status is workflow state, not severity. Neutral styling.
-// The ASSET criticality provides semantic context, not the case status.
-const CASE_STATUS_STYLE = {
+// Low uses neutral gray (same as investigation statuses)
+const NEUTRAL_BADGE_STYLE = {
   background: 'var(--color-border-subtle)',
   color: 'var(--color-text-secondary)',
 }
 
-// ── Summary builders ──────────────────────────────────────────────────────────
+// ── Summary builders ────────────────────────────────────────────────────────
 
 function buildWoSummary(orders) {
   const counts = { critical: 0, high: 0, medium: 0, low: 0 }
@@ -31,18 +29,18 @@ function buildCaseSummary(cases) {
   return counts
 }
 
-// ── Row hover styles ──────────────────────────────────────────────────────────
+// ── Row hover styles ────────────────────────────────────────────────────────
 
 function rowBaseStyle(isHovered) {
   return {
     display: 'flex',
     flexDirection: 'column',
     gap: 'var(--spacing-4)',
-    padding: 'var(--spacing-12) 0',
+    padding: 'var(--spacing-12) var(--spacing-8)',
     borderBottom: '1px solid var(--color-border-subtle)',
     borderLeft: isHovered ? '2px solid var(--color-accent)' : '2px solid transparent',
-    paddingLeft: isHovered ? 'var(--spacing-8)' : 'var(--spacing-8)',
     background: isHovered ? 'var(--color-hover-01)' : 'transparent',
+    cursor: 'pointer',
     transition: [
       'background var(--motion-fast) var(--ease-productive)',
       'border-left-color var(--motion-fast) var(--ease-productive)',
@@ -50,7 +48,25 @@ function rowBaseStyle(isHovered) {
   }
 }
 
-// ── WO summary line ───────────────────────────────────────────────────────────
+// ── Status dot (filled = active, hollow = waiting) ──────────────────────────
+
+function StatusDot({ filled }) {
+  return (
+    <span
+      style={{
+        width: '8px',
+        height: '8px',
+        borderRadius: 'var(--radius-full)',
+        border: '1.5px solid var(--color-text-secondary)',
+        background: filled ? 'var(--color-text-secondary)' : 'transparent',
+        flexShrink: 0,
+        display: 'inline-block',
+      }}
+    />
+  )
+}
+
+// ── WO summary line ─────────────────────────────────────────────────────────
 
 function WoSummaryLine({ summary }) {
   const parts = []
@@ -63,7 +79,12 @@ function WoSummaryLine({ summary }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
       {parts.map((p, i) => (
         <span key={p.label}>
-          <span className={p.neutral ? 'badge' : p.cls} style={p.neutral ? CASE_STATUS_STYLE : undefined}>{p.label}</span>
+          <span
+            className={p.neutral ? 'badge' : p.cls}
+            style={p.neutral ? NEUTRAL_BADGE_STYLE : undefined}
+          >
+            {p.label}
+          </span>
           {i < parts.length - 1 && (
             <span className="type-label" style={{ marginLeft: 'var(--spacing-8)' }}>·</span>
           )}
@@ -73,20 +94,23 @@ function WoSummaryLine({ summary }) {
   )
 }
 
-// ── Case summary line ─────────────────────────────────────────────────────────
+// ── Case summary line ───────────────────────────────────────────────────────
 
 function CaseSummaryLine({ summary }) {
   const parts = []
-  if (summary.investigating > 0) parts.push(`${summary.investigating} Investigating`)
-  if (summary.open > 0)          parts.push(`${summary.open} Open`)
+  if (summary.investigating > 0) parts.push({ label: `${summary.investigating} Investigating`, filled: true })
+  if (summary.open > 0)          parts.push({ label: `${summary.open} Open`, filled: false })
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
-      {parts.map((label, i) => (
-        <span key={label}>
-          <span className="badge" style={CASE_STATUS_STYLE}>{label}</span>
+      {parts.map((p, i) => (
+        <span key={p.label} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+          <span className="badge" style={{ ...NEUTRAL_BADGE_STYLE, display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+            <StatusDot filled={p.filled} />
+            {p.label}
+          </span>
           {i < parts.length - 1 && (
-            <span className="type-label" style={{ marginLeft: 'var(--spacing-8)' }}>·</span>
+            <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
           )}
         </span>
       ))}
@@ -94,9 +118,9 @@ function CaseSummaryLine({ summary }) {
   )
 }
 
-// ── Work Orders card ──────────────────────────────────────────────────────────
+// ── Work Orders card ────────────────────────────────────────────────────────
 
-function WorkOrdersCard({ onAssetClick }) {
+function WorkOrdersCard() {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildWoSummary(WORK_ORDERS)
 
@@ -118,7 +142,7 @@ function WorkOrdersCard({ onAssetClick }) {
       {/* Summary */}
       <WoSummaryLine summary={summary} />
 
-      {/* Rows (max 6, no internal scroll) */}
+      {/* Rows (max 5, no internal scroll) */}
       <div style={{ flex: 1 }}>
         {visible.map((wo) => (
           <div
@@ -127,15 +151,18 @@ function WorkOrdersCard({ onAssetClick }) {
             onMouseEnter={() => setHoveredId(wo.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: ID + task | priority pill */}
+            {/* Line 1: WO ID + task (clickable) | priority pill */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0 }}>
                 <span className="type-helper">{wo.id}</span>
                 <span className="type-helper"> · </span>
-                <span className="type-body-01">{wo.task}</span>
+                <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{wo.task}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <span className={PRIORITY_BADGE[wo.priority] || 'badge badge-info'} style={{ textTransform: 'capitalize' }}>
+                <span
+                  className={PRIORITY_BADGE[wo.priority] || 'badge'}
+                  style={!PRIORITY_BADGE[wo.priority] ? { ...NEUTRAL_BADGE_STYLE, textTransform: 'capitalize' } : { textTransform: 'capitalize' }}
+                >
                   {wo.priority}
                 </span>
               </div>
@@ -143,11 +170,7 @@ function WorkOrdersCard({ onAssetClick }) {
 
             {/* Line 2: asset name | assignee + timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span
-                className="type-body-01"
-                style={{ color: 'var(--color-accent)', cursor: 'pointer' }}
-                onClick={() => onAssetClick(wo.assetId)}
-              >
+              <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
                 {wo.asset}
               </span>
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -165,7 +188,7 @@ function WorkOrdersCard({ onAssetClick }) {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom via margin-top: auto */}
+      {/* Footer -- pinned to bottom */}
       <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
         <span className="type-link">Go to Work Orders &rarr;</span>
       </div>
@@ -173,9 +196,9 @@ function WorkOrdersCard({ onAssetClick }) {
   )
 }
 
-// ── Investigations card ───────────────────────────────────────────────────────
+// ── Investigations card ─────────────────────────────────────────────────────
 
-function InvestigationsCard({ onAssetClick }) {
+function InvestigationsCard() {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildCaseSummary(CASES)
 
@@ -193,7 +216,7 @@ function InvestigationsCard({ onAssetClick }) {
       {/* Summary */}
       <CaseSummaryLine summary={summary} />
 
-      {/* Rows (max 6, no internal scroll) */}
+      {/* Rows (max 5, no internal scroll) */}
       <div style={{ flex: 1 }}>
         {visible.map((c) => (
           <div
@@ -202,15 +225,19 @@ function InvestigationsCard({ onAssetClick }) {
             onMouseEnter={() => setHoveredId(c.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: Case ID + description | status pill */}
+            {/* Line 1: Case ID + description (clickable) | status badge with dot */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0 }}>
                 <span className="type-helper">{c.id}</span>
                 <span className="type-helper"> · </span>
-                <span className="type-body-01">{c.description}</span>
+                <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <span className="badge" style={{ ...CASE_STATUS_STYLE, textTransform: 'capitalize' }}>
+                <span
+                  className="badge"
+                  style={{ ...NEUTRAL_BADGE_STYLE, textTransform: 'capitalize', display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
+                >
+                  <StatusDot filled={c.status === 'investigating'} />
                   {c.status}
                 </span>
               </div>
@@ -218,11 +245,7 @@ function InvestigationsCard({ onAssetClick }) {
 
             {/* Line 2: asset name | linked WO count + timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span
-                className="type-body-01"
-                style={{ color: 'var(--color-accent)', cursor: 'pointer' }}
-                onClick={() => onAssetClick(c.assetId)}
-              >
+              <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
                 {c.asset}
               </span>
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -242,7 +265,7 @@ function InvestigationsCard({ onAssetClick }) {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom via margin-top: auto */}
+      {/* Footer -- pinned to bottom */}
       <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
         <span className="type-link">Go to Investigations &rarr;</span>
       </div>
@@ -250,13 +273,13 @@ function InvestigationsCard({ onAssetClick }) {
   )
 }
 
-// ── TodaysActivity ────────────────────────────────────────────────────────────
+// ── TodaysActivity ──────────────────────────────────────────────────────────
 
-export default function TodaysActivity({ onAssetClick }) {
+export default function TodaysActivity() {
   return (
     <div className="grid-12">
-      <WorkOrdersCard onAssetClick={onAssetClick} />
-      <InvestigationsCard onAssetClick={onAssetClick} />
+      <WorkOrdersCard />
+      <InvestigationsCard />
     </div>
   )
 }

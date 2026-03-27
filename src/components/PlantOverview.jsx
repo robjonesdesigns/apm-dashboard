@@ -32,7 +32,7 @@ export default function PlantOverview({ onNavigate }) {
       {/* Step 2: Plan — "What's on my plate today?" */}
       <section>
         <p className="section-header">Today's Activity</p>
-        <TodaysActivity onAssetClick={handleAssetClick} />
+        <TodaysActivity />
       </section>
 
       {/* Step 3: Detect — "What changed overnight?" */}
