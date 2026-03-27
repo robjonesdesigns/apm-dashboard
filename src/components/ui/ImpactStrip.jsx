@@ -40,7 +40,7 @@ function MinorDot({ event, style }) {
 
   return (
     <div
-      style={{ position: 'absolute', ...style, zIndex: 2 }}
+      style={{ position: 'absolute', ...style, zIndex: 2, width: '6px', height: '6px' }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       onFocus={() => setShow(true)}
@@ -52,6 +52,7 @@ function MinorDot({ event, style }) {
         style={{
           width: '6px',
           height: '6px',
+          display: 'block',
           borderRadius: 'var(--radius-full)',
           background: show ? 'var(--color-text-secondary)' : 'var(--color-border-strong)',
           border: 'none',
