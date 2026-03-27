@@ -127,6 +127,29 @@ H2 Recycle Gas service, API 617 class).
 | 008 | Portfolio-friendly screen names |
 | 009 | Sidebar/notifications mutual exclusion |
 | 010 | Status labels (Monitor/Action Required), icons (triangle/diamond), colors (coral/amber) |
+| 011 | Priority badge color hierarchy (red→amber→blue→gray), single click target per WO row |
+| 012 | Impact Strip between KPIs and Activity, revised section order |
+| 013 | Three-layer event context: strip (glance) → KPI modal with event dots (investigate) → Event Log page (deep dive) |
+
+---
+
+## Plant Overview Sections (revised per ADR-012/013)
+
+1. **Plant Health** -- KPI bar (6 cards)
+2. **Impact Strip** -- "K-101 tripped at 2:03 AM · Availability -12.1%" (not a card, a banner)
+3. **Today's Activity** -- Work Orders (5 visible of 25) + Investigations (5 visible of 8)
+4. **Assets Requiring Attention** -- Risk Matrix + Event Summary + Bad Actors
+5. **All Assets** -- data table with drill-down
+
+"What Changed" full timeline is NOT on Plant Overview. It's a separate Event Log page accessed via "See full timeline →" on the Impact Strip.
+
+## Three-Layer Event Context (ADR-013)
+
+| Layer | Location | Depth | Time |
+|-------|----------|-------|------|
+| Impact Strip | Plant Overview, below KPIs | Glanceable, 2-3 key events | <1 second |
+| KPI Trend Modal | Click any KPI card | Trend line with event dots overlaid | 10-30 seconds |
+| Event Log Page | Separate page via "See full timeline →" | Full chronological log, filterable | 1-5 minutes |
 
 ---
 
