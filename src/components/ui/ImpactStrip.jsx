@@ -257,8 +257,8 @@ export default function ImpactStrip() {
       <div className="card" style={{ overflow: 'visible' }}>
         {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
 
-        {/* Link at bottom of card */}
-        <div style={{ marginTop: 'var(--spacing-16)' }}>
+        {/* Link at bottom of card, right-aligned */}
+        <div style={{ marginTop: 'var(--spacing-16)', textAlign: 'right' }}>
           <span className="type-link">See full timeline &rarr;</span>
         </div>
       </div>

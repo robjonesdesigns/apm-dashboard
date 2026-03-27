@@ -191,8 +191,8 @@ function WorkOrdersCard() {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom */}
-      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+      {/* Footer -- pinned to bottom, right-aligned */}
+      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)', textAlign: 'right' }}>
         <span className="type-link">Go to Work Orders &rarr;</span>
       </div>
     </div>
@@ -266,8 +266,8 @@ function InvestigationsCard() {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom */}
-      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+      {/* Footer -- pinned to bottom, right-aligned */}
+      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)', textAlign: 'right' }}>
         <span className="type-link">Go to Investigations &rarr;</span>
       </div>
     </div>
