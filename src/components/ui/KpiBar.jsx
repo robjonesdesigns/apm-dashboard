@@ -82,6 +82,7 @@ function Tooltip({ show, pos, children }) {
         pointerEvents: 'none',
       }}
     >
+      {/* Caret stays anchored under the icon, independent of bubble position */}
       <div
         style={{
           width: '8px',
@@ -90,8 +91,8 @@ function Tooltip({ show, pos, children }) {
           transform: 'rotate(45deg)',
           position: 'absolute',
           top: '-4px',
-          left: '50%',
-          marginLeft: '-4px',
+          left: pos.caretLeft != null ? `${pos.caretLeft}px` : '50%',
+          marginLeft: pos.caretLeft != null ? '-4px' : '-4px',
           zIndex: 10002,
         }}
       />
@@ -122,9 +123,13 @@ function InfoButton({ description }) {
     if (!ref.current) return
     const r = ref.current.getBoundingClientRect()
     const tooltipWidth = 220
-    const centered = r.left + r.width / 2 - tooltipWidth / 2
+    const iconCenter = r.left + r.width / 2
+    const centered = iconCenter - tooltipWidth / 2
     const rightEdge = window.innerWidth - tooltipWidth - 8
-    setPos({ top: r.bottom + 8, left: Math.max(8, Math.min(centered, rightEdge)) })
+    const bubbleLeft = Math.max(8, Math.min(centered, rightEdge))
+    // Caret offset: how far the icon center is from the bubble's left edge
+    const caretLeft = iconCenter - bubbleLeft
+    setPos({ top: r.bottom + 8, left: bubbleLeft, caretLeft })
   }
 
   return (
