@@ -155,7 +155,7 @@ function HealthIndicator({ state, thresholdLabel }) {
   const isWarning = state === 'warning'
   const color = isWarning ? 'var(--color-warning)' : 'var(--color-error)'
   const Icon = isWarning ? WarningIcon : CriticalIcon
-  const label = isWarning ? 'Below target' : 'Critical'
+  const label = isWarning ? 'Monitor' : 'Action Required'
 
   return (
     <div
