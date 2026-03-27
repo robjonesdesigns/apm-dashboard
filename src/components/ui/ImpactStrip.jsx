@@ -252,7 +252,7 @@ export default function ImpactStrip() {
 
   return (
     <section>
-      <p className="section-header">Key Events</p>
+      <p className="section-header" style={{ marginBottom: 'var(--spacing-24)' }}>Key Events</p>
 
       {/* No card wrapper. Sits on page background. */}
       {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
