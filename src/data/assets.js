@@ -389,6 +389,28 @@ export const WORK_ORDERS = [
     status: 'in-progress',
     created: '6:00 AM',
   },
+  // Additional work orders (low priority, showing scalability)
+  { id: 'WO-4485', assetId: 'P-102', asset: 'Pump P-102', task: 'Quarterly vibration baseline measurement', priority: 'low', assignee: 'James Park', status: 'in-progress', created: 'Yesterday' },
+  { id: 'WO-4486', assetId: 'V-501', asset: 'Vessel V-501', task: 'Pressure relief valve test and recertification', priority: 'low', assignee: 'Sarah Chen', status: 'open', created: 'Yesterday' },
+  { id: 'WO-4487', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Tube bundle fouling assessment', priority: 'low', assignee: null, status: 'open', created: '2 days ago' },
+  { id: 'WO-4488', assetId: 'T-102', asset: 'Turbine T-102', task: 'Borescope inspection preparation', priority: 'low', assignee: 'Mike Torres', status: 'open', created: '2 days ago' },
+  { id: 'WO-4489', assetId: 'R-301', asset: 'Reactor R-301', task: 'Catalyst bed thermocouple calibration', priority: 'low', assignee: null, status: 'open', created: '3 days ago' },
+  { id: 'WO-4490', assetId: 'K-302', asset: 'Compressor K-302', task: 'Discharge temperature sensor replacement', priority: 'low', assignee: 'Fred Martinez', status: 'open', created: '3 days ago' },
+  { id: 'WO-4491', assetId: 'P-102', asset: 'Pump P-102', task: 'Coupling alignment check', priority: 'low', assignee: null, status: 'open', created: '4 days ago' },
+  { id: 'WO-4492', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Shell-side UT thickness survey', priority: 'low', assignee: null, status: 'open', created: '4 days ago' },
+  { id: 'WO-4493', assetId: 'V-501', asset: 'Vessel V-501', task: 'Level transmitter recalibration', priority: 'low', assignee: 'James Park', status: 'open', created: '5 days ago' },
+  { id: 'WO-4494', assetId: 'K-302', asset: 'Compressor K-302', task: 'Anti-surge valve stroke test', priority: 'low', assignee: null, status: 'open', created: '5 days ago' },
+  { id: 'WO-4495', assetId: 'T-102', asset: 'Turbine T-102', task: 'Exhaust temperature profile review', priority: 'low', assignee: null, status: 'open', created: '6 days ago' },
+  { id: 'WO-4496', assetId: 'P-203', asset: 'Pump P-203', task: 'Suction strainer cleaning', priority: 'low', assignee: null, status: 'open', created: '1 week ago' },
+  { id: 'WO-4497', assetId: 'R-301', asset: 'Reactor R-301', task: 'Hydrogen analyzer calibration', priority: 'low', assignee: 'Sarah Chen', status: 'open', created: '1 week ago' },
+  { id: 'WO-4498', assetId: 'C-201', asset: 'Cooler C-201', task: 'Fan belt tension check', priority: 'low', assignee: null, status: 'open', created: '1 week ago' },
+  { id: 'WO-4499', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Gasket inventory verification', priority: 'low', assignee: null, status: 'open', created: '1 week ago' },
+  { id: 'WO-4500', assetId: 'K-302', asset: 'Compressor K-302', task: 'Lube oil sample and analysis', priority: 'low', assignee: 'Fred Martinez', status: 'open', created: '1 week ago' },
+  { id: 'WO-4501', assetId: 'T-401', asset: 'Turbine T-401', task: 'Inlet air filter differential pressure check', priority: 'low', assignee: null, status: 'open', created: '2 weeks ago' },
+  { id: 'WO-4502', assetId: 'V-501', asset: 'Vessel V-501', task: 'Corrosion coupon retrieval and analysis', priority: 'low', assignee: null, status: 'open', created: '2 weeks ago' },
+  { id: 'WO-4503', assetId: 'P-102', asset: 'Pump P-102', task: 'Motor insulation resistance test', priority: 'low', assignee: null, status: 'open', created: '2 weeks ago' },
+  { id: 'WO-4504', assetId: 'R-301', asset: 'Reactor R-301', task: 'Safety valve inspection scheduling', priority: 'low', assignee: null, status: 'open', created: '2 weeks ago' },
+  { id: 'WO-4505', assetId: 'K-101', asset: 'Compressor K-101', task: 'Vibration probe gap voltage verification', priority: 'low', assignee: null, status: 'open', created: '3 weeks ago' },
 ]
 
 // ── Cases (active at 7:00 AM) ─────────────────────────────────────────────────
@@ -412,6 +434,13 @@ export const CASES = [
     linkedWorkOrders: [],
     opened: '11:00 PM',
   },
+  // Additional cases (showing scalability)
+  { id: 'CS-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', linkedWorkOrders: [], opened: '2 days ago' },
+  { id: 'CS-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', linkedWorkOrders: ['WO-4483'], opened: '4 days ago' },
+  { id: 'CS-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', linkedWorkOrders: [], opened: '1 week ago' },
+  { id: 'CS-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', linkedWorkOrders: [], opened: '1 week ago' },
+  { id: 'CS-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', linkedWorkOrders: [], opened: '3:30 AM' },
+  { id: 'CS-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', linkedWorkOrders: [], opened: '2 days ago' },
 ]
 
 // ── Notifications (most recent first) ────────────────────────────────────────
