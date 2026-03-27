@@ -56,7 +56,7 @@ function KpiCard({ config, onClick }) {
           marginBottom: 'var(--spacing-8)',
         }}
       >
-        <span className="type-label">{config.label}</span>
+        <span className="type-heading-02">{config.label}</span>
         <span
           style={{
             color: 'var(--color-text-helper)',
@@ -128,7 +128,7 @@ export default function KpiBar({ onKpiClick }) {
 
       {/* Trains */}
       <div className="card" style={{ textAlign: 'left' }}>
-        <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
           Trains
         </span>
         <span className="type-kpi" style={{ display: 'block' }}>
@@ -138,7 +138,7 @@ export default function KpiBar({ onKpiClick }) {
 
       {/* Active Assets */}
       <div className="card" style={{ textAlign: 'left' }}>
-        <span className="type-label" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
+        <span className="type-heading-02" style={{ display: 'block', marginBottom: 'var(--spacing-8)' }}>
           Active Assets
         </span>
         <span style={{ display: 'block' }}>
