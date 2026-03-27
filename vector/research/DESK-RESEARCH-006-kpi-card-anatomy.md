@@ -53,18 +53,24 @@ Color must NOT be the sole means of conveying status. Need at least one addition
 ### ISA-101 "Dark and Quiet" Principle
 Normal operation = subdued display. Color and indicators appear ONLY when something needs attention. A healthy KPI should be visually quiet, not screaming green.
 
-### Recommended Pattern (from Carbon, Grafana, Datadog convergence)
+### Recommended Pattern (ISA-101 + Carbon + cognitive distinction)
 
 **Normal/Healthy:** No indicator shown. The absence of an alarm IS the signal. White value, no icon. This follows ISA-101 "dark and quiet."
 
-**Warning:** Amber triangle icon (filled) + "Warning" or "Below target" text. Placed inline-right of the value or on a secondary line below.
+**Warning:** Amber trending-down arrow icon + "Below target" text. The arrow says "this is moving in the wrong direction" which creates a monitoring response ("I should watch this"). Different cognitive response than an exclamation.
 
-**Critical:** Red circle-X icon (filled) + "Critical" text. Same placement.
+**Critical:** Red exclamation triangle icon + "Critical" text. The exclamation says "act now, this is urgent." Universally understood urgency symbol.
+
+The two icons must trigger DIFFERENT cognitive responses:
+- Arrow (warning) = "this is trending, monitor it" -- PER-001's "catch it before it trips"
+- Exclamation (critical) = "this has crossed a threshold, act now"
+
+If both were exclamation marks in different colors, the engineer normalizes both (PER-001: "alerts fire but nobody acts"). Different shapes create different responses.
 
 ### Icon Shapes (must be distinct at 16px)
 - Healthy: no icon (dark and quiet)
-- Warning: filled triangle with exclamation
-- Critical: filled circle with X
+- Warning: down-trending arrow (amber)
+- Critical: filled triangle with exclamation (red)
 
 ### Value Coloring
 - Normal: white (text-primary)
@@ -84,8 +90,16 @@ OEE
 Or inline when space is tight:
 ```
 OEE
-81.5% ⚠ Warning
+81.5% ↘ Below target
 ▼ -5.9% vs yesterday
+```
+
+Critical example:
+```
+OEE
+64.2%
+▼ 23.2% vs yesterday
+⚠ Critical · Below 75%
 ```
 
 ### aria-label
