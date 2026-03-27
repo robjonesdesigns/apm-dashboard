@@ -10,10 +10,11 @@ const PRIORITY_BADGE = {
   low:      'badge badge-info',
 }
 
-const CASE_STATUS_BADGE = {
-  investigating: 'badge badge-error',
-  open:          'badge badge-warning',
-  closed:        'badge badge-success',
+// Case status is workflow state, not severity. Neutral styling.
+// The ASSET criticality provides semantic context, not the case status.
+const CASE_STATUS_STYLE = {
+  background: 'var(--color-border-subtle)',
+  color: 'var(--color-text-secondary)',
 }
 
 // ── Summary builders ──────────────────────────────────────────────────────────
@@ -56,12 +57,13 @@ function WoSummaryLine({ summary }) {
   if (summary.critical > 0) parts.push({ label: `${summary.critical} Critical`, cls: 'badge badge-error' })
   if (summary.high > 0)     parts.push({ label: `${summary.high} High`,     cls: 'badge badge-warning' })
   if (summary.medium > 0)   parts.push({ label: `${summary.medium} Medium`, cls: 'badge badge-info' })
+  if (summary.low > 0)      parts.push({ label: `${summary.low} Low`,      neutral: true })
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
       {parts.map((p, i) => (
         <span key={p.label}>
-          <span className={p.cls}>{p.label}</span>
+          <span className={p.neutral ? 'badge' : p.cls} style={p.neutral ? CASE_STATUS_STYLE : undefined}>{p.label}</span>
           {i < parts.length - 1 && (
             <span className="type-label" style={{ marginLeft: 'var(--spacing-8)' }}>·</span>
           )}
@@ -75,14 +77,14 @@ function WoSummaryLine({ summary }) {
 
 function CaseSummaryLine({ summary }) {
   const parts = []
-  if (summary.investigating > 0) parts.push({ label: `${summary.investigating} Investigating`, cls: 'badge badge-error' })
-  if (summary.open > 0)          parts.push({ label: `${summary.open} Open`,          cls: 'badge badge-warning' })
+  if (summary.investigating > 0) parts.push(`${summary.investigating} Investigating`)
+  if (summary.open > 0)          parts.push(`${summary.open} Open`)
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
-      {parts.map((p, i) => (
-        <span key={p.label}>
-          <span className={p.cls}>{p.label}</span>
+      {parts.map((label, i) => (
+        <span key={label}>
+          <span className="badge" style={CASE_STATUS_STYLE}>{label}</span>
           {i < parts.length - 1 && (
             <span className="type-label" style={{ marginLeft: 'var(--spacing-8)' }}>·</span>
           )}
@@ -98,11 +100,11 @@ function WorkOrdersCard({ onAssetClick }) {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildWoSummary(WORK_ORDERS)
 
-  // Show top 6 max, sorted by priority (critical first)
+  // Show top 5, sorted by priority (critical first)
   const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
   const visible = [...WORK_ORDERS]
     .sort((a, b) => (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9))
-    .slice(0, 6)
+    .slice(0, 5)
 
   return (
     <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -110,7 +112,7 @@ function WorkOrdersCard({ onAssetClick }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
         <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Work Orders</span>
-        <span className="type-label">{WORK_ORDERS.length}</span>
+        <span className="type-label">{WORK_ORDERS.length} Total</span>
       </div>
 
       {/* Summary */}
@@ -177,7 +179,7 @@ function InvestigationsCard({ onAssetClick }) {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildCaseSummary(CASES)
 
-  const visible = CASES.slice(0, 6)
+  const visible = CASES.slice(0, 5)
 
   return (
     <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -185,7 +187,7 @@ function InvestigationsCard({ onAssetClick }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
         <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Investigations</span>
-        <span className="type-label">{CASES.length}</span>
+        <span className="type-label">{CASES.length} Total</span>
       </div>
 
       {/* Summary */}
@@ -208,7 +210,7 @@ function InvestigationsCard({ onAssetClick }) {
                 <span className="type-body-01">{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <span className={CASE_STATUS_BADGE[c.status] || 'badge badge-info'} style={{ textTransform: 'capitalize' }}>
+                <span className="badge" style={{ ...CASE_STATUS_STYLE, textTransform: 'capitalize' }}>
                   {c.status}
                 </span>
               </div>
