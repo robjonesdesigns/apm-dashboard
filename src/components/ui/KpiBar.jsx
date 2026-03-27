@@ -162,7 +162,6 @@ function HealthIndicator({ state, thresholdLabel }) {
         alignItems: 'center',
         gap: 'var(--spacing-4)',
         color,
-        marginTop: 'var(--spacing-4)',
       }}
       aria-label={`${label}: ${thresholdLabel}`}
     >
@@ -212,10 +211,13 @@ function KpiCard({ config, onClick }) {
         <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
       </div>
 
-      {/* Value */}
-      <span className="type-kpi" style={{ display: 'block', color: valueColor }}>
-        {config.value}%
-      </span>
+      {/* Value + health indicator inline */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
+        <span className="type-kpi" style={{ color: valueColor }}>
+          {config.value}%
+        </span>
+        <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
+      </div>
 
       {/* Delta */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
@@ -229,9 +231,6 @@ function KpiCard({ config, onClick }) {
           }
         </svg>
       </div>
-
-      {/* Health indicator (only shows for warning/critical) */}
-      <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
     </button>
   )
 }
