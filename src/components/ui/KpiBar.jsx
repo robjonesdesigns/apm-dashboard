@@ -180,7 +180,9 @@ function KpiCard({ config, onClick }) {
   const health = getHealthState(config.key, config.value)
   const delta = config.value - config.previous
   const deltaSign = delta >= 0 ? '+' : ''
-  const deltaColor = delta >= 0 ? 'var(--color-success)' : 'var(--color-error)'
+  // Delta is always neutral -- its job is "what changed," not "is this good or bad."
+  // The health indicator handles the judgment. Avoids doubling alarm colors.
+  const deltaColor = 'var(--color-text-secondary)'
 
   const valueColor =
     health === 'critical' ? 'var(--color-error)' :
