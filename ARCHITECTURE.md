@@ -33,29 +33,29 @@
 
 ## Layout System
 
-### 16-Column Grid (Carbon standard)
+### 12-Column Grid
 
-Based on IBM Carbon 2x Grid. All layouts use a 16-column grid at desktop.
+All layouts use a 12-column grid. Clean math: 6x2=12 (KPIs), 3x4=12 (thirds), 2x6=12 (halves).
 
 | Viewport | Min Width | Columns | Gutters | Margins |
 |----------|-----------|---------|---------|---------|
 | sm | 320px | 4 | 24px | 16px |
-| md | 672px | 8 | 24px | 16px |
-| lg | 1056px | 16 | 24px | 16px |
+| md | 672px | 8 | 24px | 32px |
+| lg | 1056px | 12 | 24px | 32px |
 
 Gutters are 24px both horizontally and vertically at all breakpoints.
 
-**Implementation:** CSS class `grid-16` in global.css. Cards use `col-*` span classes.
+**Implementation:** CSS class `grid-12` in global.css. Cards use `col-*` span classes.
 
-**Column spans (desktop, 16 columns):**
-- KPI cards: span 3 (4 KPI cards + 1 trains card = ~16 columns)
-- Analysis cards (Risk Matrix, Event Summary, Bad Actors): span 5 (three cards + gutter)
-- Half-width cards (Work Orders, Cases): span 8
-- Full width (Asset Summary table, Timeline): span 16
-- On tablet (8 columns): KPI span 2, analysis span 4, half span 4
-- On mobile (4 columns): all cards span 4 (full width)
+**Column spans (desktop, 12 columns):**
+- KPI cards: 6 cards in `kpi-grid` (dedicated responsive grid, not col spans)
+- Analysis cards (Risk Matrix, Event Summary, Bad Actors): `grid-thirds` (equal 1fr)
+- Half-width cards (Work Orders, Cases): span 6
+- Full width (Asset Summary table, Timeline): span 12
+- On tablet (8 columns): half span 4, third span 4
+- On mobile (4 columns): all cards full width
 
-**Notifications panel behavior:** Push, not overlay. 320px wide. 16-column grid recalculates within the narrower viewport. Mutually exclusive with expanded sidebar (ADR-009).
+**Notifications panel behavior:** Push, not overlay. 320px wide. 12-column grid recalculates within the narrower viewport. Mutually exclusive with expanded sidebar (ADR-009).
 
 ### Navigation
 
@@ -102,19 +102,21 @@ All typography uses composition classes from global.css. No inline font styles.
 
 | Class | Size | Weight | Color | Use |
 |-------|------|--------|-------|-----|
-| `type-h1` | 22-28px (fluid) | 700 | primary | Page titles |
-| `type-h2` | 18-22px (fluid) | 600 | primary | Section headings |
-| `type-h3` | 16-18px (fluid) | 600 | primary | Card group titles |
-| `type-h4` | 14px | 600 | primary | Card titles |
-| `type-body` | 13-14px (fluid) | 400 | primary | Body text |
-| `type-body-secondary` | 13-14px (fluid) | 400 | secondary | Supporting text |
-| `type-body-sm` | 12px | 400 | secondary | Small body, timestamps |
-| `type-label` | 10-12px (fluid) | 600 | muted | Uppercase section labels |
-| `type-meta` | 10px | 400 | muted | Tiny metadata |
-| `type-kpi` | 24-28px (fluid) | 700 | primary | KPI values |
-| `type-kpi-lg` | 30-36px (fluid) | 700 | primary | Hero KPI |
-| `type-callout` | 26-32px (fluid) | 700 | primary | Large callout numbers |
-| `type-link` | 12px | 500 | accent | Contextual links |
+| `type-heading-01` | 14px | 600 | primary | Inline headings, notification asset names |
+| `type-heading-02` | 16px | 600 | card-title (#c6c6c6) | Card titles (dimmed, not competing with data) |
+| `type-heading-03` | 20px | 400 | primary | Page section titles |
+| `type-heading-04` | 28px | 400 | primary | Large headings |
+| `type-body-01` | 14px | 400 | primary | Body text |
+| `type-body-compact` | 14px | 400 | primary | Table/data text (tighter line height) |
+| `type-body-02` | 16px | 400 | primary | Larger body text |
+| `type-label` | 12px | 400 | helper (#a8a8a8) | Labels, axis text, delta text |
+| `type-label-semibold` | 12px | 600 | helper | Bold labels |
+| `type-helper` | 12px | 400 | helper | Timestamps, metadata |
+| `type-kpi` | 28px | 400 | primary (or health color) | KPI values |
+| `type-kpi-lg` | 32px | 400 | primary | Hero KPI |
+| `type-callout` | 48px | 300 | primary | Large callout numbers |
+| `type-link` | 14px | 400 | link (#78a9ff) | Contextual links |
+| `section-header` | 12px | 600 | helper, uppercase | Section labels above card groups |
 
 **Rules:**
 - All numeric displays use `font-variant-numeric: tabular-nums`
@@ -135,27 +137,58 @@ All visual values come from CSS custom properties defined in `src/styles/global.
 - No hardcoded border-radius. Use `var(--radius-*)`.
 - No inline `fontFamily`. The base is set in `html` and inherited.
 
-### Utility Classes (global.css @layer components)
+### Cards
+
+- Background: `--color-layer-01` (#262626) on `--color-bg` (#161616)
+- Border: 1px solid `--color-border-subtle` (#393939)
+- Border radius: 10px
+- Padding: 24px (`--spacing-24`)
+- Card titles: `type-heading-02` in `--color-card-title` (#c6c6c6)
+- Hover (interactive): all borders transition to `--color-accent`, bg to `--color-hover-01`
+
+### Utility Classes (global.css)
 
 | Class | Purpose |
 |-------|---------|
-| `card` | Card surface: bg, border, radius, padding, hover border |
-| `card-interactive` | Adds cursor pointer, accent border on hover, bg shift |
-| `section-header` | Uppercase label above a section |
-| `status-dot` + variant | 8px colored dot with glow shadow |
-| `badge` + variant | Small status badge with bg tint |
+| `card` | Card surface: bg (#262626), border, 10px radius, 24px padding |
+| `card-accent-top` | 3px teal top border (KPI cards, interactive affordance) |
+| `card-interactive` | Cursor pointer, accent border + bg shift on hover |
+| `section-header` | 12px uppercase label above a section (helper color) |
+| `status-dot` + `dot-*` | 8px colored dot (dot-error, dot-warning, dot-success, dot-info) |
+| `badge` + `badge-*` | Small status badge with bg tint |
 | `chip` / `chip-active` | Interactive filter pill |
-| `badge-group` | Flex wrap with 6px gap for badge rows |
-| `page-padding` | Responsive page gutters |
-| `section-gap` | 24px flex column gap between sections |
-| `grid-kpi` / `grid-2col` / `grid-3col` | Responsive grid patterns |
+| `page-padding` | Responsive page gutters (16px mobile, 32px tablet+) |
+| `section-gap` | 48px flex column gap between sections |
+| `kpi-grid` | 6-column KPI card layout (responsive: 2/3/6 columns) |
+| `grid-12` | 12-column responsive grid |
+| `grid-thirds` | Equal 3-column grid for analysis cards |
+
+### Tooltips
+
+**Inverted (light on dark)** for visibility against the dark dashboard:
+- Background: `--color-tooltip-bg` (#f4f4f4)
+- Text: `--color-tooltip-text` (#161616)
+- Border radius: 4px
+- Padding: 12px 16px
+- Shadow: `0 4px 12px rgba(0,0,0,0.4)`
+- Caret: 8px rotated square, tracks icon position independently of bubble
+- Bubble clamps to viewport edges, caret stays anchored to trigger
+- Animation: fadeIn with `--motion-fast` `--ease-productive`
+
+### Status Colors (ADR-010)
+
+| State | Color | Icon | Label |
+|-------|-------|------|-------|
+| Normal | white (text-primary) | None (dark and quiet) | None |
+| Warning | `--color-warning` (#e8914f amber) | ▼ inverted triangle | "Monitor" |
+| Critical | `--color-error` (#f47174 coral-red) | ◆ diamond | "Action Required" |
 
 ### Recharts Styling
 
 All Recharts components use tokens from `src/styles/tokens.js`:
-- Grid lines: `chartStyle.grid` (very subtle, rgba white at 0.04)
-- Axis text: `chartStyle.axisText` (muted color, 12px)
-- Tooltips: dark surface-raised bg, border-strong, 8px radius, 8px 12px padding
+- Grid lines: `chartStyle.grid` (#393939)
+- Axis text: `chartStyle.axisText` (#c6c6c6, 12px)
+- Tooltips: inverted white bg (#f4f4f4), dark text (#161616)
 - Animation: `isAnimationActive={true}`, `animationDuration={300}`
 - Bar radius: `[4, 4, 0, 0]` (rounded top only)
 - Line width: 2px

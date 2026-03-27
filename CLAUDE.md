@@ -85,11 +85,48 @@ H2 Recycle Gas service, API 617 class).
 ## Key Rules
 
 - No Honeywell branding or Forge design system references
-- All chart colors desaturated for dark mode
-- Status indicators use color + shape + position (never color alone)
-- KPI cards must show: value, label, sparkline, period-over-period context
-- Every interactive element needs hover + focus states with transitions
-- 4px grid spacing, no arbitrary pixel values outside the grid
+- 12-column grid layout (grid-12 class)
+- Status colors: coral-red #f47174 (error) + amber #e8914f (warning) (ADR-010)
+- Status indicators use icon shape + color + text (never color alone, WCAG SC 1.4.1)
+- ISA-101 "dark and quiet": normal state = no indicator, no green everywhere
+- KPI cards: value + delta (vs yesterday) + health indicator (Monitor/Action Required)
+- Card titles: type-heading-02 in --color-card-title (dimmed, data is the hero)
+- Card radius: 10px
+- Card padding: 24px (--spacing-24)
+- Tooltips: inverted (white bg, dark text), caret tracks icon position
+- All transitions: var(--motion-fast) var(--ease-productive) (110ms Carbon productive)
+- No inline border/color styles -- use CSS classes (card, card-accent-top, card-interactive)
+
+---
+
+## KPI Bar Spec (completed)
+
+6 cards in kpi-grid (responsive 2/3/6 columns):
+- 4 KPI cards (OEE, Availability, Performance, Quality) + Trains + Active Assets
+- Teal accent top stripe on KPI cards (card-accent-top class)
+- Info icon on all 6 cards with inverted tooltip explaining the metric
+- Delta: "+/-X.X% vs yesterday" with directional arrow (↗/↘), always neutral color
+- Health: warning = amber ▼ "Monitor", critical = red ◆ "Action Required", normal = no indicator
+- Value color: white (normal), amber (warning), red (critical)
+- Thresholds: OEE warn <85% crit <75%, Availability warn <90% crit <80%
+- Current story: OEE 76.3% (warning), Availability 78.4% (critical)
+
+---
+
+## ADR Index
+
+| ADR | Decision |
+|-----|----------|
+| 001 | Dark theme with teal accent |
+| 002 | Desaturated chart colors for dark mode |
+| 003 | Superseded: uniform teal top stripe, no per-metric identity colors |
+| 004 | Storytelling over raw data density |
+| 005 | Collapsible sidebar (48px rail / 256px expanded) |
+| 006 | Fluid typography with clamp() |
+| 007 | Interactive fault tree in investigation flow |
+| 008 | Portfolio-friendly screen names |
+| 009 | Sidebar/notifications mutual exclusion |
+| 010 | Status labels (Monitor/Action Required), icons (triangle/diamond), colors (coral/amber) |
 
 ---
 
@@ -100,14 +137,7 @@ Three original Figma frames are on Rob's desktop:
 - `Asset-Health-Dark-Theme.svg` (dark theme)
 - `Asset-Details.svg` (light theme)
 
-The recreation should match the layout and interactions from these frames
-while using the dark theme tokens and unbranded styling. See
-`vector/research/FIGMA-REVIEW-001-gap-analysis.md` for the full gap analysis.
+Figma URL: https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
-### Key patterns from Figma to match:
-- KPI cards: colored left borders per metric
-- Risk Matrix: interactive grid cells, priority gradient bar below
-- Event Summary: large callout count + Event/Case toggle
-- Asset Summary table: asset type subtitle, event timestamps, link-styled names
-- Notifications: time range filters, severity badges, structured cards
-- Asset Details header: running status, duration, last shutdown, tab bar
+The recreation adapts the layout and interactions from these frames
+using the dark Carbon theme tokens. See FIGMA-REVIEW-001 for gap analysis.
