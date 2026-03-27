@@ -342,7 +342,7 @@ export const TIMELINE = [
     asset: 'Heat Exchanger E-105',
     assetId: 'E-105',
     event: 'Performance restored after recalibration',
-    kpiImpact: 'OEE +0.8%',
+    kpiImpact: null,
   },
 ]
 
