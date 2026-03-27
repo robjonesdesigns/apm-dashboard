@@ -246,18 +246,21 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 2: asset name | linked WOs · timestamp (single line right side) */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+            {/* Line 2: asset name | assignee + timestamp (matches WO row layout) */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
               <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
                 {c.asset}
               </span>
-              <span className="type-helper" style={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                {c.linkedWorkOrders.length > 0
-                  ? `${c.linkedWorkOrders.length} linked WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`
-                  : 'No linked WOs'}
-                {' · '}
-                {c.opened}
-              </span>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                {c.assignee ? (
+                  <span className="type-label">{c.assignee}</span>
+                ) : (
+                  <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>Unassigned</span>
+                )}
+                <div>
+                  <span className="type-helper">{c.opened}</span>
+                </div>
+              </div>
             </div>
           </div>
         ))}

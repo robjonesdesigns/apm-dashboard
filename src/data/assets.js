@@ -422,6 +422,7 @@ export const CASES = [
     asset: 'Compressor K-101',
     description: 'Root cause analysis: recurring bearing degradation. Vibration alerts ignored for 3 days. Oil filter bypass suspected. Threshold review needed.',
     status: 'investigating',
+    assignee: 'Carlos Mendez',
     linkedWorkOrders: ['WO-4481', 'WO-4482'],
     opened: '3:00 AM',
   },
@@ -431,16 +432,17 @@ export const CASES = [
     asset: 'Cooler C-201',
     description: 'Vibration anomaly on intake valve. Determine if related to K-101 trip transient or independent issue.',
     status: 'open',
+    assignee: null,
     linkedWorkOrders: [],
     opened: '11:00 PM',
   },
   // Additional cases (showing scalability)
-  { id: 'CS-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', linkedWorkOrders: [], opened: '2 days ago' },
-  { id: 'CS-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', linkedWorkOrders: ['WO-4483'], opened: '4 days ago' },
-  { id: 'CS-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', linkedWorkOrders: [], opened: '1 week ago' },
-  { id: 'CS-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', linkedWorkOrders: [], opened: '1 week ago' },
-  { id: 'CS-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', linkedWorkOrders: [], opened: '3:30 AM' },
-  { id: 'CS-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', linkedWorkOrders: [], opened: '2 days ago' },
+  { id: 'CS-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', assignee: null, linkedWorkOrders: [], opened: '2 days ago' },
+  { id: 'CS-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', assignee: 'Sarah Chen', linkedWorkOrders: ['WO-4483'], opened: '4 days ago' },
+  { id: 'CS-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', assignee: null, linkedWorkOrders: [], opened: '1 week ago' },
+  { id: 'CS-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', assignee: null, linkedWorkOrders: [], opened: '1 week ago' },
+  { id: 'CS-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, linkedWorkOrders: [], opened: '3:30 AM' },
+  { id: 'CS-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], opened: '2 days ago' },
 ]
 
 // ── Notifications (most recent first) ────────────────────────────────────────
