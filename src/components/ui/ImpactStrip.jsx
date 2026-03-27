@@ -43,22 +43,30 @@ function MinorDot({ event, style }) {
       style={{ position: 'absolute', ...style, zIndex: 2 }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
+      onFocus={() => setShow(true)}
+      onBlur={() => setShow(false)}
     >
-      <div
+      <button
+        tabIndex={0}
+        aria-label={`${event.time}: ${event.asset} - ${event.event}`}
         style={{
           width: '6px',
           height: '6px',
           borderRadius: 'var(--radius-full)',
           background: show ? 'var(--color-text-secondary)' : 'var(--color-border-strong)',
+          border: 'none',
+          padding: 0,
           cursor: 'pointer',
-          transition: 'background var(--motion-fast) var(--ease-productive)',
+          transition: 'all var(--motion-fast) var(--ease-productive)',
+          outline: 'none',
+          boxShadow: show ? '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' : 'none',
         }}
       />
       {show && (
         <div
           style={{
             position: 'absolute',
-            top: '14px',
+            top: '16px',
             left: '50%',
             transform: 'translateX(-50%)',
             background: 'var(--color-tooltip-bg)',
@@ -67,7 +75,8 @@ function MinorDot({ event, style }) {
             boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
             whiteSpace: 'nowrap',
             zIndex: 100,
-            animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+            pointerEvents: 'none',
+            animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
           }}
         >
           <p style={{ margin: 0, fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', opacity: 0.6 }}>
@@ -124,25 +133,36 @@ function HorizontalTimeline() {
           )
         })}
 
-        {/* Major dots -- centered on the line */}
+        {/* Major dots -- centered on the line, focusable */}
         {majorEvents.map((event, i) => {
           const pct = majorEvents.length === 1 ? 50 : (i / (majorEvents.length - 1)) * 100
           return (
-            <div
+            <button
               key={`dot-${i}`}
+              tabIndex={0}
+              aria-label={`${event.time}: ${event.asset} - ${event.event}. ${event.kpiImpact}`}
               style={{
                 position: 'absolute',
                 left: `${pct}%`,
                 top: '50%',
                 transform: 'translate(-50%, -50%)',
                 zIndex: 3,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                outline: 'none',
               }}
+              onFocus={(e) => { e.currentTarget.firstChild.style.boxShadow = '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' }}
+              onBlur={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
+              onMouseEnter={(e) => { e.currentTarget.firstChild.style.boxShadow = '0 0 0 3px var(--color-accent), 0 0 0 5px var(--color-bg)' }}
+              onMouseLeave={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
             >
               <div
                 className={`status-dot ${dotClass(event.type)}`}
-                style={{ width: '10px', height: '10px' }}
+                style={{ width: '10px', height: '10px', transition: 'box-shadow var(--motion-fast) var(--ease-productive)' }}
               />
-            </div>
+            </button>
           )
         })}
       </div>
