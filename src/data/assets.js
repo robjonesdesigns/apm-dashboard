@@ -12,8 +12,8 @@ export const PLANT = {
   name: 'Baytown Refinery',
   location: 'Baytown, TX',
   // Current KPIs -- post K-101 trip (7:00 AM Tuesday)
-  oee: 81.5,
-  availability: 82.1,
+  oee: 76.3,
+  availability: 78.4,
   performance: 93.8,
   quality: 99.1,
   // KPIs before K-101 tripped at 2:03 AM
@@ -42,8 +42,8 @@ export const OEE_TREND = [
   { month: 'Dec', oee: 85.4, availability: 90.6, performance: 93.8, quality: 99.1 },
   { month: 'Jan', oee: 86.9, availability: 91.5, performance: 94.6, quality: 99.3 },
   { month: 'Feb', oee: 86.2, availability: 91.0, performance: 94.1, quality: 99.1 },
-  // March: K-101 trip at 2:03 AM drops availability from 94.2 to 82.1
-  { month: 'Mar', oee: 81.5, availability: 82.1, performance: 93.8, quality: 99.1 },
+  // March: K-101 trip at 2:03 AM + 5 hours of downtime drops availability to critical
+  { month: 'Mar', oee: 76.3, availability: 78.4, performance: 93.8, quality: 99.1 },
 ]
 
 // ── Assets (all 10) ───────────────────────────────────────────────────────────
