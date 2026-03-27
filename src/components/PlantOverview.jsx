@@ -1,12 +1,18 @@
 // ── PlantOverview ─────────────────────────────────────────────────────────────
 // Plant-wide overview. The engineer's morning dashboard.
-// Follows the 10-step decision chain (INTERVIEW-002):
-//   1. Orient (KPIs) → 2. Plan (Activity) → 3. Detect (What Changed)
-//   → 4-5. Correlate + Identify (Risk, Bad Actors, Asset Table)
+// Section order per ADR-012/013:
+//   1. Plant Health (KPIs) → "something is wrong"
+//   2. Impact Strip → "this is what caused it"
+//   3. Today's Activity → "is anyone handling it?"
+//   4. Assets Requiring Attention → risk, bad actors
+//   5. All Assets → drill-down table
+//
+// "What Changed" full timeline lives on a separate Event Log page
+// accessed via "See full timeline →" on the Impact Strip (ADR-013).
 
 import KpiBar from './ui/KpiBar'
+import ImpactStrip from './ui/ImpactStrip'
 import TodaysActivity from './ui/TodaysActivity'
-import WhatChanged from './ui/WhatChanged'
 import RiskMatrix from './ui/RiskMatrix'
 import EventSummary from './ui/EventSummary'
 import BadActors from './ui/BadActors'
@@ -23,28 +29,22 @@ export default function PlantOverview({ onNavigate }) {
   return (
     <div className="section-gap">
 
-      {/* Step 1: Orient — "How's my plant?" */}
+      {/* 1. Plant Health — "How's my plant?" */}
       <section>
         <p className="section-header">Plant Health</p>
         <KpiBar onKpiClick={(metric) => console.log('KPI clicked:', metric)} />
       </section>
 
-      {/* Step 2: Plan — "What's on my plate today?" */}
+      {/* 2. Impact Strip — "This is what caused it" (ADR-013 Layer 1) */}
+      <ImpactStrip />
+
+      {/* 3. Today's Activity — "Is anyone handling it?" */}
       <section>
         <p className="section-header">Today's Activity</p>
         <TodaysActivity />
       </section>
 
-      {/* Step 3: Detect — "What changed overnight?" */}
-      <section>
-        <p className="section-header">What Changed</p>
-        <WhatChanged
-          onAssetClick={handleAssetClick}
-          onEventClick={(event) => console.log('Event clicked:', event)}
-        />
-      </section>
-
-      {/* Steps 4-5: Correlate + Identify — "Which assets need attention?" */}
+      {/* 4. Assets Requiring Attention — risk, events, bad actors */}
       <section>
         <p className="section-header">Assets Requiring Attention</p>
         <div className="grid-thirds">
@@ -54,7 +54,7 @@ export default function PlantOverview({ onNavigate }) {
         </div>
       </section>
 
-      {/* Step 5 continued: Identify — entry point to Step 6 (Investigate) */}
+      {/* 5. All Assets — drill-down to Asset Inspection */}
       <section>
         <p className="section-header">All Assets</p>
         <AssetTable onAssetClick={(asset) => onNavigate('details', { asset })} />
