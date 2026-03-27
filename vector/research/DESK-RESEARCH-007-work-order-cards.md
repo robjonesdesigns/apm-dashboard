@@ -42,7 +42,7 @@ Dashboard widgets show 4-6 items with "View All" link. Not the full list.
 | Unassigned | Muted gray text, not amber warning | Normal workflow state per research |
 | WO ID | Muted prefix before task description | Secondary info, not the hero |
 | Row hover | Background tint + 2px left accent border | Consistent with Asset Summary table |
-| Row height | ~64-72px, two-line layout | Standard enterprise density |
+| Row height | Fixed, two-line layout | All rows same height. Line 1 truncated with ellipsis if too long. Full context on detail page. |
 | Click | Asset name is clickable (teal), row itself is not | Clear affordance on the link |
 | Header | Card title + count badge + segmented summary | "Work Orders" + (4) badge |
 

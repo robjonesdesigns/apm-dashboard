@@ -154,9 +154,9 @@ function WorkOrdersCard() {
             onMouseEnter={() => setHoveredId(wo.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: WO ID + task (clickable) | priority pill */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0 }}>
+            {/* Line 1: WO ID + task (clickable, truncated) | priority pill */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 <span className="type-helper">{wo.id}</span>
                 <span className="type-helper"> · </span>
                 <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{wo.task}</span>
@@ -228,9 +228,9 @@ function InvestigationsCard() {
             onMouseEnter={() => setHoveredId(c.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: Case ID + description (clickable) | status badge with dot */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0 }}>
+            {/* Line 1: Case ID + description (clickable, truncated) | status badge with dot */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 <span className="type-helper">{c.id}</span>
                 <span className="type-helper"> · </span>
                 <span className="type-body-01" style={{ color: 'var(--color-accent)' }}>{c.description}</span>
