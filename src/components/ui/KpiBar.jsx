@@ -84,8 +84,8 @@ function KpiCard({ config, onClick }) {
         </span>
       </div>
 
-      {/* Value */}
-      <span className="type-kpi" style={{ display: 'block' }}>
+      {/* Value -- colored to match the card's identity border */}
+      <span className="type-kpi" style={{ display: 'block', color: `var(${config.borderVar})` }}>
         {config.value}%
       </span>
 
