@@ -56,14 +56,32 @@ Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPa
 9 columns: Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
 
 - Work Orders and Investigations derived from WORK_ORDERS/CASES data (not hardcoded)
-- Toolbar: filter chips (left) + search + Filter button with dropdown (right)
+- Toolbar: filter chips (left) + smart search with autocomplete + shared FilterButton (right)
 - Sortable column headers with always-visible up/down arrows
 - Event Triage filter: chip in both Event Triage card and table toolbar, smooth scroll on apply
-- Shared FilterChip.jsx component
+- Pagination: 10 rows per page, fixed height (measures actual row height)
+- Shared FilterChip.jsx and FilterButton.jsx components
+
+## WO Urgency (ADR-022)
+
+Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (clock icon)
+- WoPriority.jsx: neutral gray icons + text, no color coding, no pills
+- Data field: `urgency` (not `priority`). Emergency/Urgent/Scheduled.
+- Visually distinct from event Badge (tally bars in colored pills)
+
+## Five Icon Systems (ADR-022)
+
+| System | Shape | Color | Component |
+|--------|-------|-------|-----------|
+| Event severity | Tally bars in pill | Red/amber/blue | Badge.jsx |
+| Investigation status | Right triangles | Neutral gray | TodaysActivity |
+| WO urgency | Circles + clock | Neutral gray | WoPriority.jsx |
+| Asset criticality | Letter grade pill | Status colors | CriticalityIndicator.jsx |
+| Asset status | Small dots + text | Status colors | AssetTable inline |
 
 ## ADR Index
 
-001 Dark theme + teal | 002 Desaturated charts | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation
+001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system
 
 ## Desk Research Index
 
@@ -71,11 +89,13 @@ Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPa
 
 ## Shared Components
 
-- `Badge.jsx` -- event severity (tally + fill hierarchy). Use for all event/work order/notification badges.
-- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). Use for all asset criticality display.
-- `Legend.jsx` -- chart legend (swatch + label + value). Use on all chart cards.
-- `FilterChip.jsx` -- dismissable filter tag. Use in Event Triage and Asset Table.
+- `Badge.jsx` -- event severity (tally + fill hierarchy). Events and notifications only.
+- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade).
+- `Legend.jsx` -- chart legend (swatch + label + value).
+- `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table).
+- `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table + Notifications).
+- `WoPriority.jsx` -- WO urgency indicator (circle icons + text).
 
 ## Handoff
 
-See `HANDOFF.md` for session 13 priorities. 21 ADRs, 14 desk research docs.
+See `HANDOFF.md` for session 13 wrap-up. 22 ADRs, 15 desk research docs.

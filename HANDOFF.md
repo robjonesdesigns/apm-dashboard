@@ -1,7 +1,7 @@
 # APM Dashboard Handoff -- Session 13
 
 ## START HERE
-Color audit next. Then remaining Plant Overview items.
+Plant Overview is nearly complete. Impact Strip layout and mobile gate remain.
 
 ## Completed this session
 
@@ -9,65 +9,86 @@ Color audit next. Then remaining Plant Overview items.
 - "Event Analysis" renamed to "Requires Attention"
 - Risk Matrix card renamed to "Event Triage"
 - Bad Actors renamed to "Watch List"
-- Alarm Quality: removed segmented control + Case Status view (duplicate of Investigations card)
-- Full section order: Plant Health > What Happened > Current Response > Requires Attention > Assets
+- Alarm Quality: removed segmented control + Case Status view
 
 ### Data reconciliation (ADR-021)
 - Added `newEvents` + `inProgressEvents` to every asset (sum = `activeEvents`)
-- RISK_MATRIX scaled to 21 total: A(3/8), B(4/5), C(1/0)
-- EVENT_SUMMARY scaled to 21: 13 confirmed, 3 false positives, 5 new
-- CASE_SUMMARY removed (duplicate of Investigations)
-- Two meanings of "New" documented: unvalidated signal (donut) vs unassigned investigation (matrix)
+- RISK_MATRIX and EVENT_SUMMARY scaled to 21 total
+- CASE_SUMMARY removed
+- Two meanings of "New" documented
 
 ### Asset Table redesign (ADR-019)
 - 9 columns: Status, Asset, Criticality, OEE, Events, Downtime, Work Orders, Investigations, Remaining Life
-- Events collapsed from 3 sub-columns (New/In Progress/Repetitive) to single `activeEvents` count
-- Work Orders + Investigations derived from WORK_ORDERS/CASES data (not hardcoded)
-- Toolbar: filter chips (left) + search field + Filter button with multi-select dropdown (right)
-- Sortable column headers: always-visible stacked arrows, teal highlight on active sort
-- Event Triage integration: filter chip in both Event Triage card and table, smooth scroll, clearable from either location
-- Shared FilterChip.jsx component (used by both RiskMatrix and AssetTable)
-- Column dividers at 50% opacity, 16px cell padding, 12px row padding
-- Asset column flexible (flex: 1), all columns use shared COL_STYLES for header/data alignment
+- Work Orders + Investigations derived from WORK_ORDERS/CASES data
+- Toolbar: filter chips (left) + smart search with autocomplete + shared FilterButton (right)
+- Sortable column headers with always-visible stacked arrows
+- Event Triage integration: filter chip in both locations, smooth scroll
+- Pagination: 10 rows per page, prev/next, page resets on filter/search
+- Fixed table height: measures actual row height, locks minHeight to 10 rows
+- Column dividers at 50% opacity, 16px cell padding
 
 ### Typography system (ADR-018)
-- Consolidated 13 classes to 9: section-header, type-card-title, type-table-header, type-body, type-meta, type-label, type-kpi, type-kpi-hero, type-link
-- Removed 4 unused classes, 3 near-duplicates
+- Consolidated 13 classes to 9
 - Swept ~15 inline fontSize overrides
-- Column headers bold (type-table-header, 14px/600)
-- No inline font-size overrides rule established
+- No inline font-size rule established
+
+### Color audit
+- Tokenized all inline colors: donut palette, column divider, accent bg variants, hover cursor, tooltip shadow
+- Zero hardcoded hex/rgba in components
+- ADR-002 updated to reflect actual Carbon g100 values (was referencing unused Tailwind values)
+- tokens.js synced with global.css (chart5 and kpiAvailability corrected)
+
+### WO urgency system (ADR-022)
+- WO `priority` renamed to `urgency`: Emergency / Urgent / Scheduled
+- Medium + Low collapsed into Scheduled
+- WoPriority.jsx: circle fill hierarchy (filled/hollow/clock) + neutral text
+- No color coding, no pills -- visually distinct from event Badge
+
+### Five-system icon language (ADR-022)
+- Events: tally bars in colored pills (Badge.jsx)
+- Investigations: right-pointing triangles, filled/hollow (TodaysActivity)
+- WO urgency: circles + clock, neutral gray (WoPriority.jsx)
+- Asset criticality: letter grade pills (CriticalityIndicator.jsx)
+- Asset status: colored dots + text label
+- Investigation summary: count outside badge, badge with triangle + label
+
+### Shared components
+- FilterButton.jsx: shared filter button + checkbox dropdown (Asset Table + Notifications)
+- FilterChip.jsx: shared dismissable filter tag (Event Triage + Asset Table)
+- Notification count badge removed (redundant once panel is open)
 
 ## Next session priorities
 
-### 1. Color audit
-- Audit all inline color values across components
-- Propose tokenized color system and sweep inlines
-- Donut palette review (desaturated Carbon colors may need adjustment)
-
-### 2. Work order priority badge design
-- Current: Critical/High/Medium/Low badges on work orders use same Badge.jsx as event severity
-- Problem: visual overlap creates ambiguity ("Critical" badge on a WO -- is that event severity or WO priority?)
-- Decision needed: different visual treatment for WO priority vs event severity
-
-### 3. Impact Strip layout
+### 1. Impact Strip layout
 - Labels use absolute positioning, feels disconnected
 - Decision: CSS grid refactor vs fine-tune current layout
 - Unconfirmed/pending state (hollow dot)
 
-### 4. Notification filter: segmented control
-- Replace chip-styled filters with segmented control
-
-### 5. Mobile gate
+### 2. Mobile gate
 - Message on screens under 1024px before deploying to portfolio
 
-### 6. Recharts tooltip unification
-- Remaining Recharts default tooltips in BadActors (Watch List) chart
+### 3. Recharts tooltip unification
+- Watch List chart still uses Recharts default tooltip
 - Convert to custom tooltip matching dashboard pattern
 
-### 7. ADR-002 color values
-- Update doc to match Carbon palette
+### 4. Donut color review
+- Desaturated Carbon palette may need adjustment
+- Compare against rest of dashboard charts
+
+### 5. Deploy preparation
+- Final visual QA pass
+- Screenshot capture for portfolio
+- GitHub README
 
 ## Doctrine inventory
-- 21 ADRs (001-021)
-- 14 desk research docs
+- 22 ADRs (001-022)
+- 15 desk research docs
 - 2 interviews, 2 personas, 1 story
+
+## Shared components inventory
+- Badge.jsx -- event severity (tally + fill hierarchy)
+- CriticalityIndicator.jsx -- asset criticality (A/B/C/D letter grade)
+- Legend.jsx -- chart legend (swatch + label + value)
+- FilterChip.jsx -- dismissable filter tag
+- FilterButton.jsx -- filter button + checkbox dropdown
+- WoPriority.jsx -- WO urgency (circle icons + text)
