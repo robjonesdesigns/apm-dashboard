@@ -10,20 +10,42 @@
 // "What Changed" full timeline lives on a separate Event Log page
 // accessed via "See full timeline →" on the Impact Strip (ADR-013).
 
+import { useState, useRef, useCallback } from 'react'
 import KpiBar from './ui/KpiBar'
 import ImpactStrip from './ui/ImpactStrip'
 import TodaysActivity from './ui/TodaysActivity'
 import RiskMatrix from './ui/RiskMatrix'
-import EventSummary from './ui/EventSummary'
+import AlarmQuality from './ui/AlarmQuality'
 import BadActors from './ui/BadActors'
 import AssetTable from './ui/AssetTable'
 
 export default function PlantOverview({ onNavigate }) {
+  const [riskFilter, setRiskFilter] = useState(null)
+  const assetTableRef = useRef(null)
+
   const handleAssetClick = (assetIdOrObj) => {
     const asset = typeof assetIdOrObj === 'string'
       ? { id: assetIdOrObj }
       : assetIdOrObj
     onNavigate('details', { asset })
+  }
+
+  const clearFilter = useCallback(() => setRiskFilter(null), [])
+
+  const handleRiskCellClick = (cell) => {
+    if (!cell) {
+      setRiskFilter(null)
+      return
+    }
+    // Toggle: click same cell deselects
+    setRiskFilter(prev => {
+      if (prev?.criticality === cell.criticality && prev?.status === cell.status) return null
+      // Scroll to asset table when applying a new filter
+      requestAnimationFrame(() => {
+        assetTableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+      return cell
+    })
   }
 
   return (
@@ -35,29 +57,33 @@ export default function PlantOverview({ onNavigate }) {
         <KpiBar onKpiClick={(metric) => console.log('KPI clicked:', metric)} />
       </section>
 
-      {/* 2. Impact Strip — "This is what caused it" (ADR-013 Layer 1) */}
+      {/* 2. What Happened — "What caused the KPI change?" (ADR-013 Layer 1) */}
       <ImpactStrip />
 
-      {/* 3. Today's Activity — "Is anyone handling it?" */}
+      {/* 3. Current Response — "Is anyone handling it?" */}
       <section>
-        <p className="section-header">Today's Activity</p>
+        <p className="section-header">Current Response</p>
         <TodaysActivity />
       </section>
 
-      {/* 4. Assets Requiring Attention — risk, events, bad actors */}
+      {/* 4. Requires Attention — "What do I need to figure out?" */}
       <section>
-        <p className="section-header">Assets Requiring Attention</p>
+        <p className="section-header">Requires Attention</p>
         <div className="grid-thirds">
-          <RiskMatrix onCellClick={(cell) => console.log('Risk cell:', cell)} />
-          <EventSummary />
+          <RiskMatrix selectedCell={riskFilter} onCellClick={handleRiskCellClick} onClearFilter={clearFilter} />
+          <AlarmQuality />
           <BadActors onAssetClick={handleAssetClick} />
         </div>
       </section>
 
-      {/* 5. All Assets — drill-down to Asset Inspection */}
-      <section>
-        <p className="section-header">All Assets</p>
-        <AssetTable onAssetClick={(asset) => onNavigate('details', { asset })} />
+      {/* 5. Assets — drill-down to Asset Inspection */}
+      <section ref={assetTableRef}>
+        <p className="section-header">Assets</p>
+        <AssetTable
+          riskFilter={riskFilter}
+          onClearFilter={clearFilter}
+          onAssetClick={(asset) => onNavigate('details', { asset })}
+        />
       </section>
 
     </div>

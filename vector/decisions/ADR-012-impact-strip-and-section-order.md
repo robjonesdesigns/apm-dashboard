@@ -12,12 +12,12 @@ No mainstream product (Grafana, Datadog, Honeywell Experion) shows "why this KPI
 ## Decision
 
 ### Impact Strip
-A contextual banner between the KPI bar and Today's Activity. Full 12 columns. Not a card (no border, no elevation). Shows only events that moved KPIs:
-- "K-101 tripped at 2:03 AM · Availability -12.1%"
-- "P-203 discharge pressure low at 4:30 AM"
-- 2-3 events maximum
-- "See full timeline →" link
-- Subtle background tint (error-bg for critical events)
+A timeline card between the KPI bar and Today's Activity. Full 12 columns. Rendered in a standard `.card` container (consistent with all other dashboard sections per Nielsen H4). Shows only events that moved KPIs as major dots, with minor events as connective tissue between them.
+
+Section title: "Key Events"
+
+- 2-3 major events maximum, telling a narrative arc (trigger, consequence, confirmation)
+- "See full timeline →" link at bottom right
 
 This bridges the gap: KPI → why → who's working on it.
 

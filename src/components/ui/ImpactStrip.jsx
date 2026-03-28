@@ -10,6 +10,15 @@ import { TIMELINE } from '../../data/assets'
 const majorEvents = TIMELINE.filter(e => e.kpiImpact).slice(0, 3)
 const minorEvents = TIMELINE.filter(e => !e.kpiImpact)
 
+// Three-act narrative labels per ADR-014
+const ACT_LABELS = ['Trigger', 'Consequence', 'Confirmation']
+// If confirmation hasn't happened yet, last dot is pending
+function getActLabel(index, total) {
+  if (total === 1) return 'Trigger'
+  if (total === 2) return index === 0 ? 'Trigger' : 'Consequence'
+  return ACT_LABELS[index] || ''
+}
+
 function timeToMinutes(timeStr) {
   const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i)
   if (!match) return 0
@@ -21,16 +30,10 @@ function timeToMinutes(timeStr) {
   return hours * 60 + mins
 }
 
-function dotClass(type) {
-  if (type === 'critical') return 'dot-error'
-  if (type === 'warning') return 'dot-warning'
-  if (type === 'healthy') return 'dot-success'
-  return 'dot-info'
-}
-
-function impactColor(impact) {
-  if (!impact) return 'var(--color-text-secondary)'
-  return impact.includes('-') ? 'var(--color-error)' : 'var(--color-success)'
+function impactColor() {
+  // All impact text is neutral. The timeline dots and labels
+  // communicate severity. Colored text would double the signal.
+  return 'var(--color-text-secondary)'
 }
 
 // ── Minor dot with tooltip ──────────────────────────────────────────────────
@@ -93,13 +96,13 @@ function MinorDot({ event, style }) {
             animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
           }}
         >
-          <p style={{ margin: 0, fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', opacity: 0.6 }}>
+          <p className="type-meta" style={{ margin: 0, color: 'var(--color-tooltip-text)', opacity: 0.6 }}>
             {event.time}
           </p>
-          <p style={{ margin: '2px 0 0', fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
+          <p className="type-meta" style={{ margin: '2px 0 0', color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
             {event.asset}
           </p>
-          <p style={{ margin: '2px 0 0', fontSize: 'var(--text-12)', color: 'var(--color-tooltip-text)', opacity: 0.8 }}>
+          <p className="type-meta" style={{ margin: '2px 0 0', color: 'var(--color-tooltip-text)', opacity: 0.8 }}>
             {event.event}
           </p>
         </div>
@@ -118,22 +121,39 @@ function HorizontalTimeline() {
   const timeEnd = Math.max(...majorTimes)
   const timeRange = timeEnd - timeStart || 1
 
-  return (
-    <div style={{ position: 'relative' }}>
+  // Track spans ~82% of card width so the last dot's text fills to the card
+  // padding edge. Dashed continuation line runs from last dot to right edge.
+  const trackWidthPct = 82
 
-      {/* Timeline track -- dots are vertically centered on the line */}
+  return (
+    <div style={{ position: 'relative', paddingTop: 'var(--spacing-24)' }}>
+
+      {/* Timeline track + continuation line */}
       <div style={{ position: 'relative', height: '10px' }}>
 
-        {/* The line itself, centered vertically */}
+        {/* Solid line spanning the track (0% to trackWidthPct%) */}
         <div style={{
           position: 'absolute',
           top: '50%',
           left: 0,
-          right: 0,
+          width: `${trackWidthPct}%`,
           height: '2px',
           background: 'var(--color-border-subtle)',
           transform: 'translateY(-50%)',
           zIndex: 1,
+        }} />
+
+        {/* Dashed continuation line from last dot to right edge */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: `${trackWidthPct}%`,
+          right: 0,
+          height: '2px',
+          borderTop: '2px dashed var(--color-border-subtle)',
+          transform: 'translateY(-50%)',
+          zIndex: 1,
+          opacity: 0.5,
         }} />
 
         {/* Minor dots -- positioned relative to the segment between the two
@@ -156,10 +176,10 @@ function HorizontalTimeline() {
               }
             }
 
-            // Major dots are evenly spaced, so segment j occupies:
-            // startPct to endPct of the visual timeline
-            const startPct = (segStart / (majorEvents.length - 1)) * 100
-            const endPct = (segEnd / (majorEvents.length - 1)) * 100
+            // Major dots are evenly spaced within the track width, so segment j
+            // occupies startPct to endPct of the track (not full container)
+            const startPct = (segStart / (majorEvents.length - 1)) * trackWidthPct
+            const endPct = (segEnd / (majorEvents.length - 1)) * trackWidthPct
 
             // Position within the segment proportional to time
             const segTimeStart = majorTimes[segStart]
@@ -168,7 +188,7 @@ function HorizontalTimeline() {
             const ratio = (t - segTimeStart) / segTimeRange
 
             const pct = startPct + ratio * (endPct - startPct)
-            const clampedPct = Math.max(3, Math.min(97, pct))
+            const clampedPct = Math.max(1, Math.min(trackWidthPct - 1, pct))
 
             return (
               <MinorDot
@@ -180,70 +200,88 @@ function HorizontalTimeline() {
           })
         }
 
-        {/* Major dots -- centered on the line, focusable, ring matches dot color */}
+        {/* Act labels above dots -- left edge aligned with dot left edge */}
         {majorEvents.map((event, i) => {
-          const pct = majorEvents.length === 1 ? 50 : (i / (majorEvents.length - 1)) * 100
-          const ringColor = event.type === 'critical' ? 'var(--color-error)' :
-                           event.type === 'warning' ? 'var(--color-warning)' :
-                           event.type === 'healthy' ? 'var(--color-success)' : 'var(--color-info)'
-          const ring = `0 0 0 3px var(--color-bg), 0 0 0 5px ${ringColor}`
+          const pct = majorEvents.length === 1 ? 0 : (i / (majorEvents.length - 1)) * trackWidthPct
+          const actLabel = getActLabel(i, majorEvents.length)
+          return (
+            <span
+              key={`label-${i}`}
+              className="type-card-title"
+              style={{
+                position: 'absolute',
+                left: `calc(${pct}% - 5px)`,
+                bottom: '100%',
+                marginBottom: 'var(--spacing-8)',
+                whiteSpace: 'nowrap',
+                color: 'var(--color-card-title)',
+              }}
+            >
+              {actLabel}
+            </span>
+          )
+        })}
+
+        {/* Major dots -- focusable buttons (ADR-014) */}
+        {majorEvents.map((event, i) => {
+          const pct = majorEvents.length === 1 ? 0 : (i / (majorEvents.length - 1)) * trackWidthPct
+          const actLabel = getActLabel(i, majorEvents.length)
           return (
             <button
               key={`dot-${i}`}
               tabIndex={0}
-              aria-label={`${event.time}: ${event.asset} - ${event.event}. ${event.kpiImpact}`}
+              aria-label={`${actLabel}: ${event.asset} - ${event.event}`}
               style={{
                 position: 'absolute',
                 left: `${pct}%`,
                 top: '50%',
                 transform: 'translate(-50%, -50%)',
                 zIndex: 3,
-                background: 'none',
+                width: '10px',
+                height: '10px',
+                borderRadius: 'var(--radius-full)',
+                background: 'var(--color-text-primary)',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',
-                outline: 'none',
+                transition: 'box-shadow var(--motion-fast) var(--ease-productive)',
               }}
-              onFocus={(e) => { e.currentTarget.firstChild.style.boxShadow = ring }}
-              onBlur={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
-              onMouseEnter={(e) => { e.currentTarget.firstChild.style.boxShadow = ring }}
-              onMouseLeave={(e) => { e.currentTarget.firstChild.style.boxShadow = 'none' }}
-            >
-              <div
-                className={`status-dot ${dotClass(event.type)}`}
-                style={{ width: '10px', height: '10px', transition: 'box-shadow var(--motion-fast) var(--ease-productive)' }}
-              />
-            </button>
+              onFocus={(e) => { e.target.style.boxShadow = '0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-text-secondary)' }}
+              onBlur={(e) => { e.target.style.boxShadow = 'none' }}
+            />
           )
         })}
       </div>
 
-      {/* Major event details below the track */}
-      {/* First = left-aligned, middle = centered, last = right-aligned */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--spacing-12)' }}>
+      {/* Major event details -- absolutely positioned under their dots */}
+      <div style={{ position: 'relative', marginTop: 'var(--spacing-12)', minHeight: '72px' }}>
         {majorEvents.map((event, i) => {
-          const isFirst = i === 0
-          const isLast = i === majorEvents.length - 1
-          const alignment = isFirst ? 'left' : isLast ? 'right' : 'center'
+          const left = majorEvents.length === 1 ? 0 : (i / (majorEvents.length - 1)) * trackWidthPct
+          const nextLeft = i < majorEvents.length - 1
+            ? ((i + 1) / (majorEvents.length - 1)) * trackWidthPct
+            : 100
+          const width = nextLeft - left
 
           return (
             <div
               key={`detail-${i}`}
               style={{
-                flex: '1 1 0',
-                textAlign: alignment,
+                position: 'absolute',
+                left: `${left}%`,
+                width: `${width}%`,
+                textAlign: 'left',
               }}
             >
-              <p className="type-helper" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
+              <p className="type-meta" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
                 {event.time}
               </p>
-              <p className="type-body-compact" style={{ margin: '2px 0 0', color: 'var(--color-text-primary)' }}>
+              <p className="type-body" style={{ margin: '2px 0 0', color: 'var(--color-text-primary)' }}>
                 {event.asset}
               </p>
-              <p className="type-helper" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
+              <p className="type-meta" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
                 {event.event.length > 50 ? event.event.substring(0, 50) + '...' : event.event}
               </p>
-              <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.kpiImpact) }}>
+              <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.type) }}>
                 {event.kpiImpact}
               </p>
             </div>
@@ -259,28 +297,32 @@ function HorizontalTimeline() {
 function VerticalTimeline() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-      {majorEvents.map((event, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-12)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, paddingTop: '2px' }}>
-            <div className={`status-dot ${dotClass(event.type)}`} style={{ width: '10px', height: '10px' }} />
-            {i < majorEvents.length - 1 && (
-              <div style={{ width: '2px', height: 'var(--spacing-24)', background: 'var(--color-border-subtle)', marginTop: 'var(--spacing-4)' }} />
-            )}
+      {majorEvents.map((event, i) => {
+        const actLabel = getActLabel(i, majorEvents.length)
+        return (
+          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-12)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, paddingTop: '2px' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: 'var(--radius-full)', background: 'var(--color-text-primary)' }} />
+              {i < majorEvents.length - 1 && (
+                <div style={{ width: '2px', height: 'var(--spacing-24)', background: 'var(--color-border-subtle)', marginTop: 'var(--spacing-4)' }} />
+              )}
+            </div>
+            <div>
+              <p className="type-card-title" style={{ margin: 0, color: 'var(--color-card-title)' }}>{actLabel}</p>
+              <p className="type-meta" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>{event.time}</p>
+              <p className="type-body" style={{ margin: '2px 0 0' }}>
+                {event.asset}
+              </p>
+              <p className="type-meta" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
+                {event.event.toLowerCase()}
+              </p>
+              <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.type) }}>
+                {event.kpiImpact}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="type-helper" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>{event.time}</p>
-            <p className="type-body-compact" style={{ margin: '2px 0 0' }}>
-              {event.asset}
-            </p>
-            <p className="type-helper" style={{ margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>
-              {event.event.toLowerCase()}
-            </p>
-            <p className="type-label" style={{ margin: '4px 0 0', color: impactColor(event.kpiImpact) }}>
-              {event.kpiImpact}
-            </p>
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
@@ -298,14 +340,20 @@ export default function ImpactStrip() {
 
   return (
     <section>
-      <p className="section-header">Key Events</p>
+      <p className="section-header">What Happened</p>
 
       <div className="card" style={{ overflow: 'visible' }}>
         {isMobile ? <VerticalTimeline /> : <HorizontalTimeline />}
 
-        {/* Link at bottom of card, right-aligned */}
+        {/* Link right-aligned, anchored under the dashed continuation line */}
         <div style={{ marginTop: 'var(--spacing-16)', textAlign: 'right' }}>
-          <span className="type-link">See full timeline &rarr;</span>
+          <button
+            className="type-link"
+            onClick={() => console.log('Navigate to Event Log')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}
+          >
+            See full timeline &rarr;
+          </button>
         </div>
       </div>
     </section>

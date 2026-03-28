@@ -3,10 +3,11 @@ import { TIMELINE } from '../../data/assets'
 
 // Map event type to status-dot variant
 function dotVariant(type) {
-  if (type === 'critical') return 'status-dot dot-error'
-  if (type === 'warning')  return 'status-dot dot-warning'
-  if (type === 'healthy')  return 'status-dot dot-success'
-  return 'status-dot dot-info'
+  if (type === 'critical') return 'status-dot dot-critical'
+  if (type === 'high')     return 'status-dot dot-high'
+  if (type === 'healthy')  return 'status-dot dot-low'
+  if (type === 'medium')   return 'status-dot dot-medium'
+  return 'status-dot dot-medium'
 }
 
 // KPI impact pill — negative = error-bg, positive = success-bg
@@ -17,7 +18,7 @@ function KpiPill({ impact }) {
   const col = isNegative ? 'var(--color-error)'       : 'var(--color-success)'
   return (
     <span
-      className="type-helper"
+      className="type-meta"
       style={{
         background:   bg,
         color:        col,
@@ -83,10 +84,10 @@ function TimelineRow({ event, onAssetClick, onEventClick }) {
 
       {/* Event text */}
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 'var(--spacing-8)' }}>
-        <span className="type-body-01">
+        <span className="type-body">
           {event.event}{' '}
           <span
-            className="type-body-01"
+            className="type-body"
             onClick={e => { e.stopPropagation(); onAssetClick && onAssetClick(event.assetId) }}
             style={{
               color:      'var(--color-accent)',
@@ -114,7 +115,7 @@ export default function WhatChanged({ onAssetClick, onEventClick }) {
       <div className="card col-full">
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-16)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>What Changed</span>
+          <span className="type-card-title">What Changed</span>
           <span className="type-label">Last 24 hours</span>
         </div>
 

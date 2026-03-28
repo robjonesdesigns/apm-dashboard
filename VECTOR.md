@@ -202,10 +202,10 @@ Both personas use Plant Overview as their morning entry point but look at differ
 |------|----------|--------|
 | Personas | `vector/research/personas/` | PER-001 (reliability manager), PER-002 (maintenance manager) -- confirmed |
 | Interviews | `vector/research/` | INTERVIEW-001 (product walkthrough), INTERVIEW-002 (engineer decision flow) -- complete |
-| Desk research | `vector/research/` | DESK-RESEARCH-001 (dashboard design), DESK-RESEARCH-002 (engineering data), DESK-RESEARCH-003 (user roles) -- complete |
+| Desk research | `vector/research/` | 12 docs: DESK-RESEARCH-001 (dashboard design), 002 (engineering data), 003 (user roles), 004 (Carbon design system), 005 (typography), 006 (KPI card anatomy), 007 (work order cards), 008 (event context), 009 (timeline label alignment), 010 (analysis cards), 011 (chart legend accessibility), 012 (event assignment status + view switching) |
 | Figma review | `vector/research/` | FIGMA-REVIEW-001 (gap analysis) -- complete |
 | Interaction spec | `vector/research/` | INTERACTION-SPEC-001 -- complete |
-| Story/data | `vector/research/` | STORY-001 (Baytown Refinery, 10 assets) -- complete |
-| Implementation | `vector/research/` | IMPLEMENTATION-PLAN-001 -- in progress |
-| Decisions | `vector/decisions/` | ADR-001 through ADR-009 -- accepted |
-| Architecture audit | `vector/audits/` | invest-architecture.md -- health POOR, rebuild needed |
+| Story/data | `vector/research/` | STORY-001 (Baytown Refinery, 10 assets) -- updated 2026-03-27 (E-105 → K-101 bearing damage) |
+| Session checklists | `vector/research/` | SESSION-CHECKLIST-003 (current -- Risk Matrix redesign, analysis cards, Asset Table) |
+| Decisions | `vector/decisions/` | ADR-001 through ADR-014 -- accepted |
+| Architecture audit | `vector/audits/` | invest-architecture.md -- needs re-run after session 9 changes |

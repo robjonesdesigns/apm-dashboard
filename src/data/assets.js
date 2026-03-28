@@ -63,10 +63,12 @@ export const ASSETS = [
     priority: 'high',
     oee: 64.2,
     activeEvents: 8,
+    newEvents: 2,
+    inProgressEvents: 6,
     repetitiveEvents: 3,
     downtime: '5h',
     workOrders: 2,
-    rul: '0 days',
+    rul: '5 days',
     mtbf: 312,
     mttr: 4.2,
     pmCompliance: 88,
@@ -82,6 +84,8 @@ export const ASSETS = [
     priority: 'high',
     oee: 78.4,
     activeEvents: 4,
+    newEvents: 1,
+    inProgressEvents: 3,
     repetitiveEvents: 2,
     downtime: '0h',
     workOrders: 1,
@@ -101,6 +105,8 @@ export const ASSETS = [
     priority: 'medium',
     oee: 82.1,
     activeEvents: 3,
+    newEvents: 2,
+    inProgressEvents: 1,
     repetitiveEvents: 1,
     downtime: '0h',
     workOrders: 0,
@@ -120,6 +126,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 88.1,
     activeEvents: 1,
+    newEvents: 0,
+    inProgressEvents: 1,
     repetitiveEvents: 0,
     downtime: '8h',
     workOrders: 1,
@@ -139,6 +147,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 93.7,
     activeEvents: 1,
+    newEvents: 1,
+    inProgressEvents: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -158,6 +168,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 95.2,
     activeEvents: 0,
+    newEvents: 0,
+    inProgressEvents: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -177,6 +189,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 94.8,
     activeEvents: 0,
+    newEvents: 0,
+    inProgressEvents: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -196,6 +210,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 96.1,
     activeEvents: 0,
+    newEvents: 0,
+    inProgressEvents: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -215,6 +231,8 @@ export const ASSETS = [
     priority: 'medium',
     oee: 79.3,
     activeEvents: 3,
+    newEvents: 1,
+    inProgressEvents: 2,
     repetitiveEvents: 3,
     downtime: '0h',
     workOrders: 0,
@@ -234,6 +252,8 @@ export const ASSETS = [
     priority: 'low',
     oee: 91.4,
     activeEvents: 1,
+    newEvents: 1,
+    inProgressEvents: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -250,7 +270,7 @@ export const ASSETS = [
 export const TIMELINE = [
   {
     time: '1:30 AM',
-    type: 'warning',
+    type: 'high',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     event: 'Oil pressure dropped to 1.2 bar, aux pump auto-started',
@@ -282,7 +302,7 @@ export const TIMELINE = [
   },
   {
     time: '2:10 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     event: 'Emergency shutdown sequence completed',
@@ -290,7 +310,7 @@ export const TIMELINE = [
   },
   {
     time: '2:15 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     event: 'Work order opened: bearing inspection',
@@ -298,7 +318,7 @@ export const TIMELINE = [
   },
   {
     time: '2:30 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     event: 'Work order opened: lube system flush',
@@ -306,7 +326,7 @@ export const TIMELINE = [
   },
   {
     time: '3:00 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     event: 'Case opened: root cause analysis',
@@ -314,7 +334,7 @@ export const TIMELINE = [
   },
   {
     time: '4:30 AM',
-    type: 'warning',
+    type: 'high',
     asset: 'Pump P-203',
     assetId: 'P-203',
     event: 'Discharge pressure 8% below normal',
@@ -322,7 +342,7 @@ export const TIMELINE = [
   },
   {
     time: '5:00 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Pump P-203',
     assetId: 'P-203',
     event: 'Work order opened: seal inspection',
@@ -330,7 +350,7 @@ export const TIMELINE = [
   },
   {
     time: '6:00 AM',
-    type: 'info',
+    type: 'medium',
     asset: 'Turbine T-401',
     assetId: 'T-401',
     event: 'Planned maintenance window started',
@@ -338,11 +358,11 @@ export const TIMELINE = [
   },
   {
     time: '6:45 AM',
-    type: 'healthy',
-    asset: 'Heat Exchanger E-105',
-    assetId: 'E-105',
-    event: 'Performance restored after recalibration',
-    kpiImpact: null,
+    type: 'critical',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    event: 'Manual inspection confirmed bearing damage',
+    kpiImpact: 'RUL revised to 5 days',
   },
 ]
 
@@ -450,15 +470,15 @@ export const CASES = [
 export const NOTIFICATIONS = [
   {
     id: 1,
-    type: 'healthy',
-    asset: 'Heat Exchanger E-105',
-    assetId: 'E-105',
-    message: 'Performance restored after recalibration',
+    type: 'critical',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    message: 'Manual inspection confirmed bearing damage -- RUL revised to 5 days',
     time: '6:45 AM',
   },
   {
     id: 2,
-    type: 'info',
+    type: 'medium',
     asset: 'Turbine T-401',
     assetId: 'T-401',
     message: 'Planned maintenance window started (combustion inspection)',
@@ -466,7 +486,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 3,
-    type: 'info',
+    type: 'medium',
     asset: 'Pump P-203',
     assetId: 'P-203',
     message: 'Work order WO-4483 opened: mechanical seal inspection',
@@ -474,7 +494,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 4,
-    type: 'warning',
+    type: 'high',
     asset: 'Pump P-203',
     assetId: 'P-203',
     message: 'Discharge pressure 8% below normal -- seal wear suspected',
@@ -482,7 +502,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 5,
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     message: 'Case CS-0891 opened: root cause analysis, recurring bearing degradation',
@@ -490,7 +510,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 6,
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     message: 'Work order WO-4482 opened: lube oil system flush and filter replacement',
@@ -498,7 +518,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 7,
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     message: 'Work order WO-4481 opened: bearing inspection and assessment',
@@ -506,7 +526,7 @@ export const NOTIFICATIONS = [
   },
   {
     id: 8,
-    type: 'info',
+    type: 'medium',
     asset: 'Compressor K-101',
     assetId: 'K-101',
     message: 'Emergency shutdown sequence completed',
@@ -589,13 +609,13 @@ export const K101_FAULT_TREE = {
     },
     {
       event: 'Surge Approach',
-      type: 'warning',
+      type: 'high',
       children: [
         {
           event: 'Surge Margin Drop',
           value: '6%',
           threshold: '10%',
-          type: 'warning',
+          type: 'high',
           attribute: 'surgeMargin',
         },
       ],
@@ -719,16 +739,17 @@ export const BAD_ACTORS = [
 // ── Risk Matrix ───────────────────────────────────────────────────────────────
 
 export const RISK_MATRIX = [
-  { priority: 'High',   newEvents: 2, inProgress: 3 },
-  { priority: 'Medium', newEvents: 4, inProgress: 5 },
-  { priority: 'Low',    newEvents: 1, inProgress: 2 },
+  { criticality: 'A', newEvents: 3, inProgress: 8 },
+  { criticality: 'B', newEvents: 4, inProgress: 5 },
+  { criticality: 'C', newEvents: 1, inProgress: 0 },
 ]
 
-// ── Event Summary ─────────────────────────────────────────────────────────────
+// ── Event Summary (Alarm Quality donut) ───────────────────────────────────────
+// "New" here = unvalidated signal (different from "New" in RISK_MATRIX = unassigned)
 
 export const EVENT_SUMMARY = {
-  confirmed:      28,
-  falsePositives: 6,
-  newEvents:      8,
-  total:          42,
+  confirmed:      13,
+  falsePositives: 3,
+  newEvents:      5,
+  total:          21,
 }

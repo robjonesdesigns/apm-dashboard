@@ -1,18 +1,21 @@
 import { useState } from 'react'
 import { WORK_ORDERS, CASES } from '../../data/assets'
+import Badge from './Badge'
 
-// ── Badge maps (ADR-011) ─────────────────────────────────────────────────────
-// Critical=red, High=amber, Medium=blue, Low=gray (visual intensity decreases)
+// ── Badge maps (ADR-016) ─────────────────────────────────────────────────────
+// Uses shared Badge component with tally + fill hierarchy
 
 const PRIORITY_BADGE = {
-  critical: 'badge badge-error',
-  high:     'badge badge-warning',
-  medium:   'badge badge-info',
+  critical: 'critical',
+  high:     'high',
+  medium:   'medium',
+  low:      'low',
 }
 // Low uses neutral gray (same as investigation statuses)
 const NEUTRAL_BADGE_STYLE = {
   background: 'var(--color-border-subtle)',
   color: 'var(--color-text-secondary)',
+  border: '1px solid var(--color-border-strong)',
 }
 
 // ── Summary builders ────────────────────────────────────────────────────────
@@ -73,23 +76,19 @@ function StatusDot({ filled }) {
 
 function WoSummaryLine({ summary }) {
   const parts = []
-  if (summary.critical > 0) parts.push({ label: `${summary.critical} Critical`, cls: 'badge badge-error' })
-  if (summary.high > 0)     parts.push({ label: `${summary.high} High`,     cls: 'badge badge-warning' })
-  if (summary.medium > 0)   parts.push({ label: `${summary.medium} Medium`, cls: 'badge badge-info' })
-  if (summary.low > 0)      parts.push({ label: `${summary.low} Low`,      neutral: true })
+  if (summary.critical > 0) parts.push({ count: summary.critical, level: 'critical' })
+  if (summary.high > 0)     parts.push({ count: summary.high,     level: 'high' })
+  if (summary.medium > 0)   parts.push({ count: summary.medium,   level: 'medium' })
+  if (summary.low > 0)      parts.push({ count: summary.low,      level: 'low' })
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
       {parts.map((p, i) => (
-        <span key={p.label}>
-          <span
-            className={p.neutral ? 'badge' : p.cls}
-            style={p.neutral ? NEUTRAL_BADGE_STYLE : undefined}
-          >
-            {p.label}
-          </span>
+        <span key={p.level} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+          <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{p.count}</span>
+          <Badge level={p.level} />
           {i < parts.length - 1 && (
-            <span className="type-label" style={{ marginLeft: 'var(--spacing-8)' }}>·</span>
+            <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
           )}
         </span>
       ))}
@@ -138,7 +137,7 @@ function WorkOrdersCard() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Work Orders</span>
+        <span className="type-card-title">Work Orders</span>
         <span className="type-label">{WORK_ORDERS.length} Total</span>
       </div>
 
@@ -157,23 +156,18 @@ function WorkOrdersCard() {
             {/* Line 1: WO ID + task (clickable, truncated) | priority pill */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
-                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body-01" style={{ color: 'inherit' }}>{wo.task}</span>
+                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
+                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <span
-                  className={PRIORITY_BADGE[wo.priority] || 'badge'}
-                  style={!PRIORITY_BADGE[wo.priority] ? { ...NEUTRAL_BADGE_STYLE, textTransform: 'capitalize' } : { textTransform: 'capitalize' }}
-                >
-                  {wo.priority}
-                </span>
+                <Badge level={PRIORITY_BADGE[wo.priority] || 'low'} />
               </div>
             </div>
 
             {/* Line 2: asset name | assignee + timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
+              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {wo.asset}
               </span>
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -183,7 +177,7 @@ function WorkOrdersCard() {
                   <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>Unassigned</span>
                 )}
                 <div>
-                  <span className="type-helper">{wo.created}</span>
+                  <span className="type-meta">{wo.created}</span>
                 </div>
               </div>
             </div>
@@ -212,7 +206,7 @@ function InvestigationsCard() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Investigations</span>
+        <span className="type-card-title">Investigations</span>
         <span className="type-label">{CASES.length} Total</span>
       </div>
 
@@ -231,9 +225,9 @@ function InvestigationsCard() {
             {/* Line 1: Case ID + description (clickable, truncated) | status badge with dot */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
-                <span className="type-helper" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body-01" style={{ color: 'inherit' }}>{c.description}</span>
+                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
+                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
                 <span
@@ -248,7 +242,7 @@ function InvestigationsCard() {
 
             {/* Line 2: asset name | assignee + timestamp (matches WO row layout) */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span className="type-body-01" style={{ color: 'var(--color-text-secondary)' }}>
+              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {c.asset}
               </span>
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -258,7 +252,7 @@ function InvestigationsCard() {
                   <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>Unassigned</span>
                 )}
                 <div>
-                  <span className="type-helper">{c.opened}</span>
+                  <span className="type-meta">{c.opened}</span>
                 </div>
               </div>
             </div>

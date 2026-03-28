@@ -2,12 +2,19 @@ import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, LabelList, ResponsiveContainer } from 'recharts'
 import { BAD_ACTORS } from '../../data/assets'
 import { colors, chartStyle } from '../../styles/tokens'
+import Legend from './Legend'
 
 function barColor(criticality) {
   if (criticality === 'A') return colors.error
   if (criticality === 'B') return colors.warning
-  return colors.success
+  return colors.info
 }
+
+const LEGEND_ITEMS = [
+  { label: 'A (Safety)',      color: colors.error },
+  { label: 'B (Production)', color: colors.warning },
+  { label: 'C (Support)',    color: colors.info },
+]
 
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
@@ -25,20 +32,12 @@ function CustomTooltip({ active, payload }) {
         {d.payload.name}
       </div>
       <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span style={{ color: chartStyle.tooltipLabel, fontSize: chartStyle.axisFont }}>Events</span>
-        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600 }}>
-          {d.value}
-        </span>
+        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>Events</span>
+        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600 }}>{d.value}</span>
       </div>
       <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center', marginTop: 'var(--spacing-4)' }}>
-        <span style={{ color: chartStyle.tooltipLabel, fontSize: chartStyle.axisFont }}>Criticality</span>
-        <span
-          style={{
-            color: barColor(d.payload.criticality),
-            fontSize: chartStyle.axisFont,
-            fontWeight: 600,
-          }}
-        >
+        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>Criticality</span>
+        <span style={{ color: barColor(d.payload.criticality), fontSize: chartStyle.axisFont, fontWeight: 600 }}>
           {d.payload.criticality}
         </span>
       </div>
@@ -46,8 +45,6 @@ function CustomTooltip({ active, payload }) {
   )
 }
 
-// Recharts needs a numeric yAxis for layout="vertical" with category data.
-// We use the asset name as the dataKey for yAxis so names render on the left.
 const chartData = BAD_ACTORS.map((a) => ({
   name: a.name,
   assetId: a.assetId,
@@ -62,13 +59,12 @@ export default function BadActors({ onAssetClick }) {
     if (onAssetClick && data?.assetId) onAssetClick(data.assetId)
   }
 
-  // Chart height scales with number of bars (40px per bar + margins)
   const chartHeight = BAD_ACTORS.length * 40 + 16
 
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
       {/* Header */}
-      <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Bad Actors</span>
+      <span className="type-card-title">Watch List</span>
 
       {/* Horizontal bar chart */}
       <div style={{ height: chartHeight }}>
@@ -100,7 +96,6 @@ export default function BadActors({ onAssetClick }) {
             <Bar
               dataKey="events"
               radius={chartStyle.barRadius}
-              isAnimationActive
               animationDuration={300}
               onMouseEnter={(_, index) => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -116,36 +111,15 @@ export default function BadActors({ onAssetClick }) {
               <LabelList
                 dataKey="events"
                 position="right"
-                style={{
-                  fill: chartStyle.axisText,
-                  fontSize: chartStyle.axisFont,
-                }}
+                style={{ fill: chartStyle.axisText, fontSize: chartStyle.axisFont }}
               />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Priority gradient bar */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-        <div
-          style={{
-            display: 'flex',
-            height: '4px',
-            borderRadius: 'var(--radius-full)',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ flex: 1, background: 'var(--color-error)' }} />
-          <div style={{ flex: 1, background: 'var(--color-warning)' }} />
-          <div style={{ flex: 1, background: 'var(--color-success)' }} />
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className="type-helper">High</span>
-          <span className="type-helper">Medium</span>
-          <span className="type-helper">Low</span>
-        </div>
-      </div>
+      {/* Legend */}
+      <Legend items={LEGEND_ITEMS} shape="square" />
     </div>
   )
 }

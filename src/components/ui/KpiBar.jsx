@@ -82,20 +82,6 @@ function Tooltip({ show, pos, children }) {
         pointerEvents: 'none',
       }}
     >
-      {/* Caret stays anchored under the icon, independent of bubble position */}
-      <div
-        style={{
-          width: '8px',
-          height: '8px',
-          background: 'var(--color-tooltip-bg)',
-          transform: 'rotate(45deg)',
-          position: 'absolute',
-          top: '-4px',
-          left: pos.caretLeft != null ? `${pos.caretLeft}px` : '50%',
-          marginLeft: pos.caretLeft != null ? '-4px' : '-4px',
-          zIndex: 10002,
-        }}
-      />
       <div
         style={{
           background: 'var(--color-tooltip-bg)',
@@ -104,7 +90,7 @@ function Tooltip({ show, pos, children }) {
           boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
         }}
       >
-        <p className="type-body-compact" style={{ color: 'var(--color-tooltip-text)', margin: 0 }}>
+        <p className="type-body" style={{ color: 'var(--color-tooltip-text)', margin: 0 }}>
           {children}
         </p>
       </div>
@@ -176,7 +162,7 @@ function HealthIndicator({ state, thresholdLabel }) {
       aria-label={`${label}: ${thresholdLabel}`}
     >
       <Icon />
-      <span className="type-label" style={{ color, textTransform: 'none', letterSpacing: 0 }}>
+      <span className="type-meta" style={{ color }}>
         {label}
       </span>
     </div>
@@ -193,10 +179,8 @@ function KpiCard({ config, onClick }) {
   // The health indicator handles the judgment. Avoids doubling alarm colors.
   const deltaColor = 'var(--color-text-secondary)'
 
-  const valueColor =
-    health === 'critical' ? 'var(--color-error)' :
-    health === 'warning' ? 'var(--color-warning)' :
-    'var(--color-text-primary)'
+  // Value is always neutral -- the health indicator handles the judgment.
+  const valueColor = 'var(--color-text-primary)'
 
   const threshold = THRESHOLDS[config.key]
   const thresholdLabel = health === 'critical'
@@ -212,7 +196,7 @@ function KpiCard({ config, onClick }) {
     >
       {/* Label + info */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>{config.label}</span>
+        <span className="type-card-title">{config.label}</span>
         <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
       </div>
 
@@ -226,7 +210,7 @@ function KpiCard({ config, onClick }) {
 
       {/* Delta */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
-        <span className="type-label" style={{ color: deltaColor, textTransform: 'none', letterSpacing: 0 }}>
+        <span className="type-meta" style={{ color: deltaColor }}>
           {deltaSign}{delta.toFixed(1)}% vs yesterday
         </span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
@@ -252,7 +236,7 @@ export default function KpiBar({ onKpiClick }) {
       {/* Trains */}
       <div className="card" style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Trains</span>
+          <span className="type-card-title">Trains</span>
           <InfoButton description={KPI_DESCRIPTIONS.trains} />
         </div>
         <span className="type-kpi" style={{ display: 'block' }}>
@@ -263,7 +247,7 @@ export default function KpiBar({ onKpiClick }) {
       {/* Active Assets */}
       <div className="card" style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-          <span className="type-heading-02" style={{ color: 'var(--color-card-title)' }}>Active Assets</span>
+          <span className="type-card-title">Active Assets</span>
           <InfoButton description={KPI_DESCRIPTIONS.activeAssets} />
         </div>
         <span style={{ display: 'block' }}>
@@ -271,7 +255,7 @@ export default function KpiBar({ onKpiClick }) {
           <span className="type-kpi" style={{ color: 'var(--color-text-secondary)' }}>/{PLANT.totalAssets}</span>
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
-          <span className="type-label" style={{ color: 'var(--color-text-secondary)', textTransform: 'none', letterSpacing: 0 }}>
+          <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
             -4 vs yesterday
           </span>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>

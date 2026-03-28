@@ -200,7 +200,7 @@ function NavItem({ item, isActive, expanded, onClick }) {
       {/* Label — only when expanded */}
       {expanded && (
         <span
-          className="type-body-compact"
+          className="type-body"
           style={{
             color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
             whiteSpace: 'nowrap',

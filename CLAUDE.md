@@ -1,166 +1,81 @@
 # APM Dashboard -- Claude Context
 
-Portfolio demo project. Unbranded recreation of Honeywell APM dashboards.
-Not a production app. Not Honeywell's actual product.
+Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 **Path:** `~/Documents/Dev/apm-dashboard/`
-**Dev server:** `npx vite` or `npm run dev` (port 5173)
-**Stack:** React 19 + Recharts + Tailwind CSS v4 + Vite
-**Font:** Inter (Google Fonts CDN)
-
----
-
-## Screens
-
-| Screen | Component | Nav label | Purpose |
-|--------|-----------|-----------|---------|
-| Plant Overview | PlantOverview.jsx | Plant Overview | KPIs, Today's Activity, What Changed, Risk/Bad Actors, Asset Summary |
-| Asset Inspection | AssetInspection.jsx | Asset Inspection | Single asset deep dive: Reliability, Maintenance, Performance rows + tab bar |
-| Root Cause Analysis | RootCauseAnalysis.jsx | Root Cause | Causal chain from top event to root causes. Leaf nodes link to Trends. |
-| Trends | Trends.jsx | Trends | Attribute trend analysis with overlay/separate modes |
-| Work Orders | WorkOrders.jsx | Work Orders | Task management dashboard |
-| Investigations | Investigations.jsx | Investigations | Case/investigation management dashboard |
-
-## Shell Components
-
-| Component | Purpose |
-|-----------|---------|
-| Sidebar.jsx | Collapsible sidebar (48px rail / 256px expanded). Carbon UI Shell pattern. Mutually exclusive with NotificationsPanel (ADR-009). |
-| TopBar.jsx | 48px fixed header. Logo + "APM" + divider + breadcrumb. Right: Help + Avatar + Bell. Z-index 10000. |
-| NotificationsPanel.jsx | Push panel (320px), compresses viewport. Filterable by asset. Mutually exclusive with Sidebar. |
-
-## Sidebar Icons
-
-| Screen | Icon description |
-|--------|-----------------|
-| Plant Overview | Factory/plant building |
-| Asset Inspection | Machine/gear |
-| Root Cause | Node tree (branching) |
-| Trends | Line graph |
-| Work Orders | Checklist with checkboxes |
-| Investigations | Briefcase |
-
-## Navigation Flow (10-step engineer decision chain)
-
-```
-1. ORIENT      Plant Overview > KPIs at a glance
-2. PLAN        Plant Overview > Today's Activity (work orders, cases)
-3. DETECT      Plant Overview > What Changed (overnight events timeline)
-4. CORRELATE   Plant Overview > KPI trend overlaid with asset events
-5. IDENTIFY    Plant Overview > Asset Summary table > click row
-6. INVESTIGATE Asset Inspection > three-level deep dive
-7. TRACE       Root Cause Analysis > causal chain from event to root cause
-8. DEEP DIVE   Trends > attribute data over time
-9. ACT         Create investigation or work order (contextual modal)
-10. VERIFY     Asset running without anomalies, investigation closed
-```
-
-See INTERVIEW-002 and INTERACTION-SPEC-001 for full details.
-Notifications panel available on all screens via bell icon.
-Breadcrumbs in TopBar allow back-navigation.
-
----
-
-## Styling
-
-**Tailwind + CSS custom properties.** Tokens defined in `src/styles/global.css`
-under `@theme` block. Available as standard Tailwind classes.
-
-**Dark theme only.** No light mode. Enterprise monitoring context.
-
-**Token naming:** `--color-*`, `--spacing-*`, `--radius-*`, `--font-*`
-
-**No inline color values.** All colors reference tokens.
-
----
-
-## Data
-
-All sample data in `src/data/assets.js`. Realistic industrial names and values.
-Plant: Baytown Refinery. Primary asset: Compressor K-101 (centrifugal compressor,
-H2 Recycle Gas service, API 617 class).
+**Dev:** `npx vite` (port 5173)
+**Stack:** React 19 + Recharts + Tailwind v4 + Vite
+**Data:** `src/data/assets.js` -- Baytown Refinery, K-101 centrifugal compressor story (21 events)
+**Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
+**Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
 ---
 
 ## Key Rules
 
-- No Honeywell branding or Forge design system references
-- 12-column grid layout (grid-12 class)
-- Status colors: coral-red #f47174 (error) + amber #e8914f (warning) (ADR-010)
-- Status indicators use icon shape + color + text (never color alone, WCAG SC 1.4.1)
-- ISA-101 "dark and quiet": normal state = no indicator, no green everywhere
-- KPI cards: value + delta (vs yesterday) + health indicator (Monitor/Action Required)
-- Card titles: type-heading-02 in --color-card-title (dimmed, data is the hero)
-- Card radius: 10px
-- Card padding: 24px (--spacing-24)
-- Tooltips: inverted (white bg, dark text), caret tracks icon position
-- All transitions: var(--motion-fast) var(--ease-productive) (110ms Carbon productive)
-- No inline border/color styles -- use CSS classes (card, card-accent-top, card-interactive)
+- No Honeywell branding. No inline color values. All colors reference tokens.
+- No inline font-size overrides. All typography from 9 type classes (ADR-018).
+- 12-column grid. Card radius 10px, padding 24px. Titles: `type-card-title`.
+- Status: coral-red + amber (ADR-010). Icon + color + text (never color alone, WCAG SC 1.4.1).
+- Event severity badges: shared Badge.jsx (tally + fill hierarchy, ADR-016). Critical=solid red, High=red outline, Medium=amber outline, Low=blue outline.
+- Asset criticality: shared CriticalityIndicator.jsx (A/B/C/D letter grade). Visually distinct from event badges.
+- ISA-101 "dark and quiet". Tooltips: inverted (white bg). Transitions: --motion-fast --ease-productive.
+- Chart legends: shared Legend.jsx (swatch + label + value). No gradient bars.
+- Route Figma MCP calls through Agent subagents to save tokens.
 
----
+## Typography Scale (ADR-018)
 
-## KPI Bar Spec (completed)
+| Class | Size | Weight | Role |
+|-------|------|--------|------|
+| `section-header` | 14px | 500 | Uppercase section labels |
+| `type-card-title` | 14px | 600 | Card headers |
+| `type-table-header` | 14px | 600 | Column headers |
+| `type-body` | 14px | 400 | General text, table data |
+| `type-meta` | 12px | 400 | Timestamps, helper text |
+| `type-label` | 12px | 500 | Legend items, chips |
+| `type-kpi` | 28px | 700 | KPI values |
+| `type-kpi-hero` | 32px | 700 | Donut center, large callouts |
+| `type-link` | 14px | 400 | Teal links |
 
-6 cards in kpi-grid (responsive 2/3/6 columns):
-- 4 KPI cards (OEE, Availability, Performance, Quality) + Trains + Active Assets
-- Teal accent top stripe on KPI cards (card-accent-top class)
-- Info icon on all 6 cards with inverted tooltip explaining the metric
-- Delta: "+/-X.X% vs yesterday" with directional arrow (↗/↘), always neutral color
-- Health: warning = amber ▼ "Monitor", critical = red ◆ "Action Required", normal = no indicator
-- Value color: white (normal), amber (warning), red (critical)
-- Thresholds: OEE warn <85% crit <75%, Availability warn <90% crit <80%
-- Current story: OEE 76.3% (warning), Availability 78.4% (critical)
+## Screens
 
----
+Plant Overview | Asset Inspection | Root Cause | Trends | Work Orders | Investigations
+
+Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPanel.jsx (320px push, two-panel drill-in, ADR-009 mutual exclusion with sidebar)
+
+## Plant Overview Sections (ADR-020)
+
+1. Plant Health -- KPI bar (6 cards, ADR-010)
+2. What Happened -- Timeline card (ADR-014: 82% track, dashed continuation, white dots, left-aligned labels, three-act narrative)
+3. Current Response -- WOs + Investigations (ADR-011)
+4. Requires Attention -- Event Triage + Alarm Quality + Watch List (ADR-020)
+5. Assets -- data table with drill-down (ADR-019)
+
+## Asset Table (ADR-019)
+
+9 columns: Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
+
+- Work Orders and Investigations derived from WORK_ORDERS/CASES data (not hardcoded)
+- Toolbar: filter chips (left) + search + Filter button with dropdown (right)
+- Sortable column headers with always-visible up/down arrows
+- Event Triage filter: chip in both Event Triage card and table toolbar, smooth scroll on apply
+- Shared FilterChip.jsx component
 
 ## ADR Index
 
-| ADR | Decision |
-|-----|----------|
-| 001 | Dark theme with teal accent |
-| 002 | Desaturated chart colors for dark mode |
-| 003 | Superseded: uniform teal top stripe, no per-metric identity colors |
-| 004 | Storytelling over raw data density |
-| 005 | Collapsible sidebar (48px rail / 256px expanded) |
-| 006 | Fluid typography with clamp() |
-| 007 | Interactive fault tree in investigation flow |
-| 008 | Portfolio-friendly screen names |
-| 009 | Sidebar/notifications mutual exclusion |
-| 010 | Status labels (Monitor/Action Required), icons (triangle/diamond), colors (coral/amber) |
-| 011 | Priority badge color hierarchy (red→amber→blue→gray), single click target per WO row |
-| 012 | Impact Strip between KPIs and Activity, revised section order |
-| 013 | Three-layer event context: strip (glance) → KPI modal with event dots (investigate) → Event Log page (deep dive) |
+001 Dark theme + teal | 002 Desaturated charts | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation
 
----
+## Desk Research Index
 
-## Plant Overview Sections (revised per ADR-012/013)
+001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization
 
-1. **Plant Health** -- KPI bar (6 cards)
-2. **Impact Strip** -- "K-101 tripped at 2:03 AM · Availability -12.1%" (not a card, a banner)
-3. **Today's Activity** -- Work Orders (5 visible of 25) + Investigations (5 visible of 8)
-4. **Assets Requiring Attention** -- Risk Matrix + Event Summary + Bad Actors
-5. **All Assets** -- data table with drill-down
+## Shared Components
 
-"What Changed" full timeline is NOT on Plant Overview. It's a separate Event Log page accessed via "See full timeline →" on the Impact Strip.
+- `Badge.jsx` -- event severity (tally + fill hierarchy). Use for all event/work order/notification badges.
+- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). Use for all asset criticality display.
+- `Legend.jsx` -- chart legend (swatch + label + value). Use on all chart cards.
+- `FilterChip.jsx` -- dismissable filter tag. Use in Event Triage and Asset Table.
 
-## Three-Layer Event Context (ADR-013)
+## Handoff
 
-| Layer | Location | Depth | Time |
-|-------|----------|-------|------|
-| Impact Strip | Plant Overview, below KPIs | Glanceable, 2-3 key events | <1 second |
-| KPI Trend Modal | Click any KPI card | Trend line with event dots overlaid | 10-30 seconds |
-| Event Log Page | Separate page via "See full timeline →" | Full chronological log, filterable | 1-5 minutes |
-
----
-
-## Figma Reference
-
-Three original Figma frames are on Rob's desktop:
-- `Asset-Health.svg` (light theme)
-- `Asset-Health-Dark-Theme.svg` (dark theme)
-- `Asset-Details.svg` (light theme)
-
-Figma URL: https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
-
-The recreation adapts the layout and interactions from these frames
-using the dark Carbon theme tokens. See FIGMA-REVIEW-001 for gap analysis.
+See `HANDOFF.md` for session 13 priorities. 21 ADRs, 14 desk research docs.

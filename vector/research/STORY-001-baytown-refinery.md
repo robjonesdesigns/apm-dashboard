@@ -219,7 +219,7 @@ Every asset has a consistent set of attributes, events, work orders, and cases t
 | 4:30 AM | warning | P-203 | Discharge pressure 8% below normal | -- |
 | 5:00 AM | info | P-203 | Work order opened: seal inspection | -- |
 | 6:00 AM | info | T-401 | Planned maintenance window started | -- |
-| 6:45 AM | healthy | E-105 | Performance restored after recalibration | OEE +0.8% |
+| 6:45 AM | critical | K-101 | Manual inspection confirmed bearing damage | RUL revised to 5 days |
 
 ---
 

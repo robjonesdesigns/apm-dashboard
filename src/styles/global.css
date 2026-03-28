@@ -146,114 +146,97 @@ html, body, #root {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Typography composition classes ──────────────────────────────────── */
-/* Matches Carbon type styles adapted for Inter.                          */
+/* ─── Typography Scale ────────────────────────────────────────────────── */
+/* 9 classes. No inline font-size overrides. Weight overrides OK for      */
+/* emphasis (fontWeight: 600 on data values). Size always from classes.   */
+/*                                                                        */
+/* section-header   14px / 500  uppercase, letter-spaced section labels   */
+/* type-card-title  14px / 600  card headers (dimmed card-title color)    */
+/* type-table-header 14px / 600 column headers (bold, secondary color)   */
+/* type-body        14px / 400  general text, table data                 */
+/* type-meta        12px / 400  timestamps, helper text, secondary info  */
+/* type-label       12px / 500  legend items, chips, form labels         */
+/* type-kpi         28px / 700  KPI card values                          */
+/* type-kpi-hero    32px / 700  donut center, large callout numbers      */
+/* type-link        14px / 400  teal interactive links                   */
 
-/* ── Component classes (outside @layer for proper specificity) ─────────── */
+  /* ── Section header ──────────────────────────────────────────── */
+  .section-header {
+    font-size: var(--text-14);
+    font-weight: 500;
+    line-height: 1.286;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-16);
+  }
 
-/* ── Headings ──────────────────────────────────────────────────── */
-  .type-heading-01 {
+  /* ── Card title ──────────────────────────────────────────────── */
+  .type-card-title {
     font-size: var(--text-14);
     font-weight: 600;
     line-height: 1.286;
     letter-spacing: 0.16px;
-    color: var(--color-text-primary);
-  }
-  .type-heading-02 {
-    font-size: var(--text-16);
-    font-weight: 600;
-    line-height: 1.375;
-    letter-spacing: 0px;
-    color: var(--color-text-primary);
-  }
-  .type-heading-03 {
-    font-size: var(--text-20);
-    font-weight: 400;
-    line-height: 1.4;
-    letter-spacing: 0px;
-    color: var(--color-text-primary);
-  }
-  .type-heading-04 {
-    font-size: var(--text-28);
-    font-weight: 400;
-    line-height: 1.286;
-    letter-spacing: 0px;
-    color: var(--color-text-primary);
+    color: var(--color-card-title);
   }
 
-  /* ── Body ──────────────────────────────────────────────────────── */
-  .type-body-01 {
+  /* ── Table header ────────────────────────────────────────────── */
+  .type-table-header {
+    font-size: var(--text-14);
+    font-weight: 600;
+    line-height: 1.286;
+    letter-spacing: 0.16px;
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Body ────────────────────────────────────────────────────── */
+  .type-body {
     font-size: var(--text-14);
     font-weight: 400;
     line-height: 1.429;
     letter-spacing: 0.16px;
     color: var(--color-text-primary);
   }
-  .type-body-compact {
-    font-size: var(--text-14);
+
+  /* ── Meta ────────────────────────────────────────────────────── */
+  .type-meta {
+    font-size: var(--text-12);
     font-weight: 400;
-    line-height: 1.286;
-    letter-spacing: 0.16px;
-    color: var(--color-text-primary);
-  }
-  .type-body-02 {
-    font-size: var(--text-16);
-    font-weight: 400;
-    line-height: 1.5;
-    letter-spacing: 0px;
-    color: var(--color-text-primary);
+    line-height: 1.333;
+    letter-spacing: 0.32px;
+    color: var(--color-text-helper);
   }
 
-  /* ── Labels / Captions / Helpers ───────────────────────────────── */
+  /* ── Label ───────────────────────────────────────────────────── */
   .type-label {
     font-size: var(--text-12);
-    font-weight: 400;
-    line-height: 1.333;
-    letter-spacing: 0.32px;
-    color: var(--color-text-helper);
-  }
-  .type-label-semibold {
-    font-size: var(--text-12);
-    font-weight: 600;
-    line-height: 1.333;
-    letter-spacing: 0.32px;
-    color: var(--color-text-helper);
-  }
-  .type-helper {
-    font-size: var(--text-12);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.333;
     letter-spacing: 0.32px;
     color: var(--color-text-helper);
   }
 
-  /* ── Data display ─────────────────────────────────────────────── */
+  /* ── KPI ─────────────────────────────────────────────────────── */
   .type-kpi {
     font-size: var(--text-28);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.286;
     letter-spacing: 0px;
     color: var(--color-text-primary);
     font-variant-numeric: tabular-nums;
   }
-  .type-kpi-lg {
+
+  /* ── KPI hero ────────────────────────────────────────────────── */
+  .type-kpi-hero {
     font-size: var(--text-32);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.25;
     letter-spacing: 0px;
     color: var(--color-text-primary);
     font-variant-numeric: tabular-nums;
   }
-  .type-callout {
-    font-size: var(--text-48);
-    font-weight: 300;
-    line-height: 1.2;
-    letter-spacing: 0px;
-    color: var(--color-text-primary);
-    font-variant-numeric: tabular-nums;
-  }
 
-  /* ── Links ─────────────────────────────────────────────────────── */
+  /* ── Link ────────────────────────────────────────────────────── */
   .type-link {
     font-size: var(--text-14);
     font-weight: 400;
@@ -266,17 +249,6 @@ html, body, #root {
   }
   .type-link:hover {
     color: var(--color-link-hover);
-  }
-
-  /* ── Section header (uppercase label above groups) ─────────────── */
-  .section-header {
-    font-size: var(--text-12);
-    font-weight: 600;
-    line-height: 1.333;
-    letter-spacing: 0.32px;
-    color: var(--color-text-helper);
-    text-transform: uppercase;
-    margin-bottom: var(--spacing-16);
   }
 
   /* ── Card ──────────────────────────────────────────────────────── */
@@ -313,12 +285,25 @@ html, body, #root {
     flex-shrink: 0;
     display: inline-block;
   }
+  /* Asset status dots */
+  .dot-tripped { background: var(--color-error); }
+  .dot-degraded { background: var(--color-warning); }
+  .dot-planned-outage { background: var(--color-info); }
+  .dot-running { background: var(--color-success); }
+  /* Event severity dots */
+  .dot-critical { background: var(--color-error); }
+  .dot-high { background: var(--color-warning); }
+  .dot-medium { background: var(--color-info); }
+  .dot-low { background: var(--color-success); }
+  /* Legacy aliases */
   .dot-error { background: var(--color-error); }
   .dot-warning { background: var(--color-warning); }
   .dot-success { background: var(--color-success); }
   .dot-info { background: var(--color-info); }
 
   /* ── Badge ─────────────────────────────────────────────────────── */
+  /* Tally + fill hierarchy: visual weight communicates severity.
+     Tallies satisfy WCAG SC 1.4.1 (info not by color alone). */
   .badge {
     font-size: var(--text-12);
     font-weight: 600;
@@ -328,23 +313,43 @@ html, body, #root {
     letter-spacing: 0.32px;
     display: inline-flex;
     align-items: center;
+    gap: 4px;
   }
-  .badge-error {
-    color: var(--color-error);
+  .badge-tally {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0.7;
+  }
+  /* Critical: solid red fill, near-black text (6.43:1 contrast) */
+  .badge-critical {
+    color: var(--color-bg);
+    background: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+  /* High: red outline + transparent red fill, light text */
+  .badge-high {
+    color: var(--color-text-primary);
     background: var(--color-error-bg);
+    border: 1px solid var(--color-error);
   }
-  .badge-warning {
-    color: var(--color-warning);
+  /* Medium: amber outline + transparent amber fill, light text */
+  .badge-medium {
+    color: var(--color-text-primary);
     background: var(--color-warning-bg);
+    border: 1px solid var(--color-warning);
   }
-  .badge-success {
-    color: var(--color-success);
-    background: var(--color-success-bg);
-  }
-  .badge-info {
-    color: var(--color-info);
+  /* Low: blue outline + transparent blue fill, light text */
+  .badge-low {
+    color: var(--color-text-primary);
     background: var(--color-info-bg);
+    border: 1px solid var(--color-info);
   }
+  /* Legacy aliases (keep until all components migrate) */
+  .badge-error { color: var(--color-bg); background: var(--color-error); border: 1px solid var(--color-error); }
+  .badge-warning { color: var(--color-text-primary); background: var(--color-warning-bg); border: 1px solid var(--color-warning); }
+  .badge-success { color: var(--color-bg); background: var(--color-success); border: 1px solid var(--color-success); }
+  .badge-info { color: var(--color-text-primary); background: var(--color-info-bg); border: 1px solid var(--color-info); }
 
   /* ── Chip (interactive filter pill) ────────────────────────────── */
   .chip {
@@ -365,6 +370,37 @@ html, body, #root {
   }
   .chip-active {
     border-color: var(--color-accent);
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
+  }
+
+  /* ── Segmented control (view switcher) ─────────────────────────── */
+  .segmented-control {
+    display: inline-flex;
+    background: var(--color-layer-02);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-8);
+    padding: 2px;
+    gap: 2px;
+  }
+  .segmented-control button {
+    font-size: var(--text-12);
+    font-weight: 500;
+    line-height: 1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--ease-productive);
+    white-space: nowrap;
+  }
+  .segmented-control button:hover {
+    color: var(--color-text-primary);
+    background: var(--color-hover-01);
+  }
+  .segmented-control button.active {
     background: var(--color-accent-bg);
     color: var(--color-accent);
   }

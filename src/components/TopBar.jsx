@@ -173,7 +173,7 @@ export default function TopBar({
 
         {/* APM wordmark */}
         <span
-          className="type-heading-01"
+          className="type-card-title"
           style={{ paddingRight: 'var(--spacing-16)', whiteSpace: 'nowrap' }}
         >
           APM
@@ -206,7 +206,7 @@ export default function TopBar({
             {/* Plant name — always present, always clickable back to overview */}
             <li>
               <button
-                className="type-body-compact"
+                className="type-body"
                 onClick={() => onNavigate('overview')}
                 style={{
                   color: 'var(--color-text-secondary)',
@@ -235,7 +235,7 @@ export default function TopBar({
                   <>
                     <li>
                       <button
-                        className="type-body-compact"
+                        className="type-body"
                         onClick={() => onNavigate(view === 'details' ? 'health' : 'inspection')}
                         style={{
                           color: 'var(--color-text-secondary)',
@@ -256,7 +256,7 @@ export default function TopBar({
                     </li>
                     <li>
                       <span
-                        className="type-body-compact"
+                        className="type-body"
                         style={{ color: 'var(--color-text-primary)' }}
                         aria-current="page"
                       >
@@ -267,7 +267,7 @@ export default function TopBar({
                 ) : (
                   <li>
                     <span
-                      className="type-body-compact"
+                      className="type-body"
                       style={{ color: 'var(--color-text-primary)' }}
                       aria-current="page"
                     >
