@@ -1,8 +1,9 @@
 // ── Sidebar ────────────────────────────────────────────────────────────────────
-// Fixed left sidebar. Rail: 48px icons only. Hover to expand: 256px overlay.
-// Props: view, onNavigate
+// Desktop: 48px rail, hover to expand 256px overlay.
+// Mobile: full-screen drawer with branding header.
 
 import { useState } from 'react'
+import { PLANT } from '../data/assets'
 
 // ── Nav icons (Feather Icons, 24x24 viewBox rendered at 20x20) ──────────────
 // Source: https://feathericons.com — stroke-based, consistent weight.
@@ -190,11 +191,12 @@ function NavItem({ item, isActive, expanded, onClick }) {
 
 // ── Sidebar ────────────────────────────────────────────────────────────────────
 
-export default function Sidebar({ view, onNavigate }) {
+export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
   const [hovered, setHovered] = useState(false)
-  const expanded = hovered
 
-  // Normalize legacy view IDs (App.jsx uses 'health'/'details')
+  // Desktop: hover-to-expand. Mobile: explicitly toggled drawer.
+  const expanded = isMobile ? open : hovered
+
   const normalizeView = (v) => {
     if (v === 'health')   return 'overview'
     if (v === 'details')  return 'inspection'
@@ -206,71 +208,104 @@ export default function Sidebar({ view, onNavigate }) {
     onNavigate(id)
   }
 
+  // Mobile: don't render the rail at all when closed
+  if (isMobile && !open) return null
+
   return (
-    <aside
-      role="navigation"
-      aria-label="Main navigation"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position: 'fixed',
-        top: 'var(--header-height)',
-        left: 0,
-        bottom: 0,
-        zIndex: 9999,
-        width: expanded ? 'var(--sidebar-width)' : 'var(--sidebar-rail)',
-        background: 'var(--color-bg)',
-        borderRight: '1px solid var(--color-border-subtle)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        flexShrink: 0,
-        transition: `width var(--motion-moderate) var(--ease-productive)`,
-        // Overlay instead of push when expanded
-        boxShadow: expanded ? 'var(--shadow-overlay)' : 'none',
-      }}
-    >
-      {/* ── Primary nav items ────────────────────────────────────────────── */}
-      <div
-        role="list"
-        style={{
+    <>
+      <aside
+        role="navigation"
+        aria-label="Main navigation"
+        onMouseEnter={isMobile ? undefined : () => setHovered(true)}
+        onMouseLeave={isMobile ? undefined : () => setHovered(false)}
+        style={isMobile ? {
+          // Mobile: full-screen drawer
+          position: 'fixed',
+          top: 'var(--header-height)',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          background: 'var(--color-bg)',
           display: 'flex',
           flexDirection: 'column',
-          flex: '1 1 auto',
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          overflow: 'hidden',
+        } : {
+          // Desktop: rail + hover overlay
+          position: 'fixed',
+          top: 'var(--header-height)',
+          left: 0,
+          bottom: 0,
+          zIndex: 9999,
+          width: expanded ? 'var(--sidebar-width)' : 'var(--sidebar-rail)',
+          background: 'var(--color-bg)',
+          borderRight: '1px solid var(--color-border-subtle)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          flexShrink: 0,
+          transition: `width var(--motion-moderate) var(--ease-productive)`,
+          boxShadow: expanded ? 'var(--shadow-overlay)' : 'none',
         }}
       >
-        {NAV_ITEMS.map((item) => (
-          <NavItem
-            key={item.id}
-            item={item}
-            isActive={activeView === item.id}
-            expanded={expanded}
-            onClick={() => handleNav(item.id)}
-          />
-        ))}
-      </div>
+        {/* ── Mobile branding header ─────────────────────────────────────── */}
+        {isMobile && (
+          <div style={{
+            padding: 'var(--spacing-16)',
+            borderBottom: '1px solid var(--color-border-subtle)',
+            flexShrink: 0,
+          }}>
+            <span className="type-card-title" style={{ display: 'block' }}>
+              Asset Performance Management
+            </span>
+            <span className="type-meta" style={{ marginTop: 'var(--spacing-4)', display: 'block' }}>
+              {PLANT.name}
+            </span>
+          </div>
+        )}
 
-      {/* ── Separator ────────────────────────────────────────────────────── */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: '1px',
-          background: 'var(--color-border-subtle)',
-          flexShrink: 0,
-        }}
-      />
+        {/* ── Primary nav items ──────────────────────────────────────────── */}
+        <div
+          role="list"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: '1 1 auto',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
+          {NAV_ITEMS.map((item) => (
+            <NavItem
+              key={item.id}
+              item={item}
+              isActive={activeView === item.id}
+              expanded={expanded}
+              onClick={() => handleNav(item.id)}
+            />
+          ))}
+        </div>
 
-      {/* ── Bottom section: Settings ─────────────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-        <NavItem
-          item={{ id: 'settings', label: 'Settings', Icon: IconSettings }}
-          isActive={activeView === 'settings'}
-          expanded={expanded}
-          onClick={() => handleNav('settings')}
+        {/* ── Separator ──────────────────────────────────────────────────── */}
+        <div
+          aria-hidden="true"
+          style={{
+            height: '1px',
+            background: 'var(--color-border-subtle)',
+            flexShrink: 0,
+          }}
         />
-      </div>
-    </aside>
+
+        {/* ── Bottom section: Settings ───────────────────────────────────── */}
+        <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+          <NavItem
+            item={{ id: 'settings', label: 'Settings', Icon: IconSettings }}
+            isActive={activeView === 'settings'}
+            expanded={expanded}
+            onClick={() => handleNav('settings')}
+          />
+        </div>
+      </aside>
+    </>
   )
 }

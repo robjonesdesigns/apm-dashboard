@@ -332,7 +332,7 @@ function PanelHeader({ onClose, activeFilters, onToggleFilter }) {
 
 // ── Main panel ───────────────────────────────────────────────────────────────
 
-export default function NotificationsPanel({ open, onClose, assetFilter }) {
+export default function NotificationsPanel({ open, onClose, assetFilter, isMobile }) {
   const [selectedNotification, setSelectedNotification] = useState(null)
   const [severityFilters, setSeverityFilters] = useState([])
 
@@ -367,7 +367,19 @@ export default function NotificationsPanel({ open, onClose, assetFilter }) {
     <div
       role="dialog"
       aria-label="Notifications"
-      style={{
+      style={isMobile ? {
+        // Mobile: full-screen overlay
+        position: 'fixed',
+        top: 'var(--header-height)',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9998,
+        background: 'var(--color-layer-01)',
+        display: open ? 'flex' : 'none',
+        flexDirection: 'column',
+      } : {
+        // Desktop: 320px push panel
         width: open ? '320px' : '0px',
         minWidth: open ? '320px' : '0px',
         overflow: 'hidden',

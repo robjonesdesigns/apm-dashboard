@@ -129,6 +129,7 @@ export default function TopBar({
   onToggleNotifications,
   notificationsOpen,
   onToggleSidebar,
+  isMobile,
 }) {
   const hasNotifications = NOTIFICATIONS.length > 0
   const viewLabel = VIEW_LABELS[view] ?? view
@@ -154,45 +155,60 @@ export default function TopBar({
         flexShrink: 0,
       }}
     >
-      {/* ── Left: logo + divider + breadcrumb ─────────────────────────────── */}
+      {/* ── Left: logo/hamburger + title + breadcrumb ────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
 
-        {/* Logo block — same 48px width as sidebar rail */}
-        <div
-          style={{
-            width: 'var(--sidebar-rail)',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <LogoIcon />
-        </div>
+        {isMobile ? (
+          /* Mobile: hamburger menu button */
+          <IconButton onClick={onToggleSidebar} ariaLabel="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </IconButton>
+        ) : (
+          /* Desktop: logo block — same 48px width as sidebar rail */
+          <div
+            style={{
+              width: 'var(--sidebar-rail)',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <LogoIcon />
+          </div>
+        )}
 
-        {/* APM wordmark */}
-        <span
-          className="type-card-title"
-          style={{ paddingRight: 'var(--spacing-16)', whiteSpace: 'nowrap' }}
-        >
-          Asset Performance Management
-        </span>
+        {/* APM wordmark — hidden on mobile */}
+        {!isMobile && (
+          <span
+            className="type-card-title"
+            style={{ paddingRight: 'var(--spacing-16)', whiteSpace: 'nowrap' }}
+          >
+            Asset Performance Management
+          </span>
+        )}
 
-        {/* Vertical divider */}
-        <div
-          aria-hidden="true"
-          style={{
-            width: '1px',
-            height: '24px',
-            background: 'var(--color-border-strong)',
-            flexShrink: 0,
-            marginRight: 'var(--spacing-16)',
-          }}
-        />
+        {/* Vertical divider — hidden on mobile */}
+        {!isMobile && (
+          <div
+            aria-hidden="true"
+            style={{
+              width: '1px',
+              height: '24px',
+              background: 'var(--color-border-strong)',
+              flexShrink: 0,
+              marginRight: 'var(--spacing-16)',
+            }}
+          />
+        )}
 
-        {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb">
+        {/* Breadcrumb — hidden on mobile */}
+        {!isMobile && <nav aria-label="Breadcrumb">
           <ol
             style={{
               display: 'flex',
@@ -278,21 +294,25 @@ export default function TopBar({
               </>
             )}
           </ol>
-        </nav>
+        </nav>}
       </div>
 
       {/* ── Right: icon buttons ────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
 
-        {/* Help */}
-        <IconButton ariaLabel="Help">
-          <HelpIcon />
-        </IconButton>
+        {/* Help — hidden on mobile */}
+        {!isMobile && (
+          <IconButton ariaLabel="Help">
+            <HelpIcon />
+          </IconButton>
+        )}
 
-        {/* Avatar / User profile */}
-        <IconButton ariaLabel="User profile">
-          <AvatarIcon />
-        </IconButton>
+        {/* Avatar / User profile — hidden on mobile */}
+        {!isMobile && (
+          <IconButton ariaLabel="User profile">
+            <AvatarIcon />
+          </IconButton>
+        )}
 
         {/* Notification bell */}
         <IconButton

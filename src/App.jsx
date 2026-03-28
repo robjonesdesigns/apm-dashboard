@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import PlantOverview from './components/PlantOverview'
@@ -21,11 +21,28 @@ const VIEWS = {
   settings:       PlantOverview,   // placeholder
 }
 
+// ── Responsive hook ─────────────────────────────────────────────────────────
+
+function useIsMobile(breakpoint = 671) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`)
+    setIsMobile(mq.matches)
+    const handler = (e) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [breakpoint])
+  return isMobile
+}
+
 export default function App() {
   const [view, setView]                     = useState('health')
   const [selectedAsset, setSelectedAsset]   = useState(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
+  const [sidebarOpen, setSidebarOpen]       = useState(false)
+  const isMobile = useIsMobile()
+
   const navigate = (target, options = {}) => {
     if ((target === 'details' || target === 'inspection') && options.asset) {
       setSelectedAsset(options.asset)
@@ -40,17 +57,16 @@ export default function App() {
 
   return (
     <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      {/* Fixed top bar — rendered at z-index 10000 */}
       <TopBar
         view={view}
         selectedAsset={selectedAsset}
         onNavigate={navigate}
         onToggleNotifications={() => setNotificationsOpen((prev) => !prev)}
         notificationsOpen={notificationsOpen}
-        onToggleSidebar={() => {}}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+        isMobile={isMobile}
       />
 
-      {/* Body below fixed top bar */}
       <div
         style={{
           display: 'flex',
@@ -59,19 +75,20 @@ export default function App() {
           marginTop: 'var(--header-height)',
         }}
       >
-        {/* Fixed sidebar — leaves a matching space via the margin-left on the content */}
         <Sidebar
           view={view}
-          onNavigate={navigate}
+          onNavigate={(id) => { navigate(id); if (isMobile) setSidebarOpen(false) }}
+          isMobile={isMobile}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
-        {/* Scrollable content — pushes right by the sidebar width */}
         <div
           style={{
             flex: '1 1 auto',
             display: 'flex',
             overflow: 'hidden',
-            marginLeft: 'var(--sidebar-rail)',
+            marginLeft: isMobile ? 0 : 'var(--sidebar-rail)',
           }}
         >
           <div
@@ -97,6 +114,7 @@ export default function App() {
             open={notificationsOpen}
             onClose={() => setNotificationsOpen(false)}
             assetFilter={(view === 'details' || view === 'inspection') ? selectedAsset?.name : null}
+            isMobile={isMobile}
           />
         </div>
       </div>
