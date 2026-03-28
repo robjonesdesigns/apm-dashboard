@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { NOTIFICATIONS } from '../data/assets.js'
 import Badge from './ui/Badge'
+import FilterButton from './ui/FilterButton'
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -22,11 +23,7 @@ const BackIcon = () => (
   </svg>
 )
 
-const FilterIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1 2h14M4 8h8M6 14h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-  </svg>
-)
+
 
 // Event types now match badge levels directly (ADR-016)
 // critical → critical, high → high, medium → medium, low → low
@@ -40,7 +37,8 @@ const TYPE_DOT_CLASS = {
 
 // ── Filter chips ─────────────────────────────────────────────────────────────
 
-const FILTER_OPTIONS = ['All', 'Critical', 'High', 'Medium']
+const SEVERITY_OPTIONS = ['critical', 'high', 'medium', 'low']
+const SEVERITY_LABELS = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' }
 
 // ── Notification row ─────────────────────────────────────────────────────────
 
@@ -276,26 +274,38 @@ function getEventDetails(notification) {
 
 // ── Panel header ─────────────────────────────────────────────────────────────
 
-function PanelHeader({ count, onClose, activeFilter, onFilterChange }) {
+const NOTIF_FILTER_CATEGORIES = [
+  { key: 'severity', label: 'Severity', options: SEVERITY_OPTIONS, labelFn: v => SEVERITY_LABELS[v] },
+]
+
+function PanelHeader({ onClose, activeFilters, onToggleFilter }) {
+  const filtersObj = { severity: activeFilters }
+
+  function handleToggle(_key, value) {
+    onToggleFilter(value)
+  }
+
   return (
-    <>
-      {/* Title row */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 'var(--spacing-12) var(--spacing-16)',
-        borderBottom: '1px solid var(--color-border-subtle)',
-        flexShrink: 0,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-          <span className="section-header" style={{ margin: 0 }}>
-            Notifications
-          </span>
-          {count > 0 && (
-            <span className="badge badge-info">{count}</span>
-          )}
-        </div>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 'var(--spacing-12) var(--spacing-16)',
+      borderBottom: '1px solid var(--color-border-subtle)',
+      flexShrink: 0,
+    }}>
+      <span className="section-header" style={{ margin: 0 }}>
+        Notifications
+      </span>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+        <FilterButton
+          categories={NOTIF_FILTER_CATEGORIES}
+          filters={filtersObj}
+          onToggle={handleToggle}
+        />
+
+        {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Close notifications"
@@ -303,8 +313,8 @@ function PanelHeader({ count, onClose, activeFilter, onFilterChange }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '32px',
-            height: '32px',
+            width: '28px',
+            height: '28px',
             borderRadius: 'var(--radius-4)',
             border: 'none',
             background: 'transparent',
@@ -316,29 +326,7 @@ function PanelHeader({ count, onClose, activeFilter, onFilterChange }) {
           <CloseIcon />
         </button>
       </div>
-
-      {/* Filter chips */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-8)',
-        padding: 'var(--spacing-8) var(--spacing-16)',
-        borderBottom: '1px solid var(--color-border-subtle)',
-        flexShrink: 0,
-        flexWrap: 'wrap',
-      }}>
-        {FILTER_OPTIONS.map((f) => (
-          <button
-            key={f}
-            className={`chip ${activeFilter === f ? 'chip-active' : ''}`}
-            onClick={() => onFilterChange(f)}
-            style={{ padding: '4px 12px', fontSize: 'var(--text-12)' }}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-    </>
+    </div>
   )
 }
 
@@ -346,16 +334,22 @@ function PanelHeader({ count, onClose, activeFilter, onFilterChange }) {
 
 export default function NotificationsPanel({ open, onClose, assetFilter }) {
   const [selectedNotification, setSelectedNotification] = useState(null)
-  const [filter, setFilter] = useState('All')
+  const [severityFilters, setSeverityFilters] = useState([])
+
+  function toggleSeverity(level) {
+    setSeverityFilters(prev =>
+      prev.includes(level) ? prev.filter(l => l !== level) : [...prev, level]
+    )
+  }
 
   // Apply asset filter (from Asset Inspection screen)
   let notifications = assetFilter
     ? NOTIFICATIONS.filter(n => n.asset === assetFilter)
     : NOTIFICATIONS
 
-  // Apply severity filter
-  if (filter !== 'All') {
-    notifications = notifications.filter(n => n.type === filter.toLowerCase())
+  // Apply severity filter (multi-select: show any checked levels, empty = all)
+  if (severityFilters.length > 0) {
+    notifications = notifications.filter(n => severityFilters.includes(n.type))
   }
 
   // Track read state -- first 3 start as unread, clicking marks as read
@@ -394,10 +388,9 @@ export default function NotificationsPanel({ open, onClose, assetFilter }) {
       ) : (
         <>
           <PanelHeader
-            count={notifications.length}
             onClose={onClose}
-            activeFilter={filter}
-            onFilterChange={setFilter}
+            activeFilters={severityFilters}
+            onToggleFilter={toggleSeverity}
           />
 
           {/* Asset filter indicator */}

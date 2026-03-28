@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ASSETS, WORK_ORDERS, CASES } from '../../data/assets'
 import CriticalityIndicator from './CriticalityIndicator'
 import FilterChip from './FilterChip'
+import FilterButton from './FilterButton'
 
 // Status dot variant from asset status
 function statusDotVariant(status) {
@@ -230,82 +231,6 @@ function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }
   )
 }
 
-// ── Filter dropdown panel ───────────────────────────────────────────────────
-
-function FilterDropdown({ filters, onToggle, onClose }) {
-  const ref = useRef(null)
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) onClose()
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [onClose])
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        position: 'absolute',
-        top: '100%',
-        right: 0,
-        marginTop: 4,
-        width: 240,
-        background: 'var(--color-layer-01)',
-        border: '1px solid var(--color-border-strong)',
-        borderRadius: 'var(--radius-8)',
-        boxShadow: 'var(--shadow-tooltip)',
-        zIndex: 20,
-        padding: 'var(--spacing-8) 0',
-        animation: 'fadeInOnly var(--motion-fast) var(--ease-productive)',
-      }}
-    >
-      {FILTER_CATEGORIES.map(cat => (
-        <div key={cat.key} style={{ padding: 'var(--spacing-8) var(--spacing-16)' }}>
-          <span className="type-label" style={{ color: 'var(--color-text-helper)', marginBottom: 4, display: 'block' }}>
-            {cat.label}
-          </span>
-          {cat.options.map(opt => {
-            const isChecked = filters[cat.key]?.includes(opt) || false
-            return (
-              <label
-                key={opt}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-8)',
-                  padding: '4px 0',
-                  cursor: 'pointer',
-                  fontSize: 'var(--text-12)',
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={() => onToggle(cat.key, opt)}
-                  style={{ accentColor: 'var(--color-accent)' }}
-                />
-                {cat.labelFn(opt)}
-              </label>
-            )
-          })}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ── Filter icon (funnel SVG) ────────────────────────────────────────────────
-
-function FilterIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1.5 2h13l-5 6v4.5l-3 1.5V8z" />
-    </svg>
-  )
-}
 
 // ── Search icon ─────────────────────────────────────────────────────────────
 
@@ -461,7 +386,6 @@ function AssetSearch({ value, onChange, onAssetClick }) {
 export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) {
   const [filters, setFilters] = useState({ criticality: [], status: [], processUnit: [] })
   const [search, setSearch] = useState('')
-  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [sortKey, setSortKey] = useState(null)
   const [sortDir, setSortDir] = useState('asc')
   const [page, setPage] = useState(0)
@@ -570,52 +494,11 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
               onChange={val => { setSearch(val); setPage(0) }}
               onAssetClick={onAssetClick}
             />
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => setDropdownOpen(prev => !prev)}
-                aria-label="Filter assets"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-4)',
-                  padding: '0 var(--spacing-12)',
-                  height: 32,
-                  borderRadius: 'var(--radius-4)',
-                  border: `1px solid ${activeChipCount > 0 ? 'var(--color-accent)' : 'var(--color-border-subtle)'}`,
-                  background: activeChipCount > 0 ? 'var(--color-accent-bg)' : 'var(--color-layer-02)',
-                  color: activeChipCount > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-                  fontSize: 'var(--text-12)',
-                  cursor: 'pointer',
-                  transition: 'all var(--motion-fast) var(--ease-productive)',
-                }}
-              >
-                <FilterIcon />
-                <span>Filter</span>
-                {activeChipCount > 0 && (
-                  <span style={{
-                    background: 'var(--color-accent)',
-                    color: 'var(--color-text-inverse)',
-                    borderRadius: '50%',
-                    width: 16,
-                    height: 16,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 10,
-                    fontWeight: 600,
-                  }}>
-                    {activeChipCount}
-                  </span>
-                )}
-              </button>
-              {dropdownOpen && (
-                <FilterDropdown
-                  filters={filters}
-                  onToggle={toggleFilter}
-                  onClose={() => setDropdownOpen(false)}
-                />
-              )}
-            </div>
+            <FilterButton
+              categories={FILTER_CATEGORIES}
+              filters={filters}
+              onToggle={toggleFilter}
+            />
           </div>
         </div>
 
