@@ -13,6 +13,7 @@ const VIEWS = {
   trends:   Trends,
   // New screen IDs (map to same components until dedicated screens are built)
   overview:       PlantOverview,
+  events:         PlantOverview,   // placeholder
   inspection:     AssetInspection,
   rootcause:      PlantOverview,   // placeholder
   workorders:     PlantOverview,   // placeholder
@@ -25,8 +26,6 @@ export default function App() {
   const [selectedAsset, setSelectedAsset]   = useState(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
-  const [sidebarExpanded, setSidebarExpanded]     = useState(false)
-
   const navigate = (target, options = {}) => {
     if ((target === 'details' || target === 'inspection') && options.asset) {
       setSelectedAsset(options.asset)
@@ -48,7 +47,7 @@ export default function App() {
         onNavigate={navigate}
         onToggleNotifications={() => setNotificationsOpen((prev) => !prev)}
         notificationsOpen={notificationsOpen}
-        onToggleSidebar={() => setSidebarExpanded((prev) => !prev)}
+        onToggleSidebar={() => {}}
       />
 
       {/* Body below fixed top bar */}
@@ -64,8 +63,6 @@ export default function App() {
         <Sidebar
           view={view}
           onNavigate={navigate}
-          expanded={sidebarExpanded}
-          onToggle={() => setSidebarExpanded((prev) => !prev)}
         />
 
         {/* Scrollable content — pushes right by the sidebar width */}
@@ -74,8 +71,7 @@ export default function App() {
             flex: '1 1 auto',
             display: 'flex',
             overflow: 'hidden',
-            marginLeft: sidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-rail)',
-            transition: `margin-left var(--motion-moderate) var(--ease-productive)`,
+            marginLeft: 'var(--sidebar-rail)',
           }}
         >
           <div

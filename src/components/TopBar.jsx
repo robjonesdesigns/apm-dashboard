@@ -176,7 +176,7 @@ export default function TopBar({
           className="type-card-title"
           style={{ paddingRight: 'var(--spacing-16)', whiteSpace: 'nowrap' }}
         >
-          APM
+          Asset Performance Management
         </span>
 
         {/* Vertical divider */}
