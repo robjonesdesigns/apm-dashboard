@@ -1,84 +1,86 @@
 # APM Dashboard Handoff -- Session 13
 
 ## START HERE
-Plant Overview is nearly complete. Impact Strip layout and mobile gate remain.
+Plant Overview is complete pending mobile gate and donut color review. Next: deploy or Asset Inspection.
 
 ## Completed this session
 
 ### Section and card naming (ADR-020)
 - "Event Analysis" renamed to "Requires Attention"
-- Risk Matrix card renamed to "Event Triage"
-- Bad Actors renamed to "Watch List"
-- Alarm Quality: removed segmented control + Case Status view
+- Risk Matrix card: "Event Triage". Bad Actors: "Watch List". Alarm Quality: dropped Case Status.
+- Section order: Plant Health > What Happened > Current Response > Requires Attention > Assets
 
 ### Data reconciliation (ADR-021)
-- Added `newEvents` + `inProgressEvents` to every asset (sum = `activeEvents`)
-- RISK_MATRIX and EVENT_SUMMARY scaled to 21 total
-- CASE_SUMMARY removed
-- Two meanings of "New" documented
+- newEvents + inProgressEvents on every asset (sum = activeEvents, total 21)
+- RISK_MATRIX and EVENT_SUMMARY scaled to 21. CASE_SUMMARY removed.
 
 ### Asset Table redesign (ADR-019)
-- 9 columns: Status, Asset, Criticality, OEE, Events, Downtime, Work Orders, Investigations, Remaining Life
-- Work Orders + Investigations derived from WORK_ORDERS/CASES data
-- Toolbar: filter chips (left) + smart search with autocomplete + shared FilterButton (right)
-- Sortable column headers with always-visible stacked arrows
+- 9 columns with derived WO/Investigation counts
+- Smart search with autocomplete (name, ID, type). Enter filters, click navigates.
+- Shared FilterButton with multi-select checkbox dropdown
+- Sortable headers with always-visible stacked arrows
 - Event Triage integration: filter chip in both locations, smooth scroll
-- Pagination: 10 rows per page, prev/next, page resets on filter/search
-- Fixed table height: measures actual row height, locks minHeight to 10 rows
-- Column dividers at 50% opacity, 16px cell padding
+- Pagination: 10 rows/page, fixed height (measured), page resets on filter/search
+- Column dividers, 16px cell padding, flexible asset column
 
 ### Typography system (ADR-018)
-- Consolidated 13 classes to 9
-- Swept ~15 inline fontSize overrides
-- No inline font-size rule established
+- 13 classes consolidated to 9. ~15 inline fontSize overrides swept.
 
 ### Color audit
-- Tokenized all inline colors: donut palette, column divider, accent bg variants, hover cursor, tooltip shadow
-- Zero hardcoded hex/rgba in components
-- ADR-002 updated to reflect actual Carbon g100 values (was referencing unused Tailwind values)
-- tokens.js synced with global.css (chart5 and kpiAvailability corrected)
+- All inline rgba/hex tokenized. Zero hardcoded colors in components.
+- ADR-002 updated to reflect Carbon g100 values. tokens.js synced.
+- New tokens: donut palette, border-divider, accent-bg variants, hover-cursor, shadow-tooltip, shadow-overlay.
 
 ### WO urgency system (ADR-022)
-- WO `priority` renamed to `urgency`: Emergency / Urgent / Scheduled
-- Medium + Low collapsed into Scheduled
-- WoPriority.jsx: circle fill hierarchy (filled/hollow/clock) + neutral text
-- No color coding, no pills -- visually distinct from event Badge
+- Emergency / Urgent / Scheduled (replaces Critical/High/Medium/Low on WOs)
+- WoPriority.jsx: circle fill hierarchy + neutral text. No color coding.
+- Five distinct icon systems documented: events (tallies), investigations (triangles), WO urgency (circles), criticality (letter pills), asset status (dots).
 
-### Five-system icon language (ADR-022)
-- Events: tally bars in colored pills (Badge.jsx)
-- Investigations: right-pointing triangles, filled/hollow (TodaysActivity)
-- WO urgency: circles + clock, neutral gray (WoPriority.jsx)
-- Asset criticality: letter grade pills (CriticalityIndicator.jsx)
-- Asset status: colored dots + text label
-- Investigation summary: count outside badge, badge with triangle + label
+### Impact Strip redesign
+- Replaced timeline visualization (361 lines) with three cards: Trigger / Consequence / Confirmation
+- grid-thirds layout, stateless component, 64 lines
+- "See full timeline" links to Events screen
+- Events added to sidebar navigation
 
-### Shared components
-- FilterButton.jsx: shared filter button + checkbox dropdown (Asset Table + Notifications)
-- FilterChip.jsx: shared dismissable filter tag (Event Triage + Asset Table)
-- Notification count badge removed (redundant once panel is open)
+### Watch List (BadActors) rewrite
+- Pure React horizontal bars (no Recharts). Cursor-following tooltip with fadeInOnly.
+- CriticalityIndicator with inverted prop for light tooltip bg.
+- "Last 30 days" subtitle. Asset names always teal. Bars 20px, vertically centered.
+
+### Notification filter
+- Chip filters replaced with shared FilterButton (multi-select severity checkboxes)
+- Count badge removed (redundant when panel is open)
+- Same component as Asset Table filter
+
+### Sidebar overhaul
+- Hover-to-expand overlay (no toggle button, no content push, shadow overlay)
+- All icons replaced with Feather/Lucide: factory, list, gauge, git-branch, trending-up, tool, file-search, settings
+- Shared feather base object for consistent stroke weight
+
+### TopBar
+- "APM" spelled out to "Asset Performance Management"
+
+### App.jsx cleanup
+- sidebarExpanded state removed. Content locked to rail width.
+- Events added to VIEWS map (placeholder).
 
 ## Next session priorities
 
-### 1. Impact Strip layout
-- Labels use absolute positioning, feels disconnected
-- Decision: CSS grid refactor vs fine-tune current layout
-- Unconfirmed/pending state (hollow dot)
-
-### 2. Mobile gate
+### 1. Mobile gate
 - Message on screens under 1024px before deploying to portfolio
 
-### 3. Recharts tooltip unification
-- Watch List chart still uses Recharts default tooltip
-- Convert to custom tooltip matching dashboard pattern
-
-### 4. Donut color review
+### 2. Donut color review
 - Desaturated Carbon palette may need adjustment
 - Compare against rest of dashboard charts
 
-### 5. Deploy preparation
+### 3. Deploy preparation
 - Final visual QA pass
-- Screenshot capture for portfolio
+- Screenshot/video capture for portfolio
 - GitHub README
+
+### 4. Asset Inspection screen
+- Three-level IA: Reliability / Maintenance / Performance
+- Drill-down from Asset Table and Watch List
 
 ## Doctrine inventory
 - 22 ADRs (001-022)
@@ -87,7 +89,7 @@ Plant Overview is nearly complete. Impact Strip layout and mobile gate remain.
 
 ## Shared components inventory
 - Badge.jsx -- event severity (tally + fill hierarchy)
-- CriticalityIndicator.jsx -- asset criticality (A/B/C/D letter grade)
+- CriticalityIndicator.jsx -- asset criticality (A/B/C/D, inverted prop)
 - Legend.jsx -- chart legend (swatch + label + value)
 - FilterChip.jsx -- dismissable filter tag
 - FilterButton.jsx -- filter button + checkbox dropdown

@@ -4,7 +4,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 **Path:** `~/Documents/Dev/apm-dashboard/`
 **Dev:** `npx vite` (port 5173)
-**Stack:** React 19 + Recharts + Tailwind v4 + Vite
+**Stack:** React 19 + Recharts (Watch List removed) + Tailwind v4 + Vite
 **Data:** `src/data/assets.js` -- Baytown Refinery, K-101 centrifugal compressor story (21 events)
 **Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
@@ -15,12 +15,14 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 - No Honeywell branding. No inline color values. All colors reference tokens.
 - No inline font-size overrides. All typography from 9 type classes (ADR-018).
+- No inline rgba/hex. Shadows tokenized (--shadow-tooltip, --shadow-overlay).
 - 12-column grid. Card radius 10px, padding 24px. Titles: `type-card-title`.
 - Status: coral-red + amber (ADR-010). Icon + color + text (never color alone, WCAG SC 1.4.1).
 - Event severity badges: shared Badge.jsx (tally + fill hierarchy, ADR-016). Critical=solid red, High=red outline, Medium=amber outline, Low=blue outline.
-- Asset criticality: shared CriticalityIndicator.jsx (A/B/C/D letter grade). Visually distinct from event badges.
-- ISA-101 "dark and quiet". Tooltips: inverted (white bg). Transitions: --motion-fast --ease-productive.
+- Asset criticality: shared CriticalityIndicator.jsx (A/B/C/D letter grade, `inverted` prop for light tooltip bg).
+- ISA-101 "dark and quiet". Tooltips: inverted (white bg), cursor-following where possible. Transitions: --motion-fast --ease-productive.
 - Chart legends: shared Legend.jsx (swatch + label + value). No gradient bars.
+- Nav icons: Feather/Lucide library (24x24 viewBox, shared `feather` base object).
 - Route Figma MCP calls through Agent subagents to save tokens.
 
 ## Typography Scale (ADR-018)
@@ -37,19 +39,23 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 | `type-kpi-hero` | 32px | 700 | Donut center, large callouts |
 | `type-link` | 14px | 400 | Teal links |
 
+## Shell
+
+- **TopBar.jsx**: 48px fixed. Title: "Asset Performance Management".
+- **Sidebar.jsx**: 48px rail, hover-to-expand 256px overlay (no toggle button, no content push). Shadow: --shadow-overlay.
+- **NotificationsPanel.jsx**: 320px push, two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar.
+
 ## Screens
 
 Plant Overview | Events | Asset Inspection | Root Cause | Trends | Work Orders | Investigations
 
-Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPanel.jsx (320px push, two-panel drill-in, ADR-009 mutual exclusion with sidebar)
-
 ## Plant Overview Sections (ADR-020)
 
-1. Plant Health -- KPI bar (6 cards, ADR-010)
-2. What Happened -- Timeline card (ADR-014: 82% track, dashed continuation, white dots, left-aligned labels, three-act narrative)
-3. Current Response -- WOs + Investigations (ADR-011)
-4. Requires Attention -- Event Triage + Alarm Quality + Watch List (ADR-020)
-5. Assets -- data table with drill-down (ADR-019)
+1. Plant Health -- KPI bar (6 cards, ADR-010). Health indicators: triangle (warning), diamond (critical).
+2. What Happened -- Three cards in grid-thirds: Trigger / Consequence / Confirmation. "See full timeline" links to Events screen.
+3. Current Response -- WOs (WoPriority urgency icons) + Investigations (triangle status icons).
+4. Requires Attention -- Event Triage + Alarm Quality + Watch List (ADR-020).
+5. Assets -- data table with drill-down (ADR-019).
 
 ## Asset Table (ADR-019)
 
@@ -60,14 +66,17 @@ Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPa
 - Sortable column headers with always-visible up/down arrows
 - Event Triage filter: chip in both Event Triage card and table toolbar, smooth scroll on apply
 - Pagination: 10 rows per page, fixed height (measures actual row height)
-- Shared FilterChip.jsx and FilterButton.jsx components
+- Column dividers (--color-border-divider), 16px cell padding
+
+## Watch List
+
+Pure React horizontal bars (no Recharts). Cursor-following tooltip with CriticalityIndicator (inverted). "Last 30 days" subtitle. Asset names always teal. Bars color-coded by criticality.
 
 ## WO Urgency (ADR-022)
 
 Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (clock icon)
 - WoPriority.jsx: neutral gray icons + text, no color coding, no pills
 - Data field: `urgency` (not `priority`). Emergency/Urgent/Scheduled.
-- Visually distinct from event Badge (tally bars in colored pills)
 
 ## Five Icon Systems (ADR-022)
 
@@ -85,12 +94,12 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 ## Desk Research Index
 
-001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization
+001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography
 
 ## Shared Components
 
 - `Badge.jsx` -- event severity (tally + fill hierarchy). Events and notifications only.
-- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade).
+- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). `inverted` prop for tooltip contexts.
 - `Legend.jsx` -- chart legend (swatch + label + value).
 - `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table).
 - `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table + Notifications).
