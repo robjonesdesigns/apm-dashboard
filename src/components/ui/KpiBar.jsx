@@ -87,7 +87,7 @@ function Tooltip({ show, pos, children }) {
           background: 'var(--color-tooltip-bg)',
           borderRadius: 'var(--radius-4)',
           padding: 'var(--spacing-12) var(--spacing-16)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          boxShadow: 'var(--shadow-tooltip)',
         }}
       >
         <p className="type-body" style={{ color: 'var(--color-tooltip-text)', margin: 0 }}>

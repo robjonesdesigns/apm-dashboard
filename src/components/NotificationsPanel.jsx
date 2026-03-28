@@ -59,7 +59,7 @@ function NotificationItem({ notification, isNew, onSelect }) {
         borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
         borderRadius: hovered ? 'var(--radius-4)' : '0',
         background: isNew
-          ? (hovered ? 'rgba(45, 212, 191, 0.12)' : 'rgba(45, 212, 191, 0.06)')
+          ? (hovered ? 'var(--color-accent-bg-strong)' : 'var(--color-accent-bg-subtle)')
           : (hovered ? 'var(--color-hover-01)' : 'transparent'),
         cursor: 'pointer',
         transition: `all var(--motion-fast) var(--ease-productive)`,

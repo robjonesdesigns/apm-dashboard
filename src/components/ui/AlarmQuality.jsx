@@ -4,9 +4,9 @@ import { EVENT_SUMMARY } from '../../data/assets'
 // ── Donut palette (Carbon tokens, desaturated for dark-and-quiet) ────────────
 
 const DONUT_COLORS = {
-  confirmed:      '#24a898',  // teal desaturated (from #2dd4bf)
-  falsePositives: '#c9a640',  // yellow desaturated (from #f1c21b)
-  newEvents:      '#3d72cc',  // blue desaturated (from #4589ff)
+  confirmed:      'var(--color-chart-donut-1)',
+  falsePositives: 'var(--color-chart-donut-2)',
+  newEvents:      'var(--color-chart-donut-3)',
 }
 
 const ALARM_SEGMENTS = [
@@ -60,7 +60,7 @@ function DonutTooltip({ segment, total, x, y }) {
         background: 'var(--color-tooltip-bg)',
         borderRadius: 'var(--radius-4)',
         padding: 'var(--spacing-8) var(--spacing-12)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+        boxShadow: 'var(--shadow-tooltip)',
         whiteSpace: 'nowrap',
         zIndex: 100,
         pointerEvents: 'none',

@@ -92,7 +92,7 @@ export default function BadActors({ onAssetClick }) {
               axisLine={false}
               tickLine={false}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--color-hover-cursor)' }} />
             <Bar
               dataKey="events"
               radius={chartStyle.barRadius}

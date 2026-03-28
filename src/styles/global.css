@@ -15,7 +15,11 @@
   --color-hover-01: #333333;
   --color-hover-02: #474747;
   --color-selected: rgba(141, 141, 141, 0.24);
+  --color-hover-cursor: rgba(255, 255, 255, 0.03);
   --color-overlay: rgba(0, 0, 0, 0.6);
+
+  /* ── Shadows ────────────────────────────────────────────────────── */
+  --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.4);
 
   /* ── Text ─────────────────────────────────────────────────────────── */
   --color-text-primary: #f4f4f4;
@@ -36,11 +40,14 @@
   --color-border-tile: #525252;
   --color-border-interactive: #2dd4bf;
   --color-border-disabled: rgba(141, 141, 141, 0.5);
+  --color-border-divider: rgba(57, 57, 57, 0.5);
 
   /* ── Accent (teal, our adaptation of Carbon's interactive blue) ──── */
   --color-accent: #2dd4bf;
   --color-accent-hover: #5de0cf;
   --color-accent-bg: rgba(45, 212, 191, 0.16);
+  --color-accent-bg-strong: rgba(45, 212, 191, 0.12);
+  --color-accent-bg-subtle: rgba(45, 212, 191, 0.06);
 
   /* ── Tooltip (inverted for dark dashboards) ─────────────────────── */
   --color-tooltip-bg: #f4f4f4;
@@ -73,6 +80,11 @@
   --color-chart-6: #ff7eb6;
   --color-chart-7: #42be65;
   --color-chart-8: #33b1ff;
+
+  /* ── Donut palette (desaturated for dark-and-quiet, ADR-017) ────── */
+  --color-chart-donut-1: #24a898;
+  --color-chart-donut-2: #c9a640;
+  --color-chart-donut-3: #3d72cc;
 
   /* ── KPI identity colors ──────────────────────────────────────────── */
   --color-kpi-oee: #4589ff;

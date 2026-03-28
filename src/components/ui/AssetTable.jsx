@@ -26,7 +26,7 @@ WORK_ORDERS.forEach(wo => { woCountByAsset[wo.assetId] = (woCountByAsset[wo.asse
 const invCountByAsset = {}
 CASES.forEach(c => { invCountByAsset[c.assetId] = (invCountByAsset[c.assetId] || 0) + 1 })
 
-const COL_DIVIDER = '1px solid rgba(57, 57, 57, 0.5)'
+const COL_DIVIDER = '1px solid var(--color-border-divider)'
 const cellBase = {
   flexShrink: 0,
   flexGrow: 0,
@@ -67,6 +67,7 @@ function AssetRow({ asset, onAssetClick }) {
 
   return (
     <div
+      data-row
       onClick={() => onAssetClick && onAssetClick(asset)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -254,7 +255,7 @@ function FilterDropdown({ filters, onToggle, onClose }) {
         background: 'var(--color-layer-01)',
         border: '1px solid var(--color-border-strong)',
         borderRadius: 'var(--radius-8)',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+        boxShadow: 'var(--shadow-tooltip)',
         zIndex: 20,
         padding: 'var(--spacing-8) 0',
         animation: 'fadeInOnly var(--motion-fast) var(--ease-productive)',
@@ -306,6 +307,155 @@ function FilterIcon() {
   )
 }
 
+// ── Search icon ─────────────────────────────────────────────────────────────
+
+function SearchIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="7" cy="7" r="5" />
+      <path d="M11 11l3.5 3.5" />
+    </svg>
+  )
+}
+
+// ── Asset search with autocomplete ──────────────────────────────────────────
+
+function AssetSearch({ value, onChange, onAssetClick }) {
+  const [focused, setFocused] = useState(false)
+  const [highlightIdx, setHighlightIdx] = useState(-1)
+  const inputRef = useRef(null)
+  const listRef = useRef(null)
+
+  const query = value.toLowerCase()
+  const suggestions = query.length > 0
+    ? ASSETS.filter(a =>
+        a.name.toLowerCase().includes(query) ||
+        a.id.toLowerCase().includes(query) ||
+        a.type.toLowerCase().includes(query)
+      ).slice(0, 8)
+    : []
+
+  const showDropdown = focused && suggestions.length > 0
+
+  function handleSelect(asset) {
+    onChange('')
+    onAssetClick?.(asset)
+    inputRef.current?.blur()
+  }
+
+  function handleKeyDown(e) {
+    if (!showDropdown) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setHighlightIdx(prev => Math.min(prev + 1, suggestions.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setHighlightIdx(prev => Math.max(prev - 1, 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      setFocused(false)
+    } else if (e.key === 'Escape') {
+      inputRef.current?.blur()
+    }
+  }
+
+  // Reset highlight when suggestions change
+  useEffect(() => { setHighlightIdx(-1) }, [value])
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (listRef.current && !listRef.current.contains(e.target) && e.target !== inputRef.current) {
+        setFocused(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative' }}>
+        <span style={{
+          position: 'absolute',
+          left: 'var(--spacing-8)',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          color: 'var(--color-text-helper)',
+          pointerEvents: 'none',
+          display: 'flex',
+        }}>
+          <SearchIcon />
+        </span>
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onKeyDown={handleKeyDown}
+          placeholder="Search assets..."
+          style={{
+            background: 'var(--color-layer-02)',
+            border: `1px solid ${focused ? 'var(--color-border-interactive)' : 'var(--color-border-subtle)'}`,
+            borderRadius: 'var(--radius-4)',
+            color: 'var(--color-text-primary)',
+            fontSize: 'var(--text-12)',
+            padding: '0 var(--spacing-12) 0 var(--spacing-32)',
+            height: 32,
+            width: 220,
+            outline: 'none',
+            transition: 'border-color var(--motion-fast) var(--ease-productive)',
+          }}
+        />
+      </div>
+      {showDropdown && (
+        <div
+          ref={listRef}
+          role="listbox"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            marginTop: 4,
+            background: 'var(--color-layer-01)',
+            border: '1px solid var(--color-border-strong)',
+            borderRadius: 'var(--radius-8)',
+            boxShadow: 'var(--shadow-tooltip)',
+            zIndex: 20,
+            overflow: 'hidden',
+            animation: 'fadeInOnly var(--motion-fast) var(--ease-productive)',
+          }}
+        >
+          {suggestions.map((asset, i) => {
+            const isHighlighted = i === highlightIdx
+            return (
+              <div
+                key={asset.id}
+                role="option"
+                aria-selected={isHighlighted}
+                onMouseEnter={() => setHighlightIdx(i)}
+                onMouseDown={(e) => { e.preventDefault(); handleSelect(asset) }}
+                style={{
+                  padding: 'var(--spacing-8) var(--spacing-12)',
+                  cursor: 'pointer',
+                  background: isHighlighted ? 'var(--color-accent-bg)' : 'transparent',
+                  borderLeft: isHighlighted ? '2px solid var(--color-accent)' : '2px solid transparent',
+                  transition: 'background var(--motion-fast) var(--ease-productive)',
+                }}
+              >
+                <div className="type-body" style={{ color: 'var(--color-accent)' }}>{asset.name}</div>
+                <div className="type-meta">{asset.id} -- {asset.type}</div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── AssetTable ──────────────────────────────────────────────────────────────
 
 export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) {
@@ -314,6 +464,18 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [sortKey, setSortKey] = useState(null)
   const [sortDir, setSortDir] = useState('asc')
+  const [page, setPage] = useState(0)
+  const [rowHeight, setRowHeight] = useState(0)
+  const rowsRef = useRef(null)
+  const rowsPerPage = 10
+
+  // Measure actual row height on first render
+  useEffect(() => {
+    if (rowsRef.current && rowHeight === 0) {
+      const firstRow = rowsRef.current.querySelector('[data-row]')
+      if (firstRow) setRowHeight(firstRow.getBoundingClientRect().height)
+    }
+  })
 
   const searchLower = search.toLowerCase()
 
@@ -327,6 +489,7 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
   }
 
   function toggleFilter(category, value) {
+    setPage(0)
     setFilters(prev => {
       const arr = prev[category]
       const next = arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value]
@@ -335,6 +498,7 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
   }
 
   function removeFilter(category, value) {
+    setPage(0)
     setFilters(prev => ({ ...prev, [category]: prev[category].filter(v => v !== value) }))
   }
 
@@ -349,11 +513,17 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
     if (filters.criticality.length && !filters.criticality.includes(a.criticality)) return false
     if (filters.status.length && !filters.status.includes(a.status)) return false
     if (filters.processUnit.length && !filters.processUnit.includes(a.processUnit)) return false
-    if (searchLower && !a.name.toLowerCase().includes(searchLower) && !a.id.toLowerCase().includes(searchLower)) return false
+    if (searchLower && !a.name.toLowerCase().includes(searchLower) && !a.id.toLowerCase().includes(searchLower) && !a.type.toLowerCase().includes(searchLower)) return false
     return true
   })
 
   const sortedAssets = sortAssets(filteredAssets, sortKey, sortDir)
+  const totalRows = sortedAssets.length
+  const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage))
+  const safePage = Math.min(page, totalPages - 1)
+  const startIdx = safePage * rowsPerPage
+  const pageAssets = sortedAssets.slice(startIdx, startIdx + rowsPerPage)
+
   const activeChipCount = filters.criticality.length + filters.status.length + filters.processUnit.length
   const hasAnyFilter = riskFilter || activeChipCount > 0 || search
 
@@ -395,21 +565,10 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
 
           {/* Right: search + filter button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-            <input
-              type="text"
+            <AssetSearch
               value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search assets..."
-              style={{
-                background: 'var(--color-layer-02)',
-                border: '1px solid var(--color-border-subtle)',
-                borderRadius: 'var(--radius-4)',
-                color: 'var(--color-text-primary)',
-                fontSize: 'var(--text-12)',
-                padding: '0 var(--spacing-12)',
-                height: 32,
-                width: 200,
-              }}
+              onChange={val => { setSearch(val); setPage(0) }}
+              onAssetClick={onAssetClick}
             />
             <div style={{ position: 'relative' }}>
               <button
@@ -460,9 +619,9 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
           </div>
         </div>
 
-        {/* Scrollable table area — pull to card edges with negative margin */}
-        <div style={{ overflowX: 'auto', margin: '0 calc(-1 * var(--spacing-24))' }}>
-          {/* Sticky header */}
+        {/* Table area — pull to card edges with negative margin */}
+        <div style={{ margin: '0 calc(-1 * var(--spacing-24))' }}>
+          {/* Fixed header */}
           <div
             style={{
               display:         'flex',
@@ -473,9 +632,6 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
               borderTop:       '1px solid var(--color-border-subtle)',
               borderBottom:    '1px solid var(--color-border-subtle)',
               borderLeft:      '2px solid transparent',
-              position:        'sticky',
-              top:             0,
-              zIndex:          1,
               minWidth:        700,
             }}
           >
@@ -490,17 +646,86 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
             <SortableHeader label="Remaining Life" sortKey="rul"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.rul} />
           </div>
 
-          {/* Rows */}
-          <div style={{ minWidth: 700 }}>
-            {sortedAssets.map(asset => (
+          {/* Rows — paginated, always 10 row slots */}
+          <div ref={rowsRef} style={{ minWidth: 700, minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
+            {pageAssets.map(asset => (
               <AssetRow
                 key={asset.id}
                 asset={asset}
                 onAssetClick={onAssetClick}
               />
             ))}
+            {totalRows === 0 && (
+              <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
+                <span className="type-meta">No assets match the current filters</span>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalRows > 0 && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: 'var(--spacing-12)',
+            marginTop: 'var(--spacing-4)',
+          }}>
+            <span className="type-meta">
+              {startIdx + 1}--{Math.min(startIdx + rowsPerPage, totalRows)} of {totalRows} assets
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <button
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={safePage === 0}
+                aria-label="Previous page"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 32,
+                  height: 32,
+                  borderRadius: 'var(--radius-4)',
+                  border: '1px solid var(--color-border-subtle)',
+                  background: 'var(--color-layer-02)',
+                  color: safePage === 0 ? 'var(--color-text-disabled)' : 'var(--color-text-secondary)',
+                  cursor: safePage === 0 ? 'not-allowed' : 'pointer',
+                  transition: 'all var(--motion-fast) var(--ease-productive)',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 4L6 8l4 4" />
+                </svg>
+              </button>
+              <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', minWidth: 48, textAlign: 'center' }}>
+                {safePage + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={safePage >= totalPages - 1}
+                aria-label="Next page"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 32,
+                  height: 32,
+                  borderRadius: 'var(--radius-4)',
+                  border: '1px solid var(--color-border-subtle)',
+                  background: 'var(--color-layer-02)',
+                  color: safePage >= totalPages - 1 ? 'var(--color-text-disabled)' : 'var(--color-text-secondary)',
+                  cursor: safePage >= totalPages - 1 ? 'not-allowed' : 'pointer',
+                  transition: 'all var(--motion-fast) var(--ease-productive)',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 4l4 4-4 4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

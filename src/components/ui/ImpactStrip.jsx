@@ -89,7 +89,7 @@ function MinorDot({ event, style }) {
             background: 'var(--color-tooltip-bg)',
             borderRadius: 'var(--radius-4)',
             padding: 'var(--spacing-8) var(--spacing-12)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            boxShadow: 'var(--shadow-tooltip)',
             whiteSpace: 'nowrap',
             zIndex: 100,
             pointerEvents: 'none',
