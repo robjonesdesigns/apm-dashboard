@@ -39,7 +39,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 ## Screens
 
-Plant Overview | Asset Inspection | Root Cause | Trends | Work Orders | Investigations
+Plant Overview | Events | Asset Inspection | Root Cause | Trends | Work Orders | Investigations
 
 Shell: Sidebar.jsx (48px rail / 256px), TopBar.jsx (48px fixed), NotificationsPanel.jsx (320px push, two-panel drill-in, ADR-009 mutual exclusion with sidebar)
 

@@ -18,7 +18,19 @@ const IconPlantOverview = () => (
   </svg>
 )
 
-// 2. Asset Inspection — gear
+// 2. Events — stacked list with dot indicators
+const IconEvents = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <circle cx="4" cy="5" r="1.5" fill="currentColor" />
+    <line x1="8" y1="5" x2="18" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="4" cy="10" r="1.5" fill="currentColor" />
+    <line x1="8" y1="10" x2="18" y2="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="4" cy="15" r="1.5" fill="currentColor" />
+    <line x1="8" y1="15" x2="18" y2="15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+)
+
+// 3. Asset Inspection — gear
 const IconAssetInspection = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
     <circle cx="10" cy="10" r="2.75" stroke="currentColor" strokeWidth="1.5" />
@@ -141,6 +153,7 @@ function ChevronIcon({ expanded }) {
 
 const NAV_ITEMS = [
   { id: 'overview',        label: 'Plant Overview',   Icon: IconPlantOverview   },
+  { id: 'events',          label: 'Events',           Icon: IconEvents          },
   { id: 'inspection',      label: 'Asset Inspection', Icon: IconAssetInspection },
   { id: 'rootcause',       label: 'Root Cause',       Icon: IconRootCause       },
   { id: 'trends',          label: 'Trends',           Icon: IconTrends          },
