@@ -1,28 +1,13 @@
 import { useState } from 'react'
 import { WORK_ORDERS, CASES } from '../../data/assets'
-import Badge from './Badge'
+import WoPriority from './WoPriority'
 
-// ── Badge maps (ADR-016) ─────────────────────────────────────────────────────
-// Uses shared Badge component with tally + fill hierarchy
-
-const PRIORITY_BADGE = {
-  critical: 'critical',
-  high:     'high',
-  medium:   'medium',
-  low:      'low',
-}
-// Low uses neutral gray (same as investigation statuses)
-const NEUTRAL_BADGE_STYLE = {
-  background: 'var(--color-border-subtle)',
-  color: 'var(--color-text-secondary)',
-  border: '1px solid var(--color-border-strong)',
-}
 
 // ── Summary builders ────────────────────────────────────────────────────────
 
 function buildWoSummary(orders) {
-  const counts = { critical: 0, high: 0, medium: 0, low: 0 }
-  orders.forEach((wo) => { counts[wo.priority] = (counts[wo.priority] || 0) + 1 })
+  const counts = { emergency: 0, urgent: 0, scheduled: 0 }
+  orders.forEach((wo) => { counts[wo.urgency] = (counts[wo.urgency] || 0) + 1 })
   return counts
 }
 
@@ -54,21 +39,34 @@ function rowBaseStyle(isHovered) {
   }
 }
 
-// ── Status dot (filled = active, hollow = waiting) ──────────────────────────
+// ── Investigation status icons (right-pointing triangles = progress) ─────────
 
-function StatusDot({ filled }) {
+function InvestigatingIcon() {
   return (
-    <span
-      style={{
-        width: '8px',
-        height: '8px',
-        borderRadius: 'var(--radius-full)',
-        border: '1.5px solid var(--color-text-secondary)',
-        background: filled ? 'var(--color-text-secondary)' : 'transparent',
-        flexShrink: 0,
-        display: 'inline-block',
-      }}
-    />
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+      <path d="M3 1.5L10 6 3 10.5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function OpenIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M3 1.5L10 6 3 10.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function InvestigationStatus({ status }) {
+  const isInvestigating = status === 'investigating'
+  const Icon = isInvestigating ? InvestigatingIcon : OpenIcon
+  const label = isInvestigating ? 'Investigating' : 'Open'
+
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-secondary)' }}>
+      <Icon />
+      <span className="type-label" style={{ color: 'var(--color-text-secondary)' }}>{label}</span>
+    </span>
   )
 }
 
@@ -76,17 +74,16 @@ function StatusDot({ filled }) {
 
 function WoSummaryLine({ summary }) {
   const parts = []
-  if (summary.critical > 0) parts.push({ count: summary.critical, level: 'critical' })
-  if (summary.high > 0)     parts.push({ count: summary.high,     level: 'high' })
-  if (summary.medium > 0)   parts.push({ count: summary.medium,   level: 'medium' })
-  if (summary.low > 0)      parts.push({ count: summary.low,      level: 'low' })
+  if (summary.emergency > 0) parts.push({ count: summary.emergency, urgency: 'emergency' })
+  if (summary.urgent > 0)    parts.push({ count: summary.urgent,    urgency: 'urgent' })
+  if (summary.scheduled > 0) parts.push({ count: summary.scheduled, urgency: 'scheduled' })
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
       {parts.map((p, i) => (
-        <span key={p.level} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+        <span key={p.urgency} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
           <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{p.count}</span>
-          <Badge level={p.level} />
+          <WoPriority urgency={p.urgency} />
           {i < parts.length - 1 && (
             <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
           )}
@@ -100,17 +97,15 @@ function WoSummaryLine({ summary }) {
 
 function CaseSummaryLine({ summary }) {
   const parts = []
-  if (summary.investigating > 0) parts.push({ label: `${summary.investigating} Investigating`, filled: true })
-  if (summary.open > 0)          parts.push({ label: `${summary.open} Open`, filled: false })
+  if (summary.investigating > 0) parts.push({ count: summary.investigating, status: 'investigating' })
+  if (summary.open > 0)          parts.push({ count: summary.open,          status: 'open' })
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
       {parts.map((p, i) => (
-        <span key={p.label} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-          <span className="badge" style={{ ...NEUTRAL_BADGE_STYLE, display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-            <StatusDot filled={p.filled} />
-            {p.label}
-          </span>
+        <span key={p.status} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+          <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{p.count}</span>
+          <InvestigationStatus status={p.status} />
           {i < parts.length - 1 && (
             <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
           )}
@@ -126,10 +121,10 @@ function WorkOrdersCard() {
   const [hoveredId, setHoveredId] = useState(null)
   const summary = buildWoSummary(WORK_ORDERS)
 
-  // Show top 5, sorted by priority (critical first)
-  const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
+  // Show top 5, sorted by urgency (emergency first)
+  const urgencyOrder = { emergency: 0, urgent: 1, scheduled: 2 }
   const visible = [...WORK_ORDERS]
-    .sort((a, b) => (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9))
+    .sort((a, b) => (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9))
     .slice(0, 5)
 
   return (
@@ -153,7 +148,7 @@ function WorkOrdersCard() {
             onMouseEnter={() => setHoveredId(wo.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: WO ID + task (clickable, truncated) | priority pill */}
+            {/* Line 1: WO ID + task (clickable, truncated) | urgency */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
                 <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
@@ -161,7 +156,7 @@ function WorkOrdersCard() {
                 <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <Badge level={PRIORITY_BADGE[wo.priority] || 'low'} />
+                <WoPriority urgency={wo.urgency} />
               </div>
             </div>
 
@@ -230,13 +225,7 @@ function InvestigationsCard() {
                 <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
               </div>
               <div style={{ flexShrink: 0 }}>
-                <span
-                  className="badge"
-                  style={{ ...NEUTRAL_BADGE_STYLE, textTransform: 'capitalize', display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}
-                >
-                  <StatusDot filled={c.status === 'investigating'} />
-                  {c.status}
-                </span>
+                <InvestigationStatus status={c.status} />
               </div>
             </div>
 
