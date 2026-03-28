@@ -14,7 +14,7 @@ const LEVELS = {
   D: { label: 'General',    bg: 'transparent',             border: 'var(--color-border-strong)' },
 }
 
-export default function CriticalityIndicator({ level }) {
+export default function CriticalityIndicator({ level, inverted = false }) {
   const config = LEVELS[level] || LEVELS.D
 
   return (
@@ -27,7 +27,7 @@ export default function CriticalityIndicator({ level }) {
         borderRadius: 'var(--radius-4)',
         border: `1px solid ${config.border}`,
         background: config.bg,
-        color: 'var(--color-text-primary)',
+        color: inverted ? 'var(--color-text-inverse)' : 'var(--color-text-primary)',
         fontSize: 'var(--text-12)',
         fontWeight: 600,
         lineHeight: 1,

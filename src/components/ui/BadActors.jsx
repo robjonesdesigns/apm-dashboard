@@ -1,8 +1,14 @@
+// ── Watch List ────────────────────────────────────────────────────────────────
+// Pure React horizontal bar chart. No Recharts dependency.
+// Assets with recurring events over 30 days, ranked by count.
+// Bars color-coded by asset criticality (A=red, B=amber, C=blue).
+// Cursor-following tooltip matches dashboard pattern.
+
 import { useState } from 'react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, LabelList, ResponsiveContainer } from 'recharts'
 import { BAD_ACTORS } from '../../data/assets'
-import { colors, chartStyle } from '../../styles/tokens'
+import { colors } from '../../styles/tokens'
 import Legend from './Legend'
+import CriticalityIndicator from './CriticalityIndicator'
 
 function barColor(criticality) {
   if (criticality === 'A') return colors.error
@@ -16,107 +22,152 @@ const LEGEND_ITEMS = [
   { label: 'C (Support)',    color: colors.info },
 ]
 
-function CustomTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null
-  const d = payload[0]
+const maxEvents = Math.max(...BAD_ACTORS.map(a => a.events))
+
+// ── Tooltip (cursor-following, matches dashboard pattern) ───────────────────
+
+function WatchListTooltip({ item, x, y }) {
+  if (!item) return null
+
   return (
     <div
       style={{
-        background: chartStyle.tooltipBg,
-        border: `1px solid ${chartStyle.tooltipBorder}`,
-        borderRadius: 'var(--radius-8)',
+        position: 'fixed',
+        left: x + 12,
+        top: y - 8,
+        background: 'var(--color-tooltip-bg)',
+        borderRadius: 'var(--radius-4)',
         padding: 'var(--spacing-8) var(--spacing-12)',
+        boxShadow: 'var(--shadow-tooltip)',
+        whiteSpace: 'nowrap',
+        zIndex: 100,
+        pointerEvents: 'none',
+        animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--spacing-4)',
       }}
     >
-      <div style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600, marginBottom: 'var(--spacing-4)' }}>
-        {d.payload.name}
+      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
+        {item.name}
+      </span>
+      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Events (30d)</span>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{item.events}</span>
       </div>
       <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>Events</span>
-        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600 }}>{d.value}</span>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Asset Criticality</span>
+        <CriticalityIndicator level={item.criticality} inverted />
       </div>
-      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center', marginTop: 'var(--spacing-4)' }}>
-        <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>Criticality</span>
-        <span style={{ color: barColor(d.payload.criticality), fontSize: chartStyle.axisFont, fontWeight: 600 }}>
-          {d.payload.criticality}
+    </div>
+  )
+}
+
+// ── Bar row ─────────────────────────────────────────────────────────────────
+
+function BarRow({ item, isHovered, isDimmed, onHover, onLeave, onClick }) {
+  const pct = (item.events / maxEvents) * 100
+
+  return (
+    <div
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      onClick={() => onClick(item.assetId)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-8)',
+        padding: 'var(--spacing-4) 0',
+        cursor: 'pointer',
+        opacity: isDimmed ? 0.35 : 1,
+        transition: 'opacity var(--motion-fast) var(--ease-productive)',
+      }}
+    >
+      {/* Asset name */}
+      <span
+        className="type-meta"
+        style={{
+          width: 120,
+          flexShrink: 0,
+          textAlign: 'right',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          color: 'var(--color-accent)',
+        }}
+      >
+        {item.name}
+      </span>
+
+      {/* Bar + count */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+        <div style={{ flex: 1, height: 20, background: 'var(--color-layer-02)', borderRadius: 'var(--radius-4)', overflow: 'hidden' }}>
+          <div
+            style={{
+              width: `${pct}%`,
+              height: '100%',
+              background: barColor(item.criticality),
+              borderRadius: 'var(--radius-4)',
+              transition: 'width var(--motion-slow) var(--ease-productive)',
+              minWidth: 4,
+            }}
+          />
+        </div>
+        <span
+          className="type-meta"
+          style={{
+            width: 24,
+            flexShrink: 0,
+            textAlign: 'right',
+            fontWeight: 600,
+            fontVariantNumeric: 'tabular-nums',
+            color: 'var(--color-text-primary)',
+          }}
+        >
+          {item.events}
         </span>
       </div>
     </div>
   )
 }
 
-const chartData = BAD_ACTORS.map((a) => ({
-  name: a.name,
-  assetId: a.assetId,
-  events: a.events,
-  criticality: a.criticality,
-}))
+// ── BadActors (Watch List) ──────────────────────────────────────────────────
 
 export default function BadActors({ onAssetClick }) {
-  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [hoveredIdx, setHoveredIdx] = useState(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  const handleClick = (data) => {
-    if (onAssetClick && data?.assetId) onAssetClick(data.assetId)
-  }
-
-  const chartHeight = BAD_ACTORS.length * 40 + 16
+  const hoveredItem = hoveredIdx !== null ? BAD_ACTORS[hoveredIdx] : null
 
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
+    <div
+      className="card"
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}
+      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+    >
       {/* Header */}
-      <span className="type-card-title">Watch List</span>
-
-      {/* Horizontal bar chart */}
-      <div style={{ height: chartHeight }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            layout="vertical"
-            margin={{ top: 8, right: 16, bottom: 0, left: 0 }}
-            onClick={(e) => {
-              if (e?.activePayload?.[0]) handleClick(e.activePayload[0].payload)
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            <XAxis
-              type="number"
-              tick={{ fill: chartStyle.axisText, fontSize: chartStyle.axisFont }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={130}
-              tick={{ fill: chartStyle.axisText, fontSize: chartStyle.axisFont }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--color-hover-cursor)' }} />
-            <Bar
-              dataKey="events"
-              radius={chartStyle.barRadius}
-              animationDuration={300}
-              onMouseEnter={(_, index) => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={entry.assetId}
-                  fill={barColor(entry.criticality)}
-                  opacity={hoveredIndex !== null && hoveredIndex !== index ? 0.4 : 1}
-                  style={{ transition: `opacity var(--motion-fast) var(--ease-productive)` }}
-                />
-              ))}
-              <LabelList
-                dataKey="events"
-                position="right"
-                style={{ fill: chartStyle.axisText, fontSize: chartStyle.axisFont }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span className="type-card-title">Watch List</span>
+        <span className="type-meta">Last 30 days</span>
       </div>
+
+      {/* Bars -- centered vertically in card */}
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+        {BAD_ACTORS.map((item, i) => (
+          <BarRow
+            key={item.assetId}
+            item={item}
+            isHovered={hoveredIdx === i}
+            isDimmed={hoveredIdx !== null && hoveredIdx !== i}
+            onHover={() => setHoveredIdx(i)}
+            onLeave={() => setHoveredIdx(null)}
+            onClick={(id) => onAssetClick?.(id)}
+          />
+        ))}
+      </div>
+
+      {/* Tooltip */}
+      <WatchListTooltip item={hoveredItem} x={mousePos.x} y={mousePos.y} />
 
       {/* Legend */}
       <Legend items={LEGEND_ITEMS} shape="square" />
