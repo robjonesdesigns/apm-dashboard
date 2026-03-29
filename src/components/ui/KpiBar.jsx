@@ -171,15 +171,11 @@ function HealthIndicator({ state, thresholdLabel }) {
 
 // ── KPI card ─────────────────────────────────────────────────────────────────
 
-function KpiCard({ config, onClick }) {
+function KpiCard({ config, onClick, isSelected }) {
   const health = getHealthState(config.key, config.value)
   const delta = config.value - config.previous
   const deltaSign = delta >= 0 ? '+' : ''
-  // Delta is always neutral -- its job is "what changed," not "is this good or bad."
-  // The health indicator handles the judgment. Avoids doubling alarm colors.
   const deltaColor = 'var(--color-text-secondary)'
-
-  // Value is always neutral -- the health indicator handles the judgment.
   const valueColor = 'var(--color-text-primary)'
 
   const threshold = THRESHOLDS[config.key]
@@ -188,39 +184,88 @@ function KpiCard({ config, onClick }) {
     : `Below ${threshold.warning}%`
 
   return (
-    <button
-      className="card card-accent-top card-interactive"
-      onClick={() => onClick(config.key)}
-      aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
-      style={{ textAlign: 'left', width: '100%' }}
-    >
-      {/* Label + info */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
-        <span className="type-card-title">{config.label}</span>
-        <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <button
+        className="card card-accent-top card-interactive"
+        onClick={() => onClick(config.key)}
+        aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
+        aria-expanded={isSelected}
+        style={{
+          textAlign: 'left',
+          width: '100%',
+          borderBottom: isSelected ? '1px solid var(--color-accent)' : undefined,
+        }}
+      >
+        {/* Label + info */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+          <span className="type-card-title">{config.label}</span>
+          <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
+        </div>
 
-      {/* Value + health indicator inline */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
-        <span className="type-kpi" style={{ color: valueColor }}>
-          {config.value}%
-        </span>
-        <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
-      </div>
+        {/* Value + health indicator inline */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
+          <span className="type-kpi" style={{ color: valueColor }}>
+            {config.value}%
+          </span>
+          <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
+        </div>
 
-      {/* Delta */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
-        <span className="type-meta" style={{ color: deltaColor }}>
-          {deltaSign}{delta.toFixed(1)}% vs yesterday
-        </span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-          {delta >= 0
-            ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
-            : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
-          }
-        </svg>
-      </div>
-    </button>
+        {/* Delta */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
+          <span className="type-meta" style={{ color: deltaColor }}>
+            {deltaSign}{delta.toFixed(1)}% vs yesterday
+          </span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+            {delta >= 0
+              ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
+              : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
+            }
+          </svg>
+        </div>
+      </button>
+
+      {/* Inline drawer */}
+      {isSelected && (
+        <div
+          className="card"
+          style={{
+            borderTop: 'none',
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+            marginTop: '-1px',
+            padding: 'var(--spacing-12) var(--spacing-16)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--spacing-8)',
+            animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+          }}
+        >
+          {/* Sparkline */}
+          <Sparkline data={OEE_TREND} dataKey={config.key} width={200} height={40} />
+
+          {/* Month range */}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{OEE_TREND[0].month}</span>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{OEE_TREND[OEE_TREND.length - 1].month}</span>
+          </div>
+
+          {/* Before / After */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+              Before: <strong style={{ color: 'var(--color-text-primary)' }}>{config.previous}%</strong>
+            </span>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+              After: <strong style={{ color: 'var(--color-text-primary)' }}>{config.value}%</strong>
+            </span>
+          </div>
+
+          {/* Go to Trends */}
+          <div style={{ textAlign: 'right', paddingTop: 'var(--spacing-4)' }}>
+            <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>Go to Trends &rarr;</span>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -262,86 +307,6 @@ function Sparkline({ data, dataKey, width = 280, height = 48 }) {
   )
 }
 
-// ── KPI Trend Panel (expandable below the KPI bar) ──────────────────────────
-
-const KPI_LABELS = { oee: 'OEE', availability: 'Availability', performance: 'Performance', quality: 'Quality' }
-
-function KpiTrendPanel({ selectedKpi, onClose }) {
-  if (!selectedKpi) return null
-
-  const config = KPI_CONFIG.find(c => c.key === selectedKpi)
-  if (!config) return null
-
-  const delta = config.value - config.previous
-  const deltaSign = delta >= 0 ? '+' : ''
-
-  return (
-    <div
-      className="card"
-      style={{
-        marginTop: 'var(--spacing-12)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-24)',
-        animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
-      }}
-    >
-      {/* Left: before/after comparison */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-        <span className="type-card-title">{KPI_LABELS[selectedKpi]} Trend</span>
-        <div style={{ display: 'flex', gap: 'var(--spacing-16)', alignItems: 'baseline' }}>
-          <div>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>Before</span>
-            <span className="type-kpi" style={{ fontSize: '20px' }}>{config.previous}%</span>
-          </div>
-          <div>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>After</span>
-            <span className="type-kpi" style={{ fontSize: '20px' }}>{config.value}%</span>
-          </div>
-          <div>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>Delta</span>
-            <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-              {deltaSign}{delta.toFixed(1)}%
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Center: sparkline */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-            {OEE_TREND[0].month}
-          </span>
-          <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-            {OEE_TREND[OEE_TREND.length - 1].month}
-          </span>
-        </div>
-        <Sparkline data={OEE_TREND} dataKey={selectedKpi} />
-      </div>
-
-      {/* Right: Go to Trends link */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-        <span className="type-link" style={{ cursor: 'pointer' }}>Go to Trends &rarr;</span>
-        <button
-          onClick={onClose}
-          className="type-meta"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--color-text-helper)',
-            cursor: 'pointer',
-            font: 'inherit',
-            padding: 0,
-          }}
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  )
-}
-
 // ── KpiBar ───────────────────────────────────────────────────────────────────
 
 export default function KpiBar({ onKpiClick }) {
@@ -356,7 +321,7 @@ export default function KpiBar({ onKpiClick }) {
     <div>
     <div className="kpi-grid">
       {KPI_CONFIG.map((config) => (
-        <KpiCard key={config.key} config={config} onClick={handleKpiClick} />
+        <KpiCard key={config.key} config={config} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />
       ))}
 
       {/* Trains */}
@@ -391,8 +356,6 @@ export default function KpiBar({ onKpiClick }) {
       </div>
     </div>
 
-    {/* Expandable trend panel */}
-    <KpiTrendPanel selectedKpi={selectedKpi} onClose={() => setSelectedKpi(null)} />
     </div>
   )
 }
