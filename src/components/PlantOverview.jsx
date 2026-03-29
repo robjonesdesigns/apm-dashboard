@@ -51,24 +51,24 @@ export default function PlantOverview({ onNavigate }) {
   return (
     <div className="section-gap">
 
-      {/* 1. Plant Health — "How's my plant?" */}
+      {/* 1. System Health — "How's my plant?" */}
       <section>
-        <p className="section-header">Plant Health</p>
+        <p className="section-header">System Health</p>
         <KpiBar onKpiClick={(metric) => console.log('KPI clicked:', metric)} />
       </section>
 
       {/* 2. What Happened — "What caused the KPI change?" (ADR-013 Layer 1) */}
       <ImpactStrip />
 
-      {/* 3. Current Response — "Is anyone handling it?" */}
+      {/* 3. In Progress — "Is anyone handling it?" */}
       <section>
-        <p className="section-header">Current Response</p>
+        <p className="section-header">In Progress</p>
         <TodaysActivity />
       </section>
 
-      {/* 4. Requires Attention — "What do I need to figure out?" */}
+      {/* 4. Needs Action — "What do I need to figure out?" */}
       <section>
-        <p className="section-header">Requires Attention</p>
+        <p className="section-header">Needs Action</p>
         <div className="grid-thirds">
           <RiskMatrix selectedCell={riskFilter} onCellClick={handleRiskCellClick} onClearFilter={clearFilter} />
           <AlarmQuality />

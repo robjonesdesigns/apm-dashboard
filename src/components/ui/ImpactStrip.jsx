@@ -41,7 +41,7 @@ export default function ImpactStrip() {
 
   return (
     <section>
-      <p className="section-header">Impact Summary</p>
+      <p className="section-header">What Happened?</p>
 
       <div className="grid-thirds">
         {majorEvents.map((event, i) => (
