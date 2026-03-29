@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { PLANT } from '../../data/assets'
+import { PLANT, OEE_TREND } from '../../data/assets'
 
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
 
@@ -224,13 +224,139 @@ function KpiCard({ config, onClick }) {
   )
 }
 
+// ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
+
+function Sparkline({ data, dataKey, width = 280, height = 48 }) {
+  if (!data || data.length === 0) return null
+
+  const values = data.map(d => d[dataKey])
+  const min = Math.min(...values) - 2
+  const max = Math.max(...values) + 2
+  const range = max - min || 1
+  const px = 4 // horizontal padding
+  const py = 4 // vertical padding
+  const stepX = (width - px * 2) / (values.length - 1)
+
+  const points = values.map((v, i) => {
+    const x = px + i * stepX
+    const y = py + (1 - (v - min) / range) * (height - py * 2)
+    return `${x},${y}`
+  }).join(' ')
+
+  // Last point highlighted
+  const lastX = px + (values.length - 1) * stepX
+  const lastY = py + (1 - (values[values.length - 1] - min) / range) * (height - py * 2)
+
+  return (
+    <svg width={width} height={height} style={{ display: 'block' }}>
+      <polyline
+        points={points}
+        fill="none"
+        stroke="var(--color-accent)"
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <circle cx={lastX} cy={lastY} r={3} fill="var(--color-accent)" />
+    </svg>
+  )
+}
+
+// ── KPI Trend Panel (expandable below the KPI bar) ──────────────────────────
+
+const KPI_LABELS = { oee: 'OEE', availability: 'Availability', performance: 'Performance', quality: 'Quality' }
+
+function KpiTrendPanel({ selectedKpi, onClose }) {
+  if (!selectedKpi) return null
+
+  const config = KPI_CONFIG.find(c => c.key === selectedKpi)
+  if (!config) return null
+
+  const delta = config.value - config.previous
+  const deltaSign = delta >= 0 ? '+' : ''
+
+  return (
+    <div
+      className="card"
+      style={{
+        marginTop: 'var(--spacing-12)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-24)',
+        animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+      }}
+    >
+      {/* Left: before/after comparison */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+        <span className="type-card-title">{KPI_LABELS[selectedKpi]} Trend</span>
+        <div style={{ display: 'flex', gap: 'var(--spacing-16)', alignItems: 'baseline' }}>
+          <div>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>Before</span>
+            <span className="type-kpi" style={{ fontSize: '20px' }}>{config.previous}%</span>
+          </div>
+          <div>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>After</span>
+            <span className="type-kpi" style={{ fontSize: '20px' }}>{config.value}%</span>
+          </div>
+          <div>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)', display: 'block' }}>Delta</span>
+            <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+              {deltaSign}{delta.toFixed(1)}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Center: sparkline */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+            {OEE_TREND[0].month}
+          </span>
+          <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+            {OEE_TREND[OEE_TREND.length - 1].month}
+          </span>
+        </div>
+        <Sparkline data={OEE_TREND} dataKey={selectedKpi} />
+      </div>
+
+      {/* Right: Go to Trends link */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+        <span className="type-link" style={{ cursor: 'pointer' }}>Go to Trends &rarr;</span>
+        <button
+          onClick={onClose}
+          className="type-meta"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--color-text-helper)',
+            cursor: 'pointer',
+            font: 'inherit',
+            padding: 0,
+          }}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── KpiBar ───────────────────────────────────────────────────────────────────
 
 export default function KpiBar({ onKpiClick }) {
+  const [selectedKpi, setSelectedKpi] = useState(null)
+
+  function handleKpiClick(key) {
+    setSelectedKpi(prev => prev === key ? null : key)
+    onKpiClick?.(key)
+  }
+
   return (
+    <div>
     <div className="kpi-grid">
       {KPI_CONFIG.map((config) => (
-        <KpiCard key={config.key} config={config} onClick={onKpiClick} />
+        <KpiCard key={config.key} config={config} onClick={handleKpiClick} />
       ))}
 
       {/* Trains */}
@@ -263,6 +389,10 @@ export default function KpiBar({ onKpiClick }) {
           </svg>
         </div>
       </div>
+    </div>
+
+    {/* Expandable trend panel */}
+    <KpiTrendPanel selectedKpi={selectedKpi} onClose={() => setSelectedKpi(null)} />
     </div>
   )
 }
