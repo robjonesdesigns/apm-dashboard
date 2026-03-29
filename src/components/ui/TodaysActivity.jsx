@@ -1,6 +1,24 @@
 import { useState } from 'react'
-import { WORK_ORDERS, CASES } from '../../data/assets'
+import { WORK_ORDERS, CASES, TIMELINE, INCIDENTS } from '../../data/assets'
 import WoPriority from './WoPriority'
+
+function getEventName(eventId) {
+  if (!eventId) return null
+  const evt = TIMELINE.find(e => e.id === eventId)
+  return evt ? evt.name : null
+}
+
+function getIncidentName(incidentId) {
+  if (!incidentId) return null
+  const inc = INCIDENTS.find(i => i.id === incidentId)
+  return inc ? inc.name : null
+}
+
+function getIncidentForEvent(eventId) {
+  if (!eventId) return null
+  const inc = INCIDENTS.find(i => i.eventIds.includes(eventId))
+  return inc ? inc.name : null
+}
 
 
 // ── Summary builders ────────────────────────────────────────────────────────
@@ -176,6 +194,25 @@ function WorkOrdersCard() {
                 </div>
               </div>
             </div>
+
+            {/* Line 3: triggering event + incident (if linked) */}
+            {(wo.eventId || getIncidentForEvent(wo.eventId)) && (
+              <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
+                {getEventName(wo.eventId) && (
+                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
+                    {getEventName(wo.eventId)}
+                  </span>
+                )}
+                {getEventName(wo.eventId) && getIncidentForEvent(wo.eventId) && (
+                  <span style={{ color: 'var(--color-text-helper)' }}>·</span>
+                )}
+                {getIncidentForEvent(wo.eventId) && (
+                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
+                    {getIncidentForEvent(wo.eventId)}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -245,6 +282,29 @@ function InvestigationsCard() {
                 </div>
               </div>
             </div>
+
+            {/* Line 3: scope (events + WOs) + incident */}
+            {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0 || c.incidentId) && (
+              <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
+                {c.linkedEvents.length > 0 && (
+                  <span>{c.linkedEvents.length} event{c.linkedEvents.length !== 1 ? 's' : ''}</span>
+                )}
+                {c.linkedEvents.length > 0 && c.linkedWorkOrders.length > 0 && (
+                  <span>·</span>
+                )}
+                {c.linkedWorkOrders.length > 0 && (
+                  <span>{c.linkedWorkOrders.length} work order{c.linkedWorkOrders.length !== 1 ? 's' : ''}</span>
+                )}
+                {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0) && c.incidentId && (
+                  <span>·</span>
+                )}
+                {c.incidentId && (
+                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
+                    {getIncidentName(c.incidentId)}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
