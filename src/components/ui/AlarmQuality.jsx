@@ -132,7 +132,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                 {/* Teal selection ring */}
                 {isSelected && (
                   <path
-                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, cornerR)}
+                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, 3)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={2}
@@ -141,7 +141,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                 {/* Teal hover ring */}
                 {isHovered && !isSelected && (
                   <path
-                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, cornerR)}
+                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, 3)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={1.5}
