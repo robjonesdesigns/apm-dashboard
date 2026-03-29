@@ -14,7 +14,7 @@ The engineer needs to understand "why did my KPI drop?" at three different depth
 - Full 12 columns, subtle background banner (not a card)
 - Shows only events that moved KPIs (2-3 max)
 - "K-101 tripped at 2:03 AM · Availability -12.1%"
-- "See full timeline →" link navigates to dedicated Event Log page
+- "Go to Events" link navigates to dedicated Events screen
 - Ambient awareness: the engineer sees the cause without scrolling
 
 ### Layer 2: KPI Trend Modal (investigative, 10-30 seconds)
@@ -25,9 +25,9 @@ The engineer needs to understand "why did my KPI drop?" at three different depth
 - The engineer sees the value drop AND the cause on the same chart
 - Similar to Grafana annotations but focused and contextual
 
-### Layer 3: Event Log Page (full investigation, 1-5 minutes)
-- Dedicated page/screen (not on Plant Overview)
-- Accessed via "See full timeline →" link on the Impact Strip
+### Layer 3: Events Screen (full investigation, 1-5 minutes)
+- Dedicated screen (not on Plant Overview)
+- Accessed via "Go to Events" link on the Impact Strip
 - Full chronological event list with filtering by severity, type, asset, time range
 - Serves as the shift handover summary (unsolved industry gap per DESK-RESEARCH-008)
 - Shows ALL events: trips, alerts, work orders opened, maintenance windows, recalibrations
@@ -37,15 +37,15 @@ The engineer needs to understand "why did my KPI drop?" at three different depth
 - Three depths match three cognitive modes: glance, investigate, deep dive
 - The Impact Strip is a differentiator (no product does inline KPI-to-event linking)
 - The KPI modal with event dots is a differentiator (Grafana-like but focused)
-- The Event Log page can be as detailed as needed without bloating the overview
+- The Events screen can be as detailed as needed without bloating the overview
 - "What Changed" section removed from Plant Overview, replaced by Impact Strip
 
-### Revised Plant Overview Sections
-1. Plant Health (KPIs)
-2. Impact Strip (why KPIs changed)
-3. Today's Activity (Work Orders + Investigations)
-4. Assets Requiring Attention (Risk Matrix, Event Summary, Bad Actors)
-5. All Assets (table)
+### Revised Plant Overview Sections (updated session 14)
+1. System Health (KPIs)
+2. What Happened (Impact Strip -- why KPIs changed)
+3. In Progress (Work Orders + Investigations)
+4. Needs Action (Event Triage, Alarm Quality, Watch List)
+5. Assets (table)
 
 ## Alternatives Considered
 - Full timeline on Plant Overview: too much scroll depth, redundant with strip + modal

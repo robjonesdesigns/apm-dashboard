@@ -19,14 +19,12 @@ Work order and investigation cards show priority as badge pills. The color hiera
 
 Visual intensity decreases with each step: red screams, gray whispers.
 
-### Investigation/Case Status Badges
-All investigation statuses use neutral gray badges regardless of status (Investigating, Open, Closed). The status is a workflow state, not a severity. The ASSET criticality provides the semantic context, not the case status.
+### Investigation Status Icons
+Superseded in part by ADR-022 (WO Urgency and Icon System). Investigation status uses right-pointing triangles in neutral gray (not circles, not colored):
+- Investigating: filled triangle -- someone is actively working
+- Open: hollow triangle -- waiting, nobody started
 
-### Investigation Status Dots
-- Investigating: filled dot (solid) -- someone is actively working
-- Open: unfilled dot (hollow circle) -- waiting, nobody started
-
-The fill state communicates progress without relying on color.
+The fill state communicates progress without relying on color. See ADR-022 for the full five-icon-system taxonomy.
 
 ## Consequences
 - Low priority visually quiet (ISA-101 "dark and quiet")

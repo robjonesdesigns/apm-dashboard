@@ -21,13 +21,14 @@ Section title: "Key Events"
 
 This bridges the gap: KPI → why → who's working on it.
 
-### Revised Section Order
-1. Plant Health (KPIs) → "something is wrong"
-2. Impact Strip → "this is what caused it"
-3. Today's Activity (WOs + Investigations) → "is anyone handling it?"
-4. What Changed (full timeline) → investigation, shift handover log
-5. Assets Requiring Attention → risk matrix, bad actors
-6. All Assets → drill-down table
+### Revised Section Order (updated session 14)
+1. System Health (KPIs) → "something is wrong"
+2. What Happened (Impact Strip) → "this is what caused it"
+3. In Progress (WOs + Investigations) → "is anyone handling it?"
+4. Needs Action (Event Triage, Alarm Quality, Watch List) → "what else needs me?"
+5. Assets → drill-down table
+
+"What Changed" was moved to the dedicated Events screen (ADR-013 Layer 3).
 
 ### Summary Strip + Full Timeline: NOT Redundant
 Per ISA-101 and every industrial HMI system, these serve different moments:

@@ -89,6 +89,13 @@ function DonutTooltip({ segment, total, x, y }) {
   )
 }
 
+function handleKeyDown(e, callback) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    callback()
+  }
+}
+
 function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, selectedKey, onHover, onLeave, onClick }) {
   const center = size / 2
   const outerR = size / 2 - 2
@@ -108,7 +115,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
 
   return (
     <div style={{ position: 'relative', width: svgSize, height: svgSize, margin: '0 auto' }}>
-      <svg width={svgSize} height={svgSize}>
+      <svg width={svgSize} height={svgSize} role="group" aria-label="Alarm quality donut chart">
         <g transform={`translate(${(svgSize - size) / 2}, ${(svgSize - size) / 2})`}>
           {/* Background ring */}
           <circle
@@ -151,6 +158,10 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                 <path
                   d={path}
                   fill={seg.color}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${seg.label}: ${seg.value} events (${Math.round((seg.value / total) * 100)}%). Click to filter Asset Table`}
+                  aria-pressed={isSelected}
                   style={{
                     transition: 'opacity var(--motion-fast) var(--ease-productive)',
                     opacity: (hoveredKey || selectedKey) && !isHovered && !isSelected ? 0.35 : 1,
@@ -158,7 +169,10 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                   }}
                   onMouseEnter={() => onHover(seg.key)}
                   onMouseLeave={onLeave}
+                  onFocus={() => onHover(seg.key)}
+                  onBlur={onLeave}
                   onClick={() => onClick?.(seg.key)}
+                  onKeyDown={(e) => handleKeyDown(e, () => onClick?.(seg.key))}
                 />
               </g>
             )

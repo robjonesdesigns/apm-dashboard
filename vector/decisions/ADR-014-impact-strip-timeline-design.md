@@ -52,7 +52,7 @@ Standard `.card` with `overflow: visible` (tooltips extend beyond card boundary)
 
 ### "See full timeline →" link
 - Right-aligned at card bottom, below the dashed continuation line
-- Navigates to the Event Log page (ADR-013 Layer 3)
+- Navigates to the Events screen (ADR-013 Layer 3)
 - Always visible (not conditional on event count)
 
 ### Responsive

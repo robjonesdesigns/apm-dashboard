@@ -1,4 +1,4 @@
-# ADR-015: Risk Matrix Redesign -- Two Views with Click-to-Filter
+# ADR-015: Risk Matrix Redesign -- Single View with Click-to-Filter
 
 **Date:** 2026-03-27
 **Status:** Accepted
@@ -20,7 +20,7 @@ Originally planned two views (Event Status + Asset Priority) with segmented cont
 - Event Summary (4x5 Criticality x Severity) too sparse with 10 demo assets
 - Single view = simpler card, no toggle, less cognitive load
 
-Layout: priority on x-axis (High/Medium/Low, left to right), status on y-axis (New/In Progress, top to bottom). "Asset Priority" label below columns for disambiguation.
+Layout: asset criticality on x-axis (A/B/C, left to right), investigation status on y-axis (New/In Progress, top to bottom). "Asset Criticality" label below columns. Card title is "Event Triage" (per ADR-020).
 
 ### "New / In Progress" over "Assigned / Unassigned"
 Per DESK-RESEARCH-012: "New/In Progress" aligns with Splunk ITSI, ServiceNow, and PagerDuty conventions. "Assigned/Unassigned" is not a lifecycle state in any system reviewed -- it's an orthogonal filter attribute on lists. Using it as a matrix axis would conflate the alarm domain with the work management domain.

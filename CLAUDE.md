@@ -43,25 +43,25 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 - **TopBar.jsx**: 48px fixed. Title: "Asset Performance Management".
 - **Sidebar.jsx**: 48px rail, hover-to-expand 256px overlay (no toggle button, no content push). Shadow: --shadow-overlay.
-- **NotificationsPanel.jsx**: 320px push, two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar.
+- **NotificationsPanel.jsx**: 320px push panel (Event Feed), two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar. Escape key closes. Focus managed on open/close (ADR-024).
 
 ## Screens
 
-Plant Overview | Events | Asset Inspection | Root Cause | Trends | Work Orders | Investigations
+Plant Overview | Events | Asset Inspection | Fault Tree | Trends | Work Orders | Investigations
 
 ## Plant Overview Sections (ADR-020)
 
-1. Plant Health -- KPI bar (6 cards, ADR-010). Health indicators: triangle (warning), diamond (critical).
-2. What Happened -- Three cards in grid-thirds: Trigger / Consequence / Confirmation. "See full timeline" links to Events screen.
-3. Current Response -- WOs (WoPriority urgency icons) + Investigations (triangle status icons).
-4. Requires Attention -- Event Triage + Alarm Quality + Watch List (ADR-020).
+1. System Health -- KPI bar (6 cards, ADR-010). Health indicators: triangle (warning), diamond (critical).
+2. What Happened -- Incident-driven ImpactStrip. "Go to Events" links to Events screen.
+3. In Progress -- WOs (WoPriority urgency icons) + Investigations (triangle status icons).
+4. Needs Action -- Event Triage + Alarm Quality + Watch List (ADR-020, ADR-023).
 5. Assets -- data table with drill-down (ADR-019).
 
 ## Asset Table (ADR-019)
 
 9 columns: Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
 
-- Work Orders and Investigations derived from WORK_ORDERS/CASES data (not hardcoded)
+- Work Orders and Investigations derived from WORK_ORDERS/INVESTIGATIONS data (not hardcoded)
 - Toolbar: filter chips (left) + smart search with autocomplete + shared FilterButton (right)
 - Sortable column headers with always-visible up/down arrows
 - Event Triage filter: chip in both Event Triage card and table toolbar, smooth scroll on apply
@@ -90,11 +90,11 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 ## ADR Index
 
-001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system
+001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA)
 
 ## Desk Research Index
 
-001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography
+001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography | 016 Accessibility audit (WCAG 2.1 AA)
 
 ## Story Index
 
@@ -112,4 +112,4 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 ## Handoff
 
-See `HANDOFF.md` for session 13 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 22 ADRs, 15 desk research docs, 2 stories. Next: finish event metadata enrichment (events 2-11), rebuild data, then Asset Inspection screen.
+See `HANDOFF.md` for session 14 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 24 ADRs, 16 desk research docs, 2 stories.

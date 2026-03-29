@@ -57,6 +57,7 @@ export default function App() {
 
   return (
     <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <TopBar
         view={view}
         selectedAsset={selectedAsset}
@@ -91,7 +92,8 @@ export default function App() {
             marginLeft: isMobile ? 0 : 'var(--sidebar-rail)',
           }}
         >
-          <div
+          <main
+            id="main-content"
             style={{
               flex: '1 1 auto',
               overflowY: 'auto',
@@ -108,7 +110,7 @@ export default function App() {
                 selectedAttribute={selectedAttribute}
               />
             </div>
-          </div>
+          </main>
 
           <NotificationsPanel
             open={notificationsOpen}

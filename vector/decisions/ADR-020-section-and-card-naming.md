@@ -1,8 +1,8 @@
-# ADR-020: Section and Card Naming (Requires Attention)
+# ADR-020: Section and Card Naming (Needs Action)
 
 **Status:** Accepted
 **Date:** 2026-03-28
-**Supersedes:** ADR-012 section naming for section 4 ("Assets Requiring Attention" -> "Event Analysis" -> "Requires Attention")
+**Supersedes:** ADR-012 section naming for section 4 ("Assets Requiring Attention" -> "Event Analysis" -> "Requires Attention" -> "Needs Action")
 
 ## Context
 
@@ -10,11 +10,11 @@ Session 12 named section 4 "Event Analysis" as an umbrella for Risk Matrix, Alar
 
 ## Decision
 
-### Section 4: Requires Attention
+### Section 4: Needs Action
 
-Replaces "Event Analysis". Matches the original ADR-012 intent ("Assets Requiring Attention") and the 7 AM engineer workflow: "what needs me today?"
+Replaces "Requires Attention" (revised session 14). Shorter, more direct, matches the 7 AM engineer workflow: "what needs me today?"
 
-### Card names under Requires Attention
+### Card names under Needs Action
 
 1. **Event Triage** (was Risk Matrix, then Event Triage under "Event Analysis")
    - Grid: criticality (A/B/C) x investigation status (New/In Progress)
@@ -30,17 +30,17 @@ Replaces "Event Analysis". Matches the original ADR-012 intent ("Assets Requirin
    - "Bad Actors" is an industry term but reads negatively out of context
    - "Watch List" matches the reliability manager's mental model
 
-### Full section order
+### Full section order (updated session 14)
 
-1. Plant Health
+1. System Health
 2. What Happened
-3. Current Response
-4. Requires Attention
+3. In Progress
+4. Needs Action
 5. Assets
 
 ## Rationale
 
-- "Requires Attention" is action-oriented, matching what the reliability manager thinks at 7 AM
+- "Needs Action" is action-oriented and concise, matching what the reliability manager thinks at 7 AM
 - "Event Triage" is no longer redundant under a non-Event umbrella
 - Alarm Quality is a recognized ISA-18.2 term that reliability engineers know
-- Case Status was removed because Investigations card in Current Response already covers open/investigating counts with correct terminology
+- Case Status was removed because Investigations card in In Progress already covers open/investigating counts with correct terminology

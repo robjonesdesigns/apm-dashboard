@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { PLANT, KPI_24H } from '../../data/assets'
 
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
@@ -384,14 +384,34 @@ function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
 
 export default function KpiBar({ onKpiClick }) {
   const [selectedKpi, setSelectedKpi] = useState(null)
+  const barRef = useRef(null)
 
   function handleKpiClick(key) {
     setSelectedKpi(prev => prev === key ? null : key)
     onKpiClick?.(key)
   }
 
+  // Close dropdown on outside click or Escape
+  useEffect(() => {
+    if (!selectedKpi) return
+    function handleClick(e) {
+      if (barRef.current && !barRef.current.contains(e.target)) {
+        setSelectedKpi(null)
+      }
+    }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') setSelectedKpi(null)
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedKpi])
+
   return (
-    <div>
+    <div ref={barRef}>
     <div className="kpi-grid">
       {KPI_CONFIG.map((config) => (
         <KpiCard key={config.key} config={config} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />

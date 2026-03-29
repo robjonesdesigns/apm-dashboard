@@ -73,9 +73,16 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`${item.name}: ${item.events} events in 30 days, criticality ${item.criticality}. Click to filter Asset Table`}
+      aria-pressed={isSelected}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
       onClick={() => onClick(item.assetId)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(item.assetId) } }}
       style={{
         display: 'flex',
         alignItems: 'center',

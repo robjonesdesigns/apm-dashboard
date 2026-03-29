@@ -4,7 +4,7 @@
 // Adapted from Forge Right Rail documentation for Carbon g100 dark theme.
 // ADR-009: mutually exclusive with expanded sidebar.
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { NOTIFICATIONS, INCIDENTS, TIMELINE } from '../data/assets.js'
 import Badge from './ui/Badge'
 import FilterButton from './ui/FilterButton'
@@ -449,6 +449,25 @@ function PanelHeader({ onClose, activeFilters, onToggleFilter }) {
 export default function NotificationsPanel({ open, onClose, assetFilter, isMobile }) {
   const [selectedNotification, setSelectedNotification] = useState(null)
   const [severityFilters, setSeverityFilters] = useState([])
+  const panelRef = useRef(null)
+
+  // Focus management: move focus into panel on open, trap Escape
+  useEffect(() => {
+    if (!open) return
+    // Focus the panel container on open
+    const timer = setTimeout(() => panelRef.current?.focus(), 50)
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open, onClose])
 
   function toggleSeverity(level) {
     setSeverityFilters(prev =>
@@ -479,8 +498,11 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
 
   return (
     <div
+      ref={panelRef}
       role="dialog"
       aria-label="Event Feed"
+      aria-modal={isMobile ? true : undefined}
+      tabIndex={-1}
       style={isMobile ? {
         // Mobile: full-screen overlay
         position: 'fixed',

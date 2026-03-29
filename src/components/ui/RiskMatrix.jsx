@@ -16,7 +16,7 @@ function cellKey(criticality, status) {
   return `${criticality}-${status}`
 }
 
-function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, onMouseLeave, label }) {
+function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, onMouseLeave, onFocus, onBlur, label }) {
   const borderColor = isSelected || isHovered
     ? 'var(--color-accent)'
     : 'transparent'
@@ -28,6 +28,8 @@ function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, o
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
       aria-label={label}
       aria-pressed={isSelected}
       style={{
@@ -181,6 +183,8 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
                       onClick={() => handleClick(c.key, status)}
                       onMouseEnter={() => setHoveredCell(key)}
                       onMouseLeave={() => setHoveredCell(null)}
+                      onFocus={() => setHoveredCell(key)}
+                      onBlur={() => setHoveredCell(null)}
                       label={`${count} ${status.toLowerCase()} events on criticality ${c.key} assets`}
                     />
                   )

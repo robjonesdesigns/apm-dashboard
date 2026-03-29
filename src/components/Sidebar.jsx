@@ -2,7 +2,7 @@
 // Desktop: 48px rail, hover to expand 256px overlay.
 // Mobile: full-screen drawer with branding header.
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PLANT } from '../data/assets'
 
 // ── Nav icons (Feather Icons, 24x24 viewBox rendered at 20x20) ──────────────
@@ -193,6 +193,16 @@ function NavItem({ item, isActive, expanded, onClick }) {
 
 export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
   const [hovered, setHovered] = useState(false)
+
+  // Escape key closes mobile drawer
+  useEffect(() => {
+    if (!isMobile || !open) return
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isMobile, open, onClose])
 
   // Desktop: hover-to-expand. Mobile: explicitly toggled drawer.
   const expanded = isMobile ? open : hovered

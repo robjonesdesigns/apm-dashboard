@@ -36,12 +36,14 @@ Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investiga
 
 `FilterChip.jsx` -- used in both Event Triage card and Asset Table. 26px height, accent border, x to dismiss.
 
-### Event Triage Integration
+### Unified Needs Action Filter Integration (ADR-023)
 
-- Clicking a cell in Event Triage scrolls to Asset Table and applies filter
-- Filter chip appears in both Event Triage header and Asset Table toolbar
-- Clearable from either location
-- Filters by criticality AND investigation status (New = `newEvents > 0`, In Progress = `inProgressEvents > 0`)
+All three Needs Action cards filter the Asset Table on click (stackable AND filters):
+- **Event Triage**: clicking a cell filters by criticality + status (New = `newEvents > 0`, In Progress = `inProgressEvents > 0`)
+- **Alarm Quality**: clicking a donut segment filters by event validation status
+- **Watch List**: clicking a bar row filters to that specific asset
+
+Filter chips appear in both the source card header and Asset Table toolbar. Clearable from either location. "Clear all" link appears when 2+ filter sources are active.
 
 ### Layout
 
@@ -54,7 +56,7 @@ Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investiga
 
 ## Rationale
 
-- Three event sub-columns (New/In Progress/Repetitive) were confusing without a group header. "New" could mean work orders or investigations. Collapsed to single Events count -- the Event Triage filter handles the breakdown.
-- Derived counts from WORK_ORDERS and CASES ensure numbers match the card summaries.
+- Three event sub-columns (New/In Progress/Repetitive) were confusing without a group header. "New" could mean work orders or investigations. Collapsed to single Events count (activeEvents = newEvents + inProgressEvents per ADR-021) -- the Event Triage filter handles the breakdown.
+- Derived counts from WORK_ORDERS and INVESTIGATIONS ensure numbers match the card summaries.
 - Always-visible sort arrows follow Carbon/Ant pattern -- engineers don't have time to hover-discover affordances.
 - Inattentional blindness: filter chip in both locations + smooth scroll ensures the user sees the effect of clicking Event Triage.

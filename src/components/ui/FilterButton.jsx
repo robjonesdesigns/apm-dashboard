@@ -31,15 +31,27 @@ export default function FilterButton({ categories, filters, onToggle }) {
     function handleClick(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false)
     }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && open) {
+        setOpen(false)
+        ref.current?.querySelector('button')?.focus()
+      }
+    }
     document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
         onClick={() => setOpen(prev => !prev)}
         aria-label="Filter"
+        aria-expanded={open}
+        aria-haspopup="listbox"
         style={{
           display: 'inline-flex',
           alignItems: 'center',

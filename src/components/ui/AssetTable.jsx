@@ -208,13 +208,15 @@ function SortIndicator({ isActive, direction }) {
 function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }) {
   const isActive = activeSort === sortKey
   const [hovered, setHovered] = useState(false)
+  const ariaSort = isActive ? (activeDir === 'asc' ? 'ascending' : 'descending') : 'none'
 
   return (
-    <div
+    <button
       className="type-table-header"
       onClick={() => onSort(sortKey)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      aria-sort={ariaSort}
       style={{
         ...style,
         cursor: 'pointer',
@@ -223,11 +225,13 @@ function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }
         whiteSpace: 'nowrap',
         color: isActive ? 'var(--color-accent)' : hovered ? 'var(--color-text-primary)' : undefined,
         transition: 'color var(--motion-fast) var(--ease-productive)',
+        background: 'none',
+        font: 'inherit',
       }}
     >
       {label}
       <SortIndicator isActive={isActive} direction={activeDir} />
-    </div>
+    </button>
   )
 }
 
@@ -320,6 +324,11 @@ function AssetSearch({ value, onChange, onAssetClick }) {
           onFocus={() => setFocused(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search assets..."
+          aria-label="Search assets"
+          aria-expanded={showDropdown}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          role="combobox"
           style={{
             background: 'var(--color-layer-02)',
             border: `1px solid ${focused ? 'var(--color-border-interactive)' : 'var(--color-border-subtle)'}`,
@@ -338,6 +347,8 @@ function AssetSearch({ value, onChange, onAssetClick }) {
         <div
           ref={listRef}
           role="listbox"
+          aria-live="polite"
+          aria-label={`${suggestions.length} asset suggestions`}
           style={{
             position: 'absolute',
             top: '100%',

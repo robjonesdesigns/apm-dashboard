@@ -1,7 +1,7 @@
-# APM Dashboard Handoff -- Session 14 End
+# APM Dashboard Handoff -- Session 15 End
 
 ## START HERE
-Massive session. Data model fully connected. Needs Action unified filter pattern (ADR-023). KPI sparkline with inline dropdown. Donut chart with rounded arc paths. Investigation IDs renamed CS- to IN-. Next session: accessibility sweep across the full dashboard, then ADR update pass.
+Accessibility sweep complete (WCAG 2.1 AA). ADR update pass done (8 stale ADRs corrected, ADR-024 added). 24 ADRs, 16 desk research docs. Next: Asset Inspection screen.
 
 ## Deployed
 - **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
@@ -9,108 +9,85 @@ Massive session. Data model fully connected. Needs Action unified filter pattern
 
 ## Next session priorities
 
-### 1. Accessibility sweep (full dashboard)
-Systematic WCAG audit across all interactive elements:
-- Color contrast (3:1 non-text, 4.5:1 text) on all data viz, badges, indicators
-- aria-labels on all interactive SVG charts (donut, risk matrix, watch list, sparkline)
-- Keyboard navigation for all clickable elements (filter cards, table rows, notification items)
-- Screen reader support (role attributes, live regions for filter updates)
-- Color independence (SC 1.4.1) -- no meaning conveyed by color alone
-- prefers-reduced-motion support for animations
-- Desk research doc needed: DESK-RESEARCH-016-accessibility-audit.md
+### 1. Asset Inspection screen
+Drill-down view for a single asset. Three-level IA (Reliability, Maintenance, Performance). Sub-asset tree, sensor data, threshold visualization. 65 sub-assets with sensors/thresholds already in data model.
 
-### 2. ADR update pass
-Go through all 23 ADRs and update stale decisions. Known stale items:
-- Section names changed (Plant Health -> System Health, etc.)
-- Screen names changed (Root Cause -> Fault Tree)
-- Event model restructured (9 events, 5 types, provenance, incidents)
-- Notification panel -> Event Feed
-- CS- -> IN- prefix
-- CASES -> INVESTIGATIONS
-- Filter pattern (ADR-023 exists but other ADRs may reference old patterns)
-- ImpactStrip now incident-driven
-- KPI sparkline dropdown added
-- Donut chart rounded arcs
-- Legend component has title prop
-- Risk Matrix stronger bg tokens
-
-### 3. Then: Asset Inspection screen
+### 2. Deploy accessibility changes
+Push session 15 changes to Vercel.
 
 ## What was completed this session
 
-### Data model -- fully connected
-- 65 sub-assets with sensors, thresholds, statuses, narratives, lessons
-- eventHistory on assets with events outside 24-hour TIMELINE
-- Event lifecycle: newEvents, inProgressEvents, closedEvents, falsePositives
-- activeEvents, totalEvents, workOrders, investigations all computed
-- RISK_MATRIX, EVENT_SUMMARY, BAD_ACTORS all computed from ASSETS
-- NOTIFICATIONS derived from TIMELINE
-- CS- renamed to IN-, CASES renamed to INVESTIGATIONS
-- V-501 event counts fixed, IN-0895/IN-0896 linked to historical events
+### Accessibility sweep (ADR-024, DESK-RESEARCH-016)
 
-### Event model -- 9 events, 5 types
-- alert, alarm, trip, anomaly, inspection
-- Provenance (source, confidence, updatedBy, status) on cause/consequence/recommendation
-- Relationships (caused_by, cascaded_to, related_to)
-- INCIDENTS (INC-001: K-101 cascade)
-- Bidirectional linkages across all entities
+**Global CSS (`src/styles/global.css`)**
+- `:focus-visible` system: 2px solid teal, 2px offset (8.6:1 contrast on dark)
+- `:focus:not(:focus-visible)` suppresses mouse focus rings
+- `@media (prefers-reduced-motion: reduce)` zeros all animation/transition durations
+- Skip-to-content link (`.skip-link`) hidden until keyboard focused
 
-### What Happened? (ImpactStrip) -- incident-driven
-- Derives from INCIDENTS structure, not kpiImpact filter
-- Supports multiple incidents
-- "Go to Events" link (consistent copy)
+**App shell (`src/App.jsx`)**
+- `<main id="main-content">` landmark wrapping content viewport
+- Skip link jumps to `#main-content`
 
-### Needs Action -- unified filter pattern (ADR-023)
-- All three cards filter Asset Table on click (stackable AND filters)
-- Consistent teal hover/selected affordance
-- Filter chips + "Clear all" in Asset Table toolbar
-- Cursor-following tooltips with "Click to filter Asset Table" hint
-- Risk Matrix: tooltip with CriticalityIndicator + count, stronger cell bg tokens
-- Donut: rounded arc paths (describeRoundedArc with quadratic bezier corners, 2px radius, 2.5 degree gaps)
-- Watch List: teal border hover/selected on bar rows
-- All legends use shared Legend component with title prop
+**SVG chart keyboard access**
+- AlarmQuality.jsx: donut segments have `tabIndex={0}`, `role="button"`, `aria-label`, `aria-pressed`, `onKeyDown` (Enter/Space), `onFocus`/`onBlur` for hover parity
+- RiskMatrix.jsx: cells already `<button>` with `aria-label`/`aria-pressed`; added `onFocus`/`onBlur` for tooltip on keyboard focus
+- BadActors.jsx: bar rows have `role="button"`, `tabIndex={0}`, `aria-label`, `aria-pressed`, `onKeyDown`, `onFocus`/`onBlur`
 
-### KPI sparkline dropdown
-- Inline dropdown popover (4px gap, overlay, shadow)
-- 24-hour sparkline (KPI_24H data, not 12-month OEE_TREND)
-- Subtle reference band for normal range (above warning threshold)
-- Event marker (dashed vertical line at 2:03 AM)
-- Before/After comparison + "K-101 Trip 2:03 AM" in time range row
-- aria-label for screen readers
-- "Go to Trends" link
-- Desk research: sparkline best practices (Tufte, Few, WCAG)
+**AssetTable.jsx**
+- Sortable headers converted from `<div>` to `<button>` with `aria-sort` (`ascending`/`descending`/`none`)
+- Search input: `role="combobox"`, `aria-label`, `aria-expanded`, `aria-haspopup="listbox"`, `aria-autocomplete="list"`
+- Suggestion listbox: `aria-live="polite"`, `aria-label` with result count
 
-### In Progress section
-- Three-line balanced layout for WO and Investigation rows
-- WO rows show event name + incident name (context, not links)
-- Investigation rows show scope counts (X events, Y WOs)
+**NotificationsPanel.jsx**
+- `aria-modal="true"` on mobile
+- `tabIndex={-1}` + programmatic focus on open
+- Escape key closes panel (document-level keydown listener)
 
-### Naming updates
-- Section headers: System Health, What Happened?, In Progress, Needs Action, Assets
-- Fault Tree (was Root Cause)
-- Event Feed (was Notifications)
-- Quick Access: Asset Inspection, Trends, Fault Tree
-- "Go to Events" (was "See full timeline")
+**FilterButton.jsx**
+- `aria-expanded` and `aria-haspopup="listbox"` on toggle button
+- Escape key closes dropdown and returns focus to button
 
-### New tokens
-- --color-error-bg-strong, --color-warning-bg-strong, --color-info-bg-strong (0.24 opacity)
+**Sidebar.jsx**
+- Escape key closes mobile drawer
 
-### ADRs
-- ADR-023: Unified Needs Action filter pattern
+### ADR update pass (8 stale ADRs)
+
+| ADR | What changed |
+|-----|-------------|
+| 005 | Sidebar: hover-to-expand overlay (not toggle button), mobile drawer |
+| 009 | Sidebar 48px rail overlay, Event Feed 320px push, updated terminology |
+| 011 | Investigation status: triangles (not circles), reference to ADR-022 |
+| 012 | Section names: System Health, In Progress, Needs Action. "What Changed" moved to Events screen |
+| 013 | "Events screen" (not "Event Log page"). Section names aligned |
+| 014 | "Events screen" (not "Event Log page") |
+| 015 | Title: "Single View" (not "Two Views"). "Asset Criticality" (not "Asset Priority"). "Event Triage" card name |
+| 019 | Unified filter pattern per ADR-023. "INVESTIGATIONS" (not "CASES"). ADR-021 data model reference |
+| 020 | Section names: System Health, In Progress, Needs Action. Title updated |
+
+### New artifacts
+- `vector/decisions/ADR-024-accessibility-standards.md`
+- `vector/research/DESK-RESEARCH-016-accessibility-audit.md`
+
+### CLAUDE.md updates
+- Section names: System Health, In Progress, Needs Action
+- Screen names: Fault Tree (not Root Cause)
+- Event Feed terminology
+- INVESTIGATIONS (not CASES)
+- ADR index: 001-024
+- Desk research index: 001-016
 
 ## Key files modified
-- `src/data/assets.js` -- full data model overhaul
-- `src/components/ui/KpiBar.jsx` -- sparkline dropdown
-- `src/components/ui/ImpactStrip.jsx` -- incident-driven narrative
-- `src/components/ui/AlarmQuality.jsx` -- rounded arcs, click-to-filter, shared Legend
-- `src/components/ui/RiskMatrix.jsx` -- tooltip, stronger bg, shared Legend
-- `src/components/ui/BadActors.jsx` -- click-to-filter, teal hover/selected
-- `src/components/ui/AssetTable.jsx` -- alarm/actor filters, clear all
-- `src/components/ui/TodaysActivity.jsx` -- three-line rows, INVESTIGATIONS rename
-- `src/components/ui/Legend.jsx` -- title prop
-- `src/components/NotificationsPanel.jsx` -- Event Feed, provenance, relationships
-- `src/components/PlantOverview.jsx` -- filter state, section renames
-- `src/components/TopBar.jsx` -- Fault Tree
-- `src/components/Sidebar.jsx` -- Fault Tree
-- `src/styles/global.css` -- *-bg-strong tokens
-- `vector/decisions/ADR-023-needs-action-filter-pattern.md`
+- `src/styles/global.css` -- focus-visible, reduced motion, skip link
+- `src/App.jsx` -- main landmark, skip link
+- `src/components/ui/AlarmQuality.jsx` -- keyboard access on donut segments
+- `src/components/ui/RiskMatrix.jsx` -- focus/blur on cells
+- `src/components/ui/BadActors.jsx` -- keyboard access on bar rows
+- `src/components/ui/AssetTable.jsx` -- aria-sort, combobox, live region
+- `src/components/NotificationsPanel.jsx` -- focus management, Escape, aria-modal
+- `src/components/ui/FilterButton.jsx` -- aria-expanded, Escape key
+- `src/components/Sidebar.jsx` -- Escape key for mobile drawer
+- `vector/decisions/ADR-024-accessibility-standards.md` (new)
+- `vector/research/DESK-RESEARCH-016-accessibility-audit.md` (new)
+- 8 ADRs updated (005, 009, 011, 012, 013, 014, 015, 019, 020)
+- `CLAUDE.md` -- section names, ADR/desk research counts
