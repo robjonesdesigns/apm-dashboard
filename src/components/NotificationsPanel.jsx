@@ -89,7 +89,7 @@ function NotificationItem({ notification, isNew, onSelect }) {
           <span className="type-meta" style={{ flexShrink: 0 }}>{notification.time}</span>
         </div>
 
-        {/* Row 2: asset name (title) */}
+        {/* Row 2: event name */}
         <span
           className="type-card-title"
           style={{
@@ -97,10 +97,15 @@ function NotificationItem({ notification, isNew, onSelect }) {
             fontWeight: isNew ? 700 : 600,
           }}
         >
+          {notification.name}
+        </span>
+
+        {/* Row 3: asset name */}
+        <span className="type-label" style={{ color: 'var(--color-accent)' }}>
           {notification.asset}
         </span>
 
-        {/* Row 3: message (preview, max 2 lines) */}
+        {/* Row 4: description (preview, max 2 lines) */}
         <span
           className="type-body"
           style={{
