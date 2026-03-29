@@ -218,55 +218,32 @@ function EventDetails({ notification, onBack, onClose }) {
   )
 }
 
-// ── Event detail content (derived from notification data + story context) ────
+// ── Event detail content (reads structured metadata from notification) ────────
 
 function getEventDetails(notification) {
   const details = []
-  const msg = notification.message.toLowerCase()
 
-  // Description is always the message itself
-  details.push({
-    label: 'Description',
-    value: notification.message,
-  })
+  details.push({ label: 'Description', value: notification.message })
 
-  // Derive cause/consequence/recommendation from message content
-  if (msg.includes('trip') || msg.includes('vibration spike')) {
-    details.push({ label: 'Cause', value: 'Bearing degradation over 28 days led to progressive vibration increase. Oil filter bypass allowed contaminated lubricant to accelerate wear.' })
-    details.push({ label: 'Consequence', value: 'Compressor tripped on high vibration protection. Availability dropped 12.1%. Downstream process disrupted.' })
-    details.push({ label: 'Recommendations', value: 'Complete bearing inspection (WO-4481). Flush lube oil system (WO-4482). Review alarm threshold adequacy per CS-0897.' })
-  } else if (msg.includes('bearing damage')) {
-    details.push({ label: 'Cause', value: 'Manual inspection confirmed mechanical damage to journal bearing surfaces consistent with contaminated lubrication.' })
-    details.push({ label: 'Consequence', value: 'Remaining useful life revised to 5 days. Bearing replacement required before restart.' })
-    details.push({ label: 'Recommendations', value: 'Expedite bearing procurement. Schedule replacement during planned turnaround window. Root cause analysis in progress (CS-0891).' })
-  } else if (msg.includes('oil pressure')) {
-    details.push({ label: 'Cause', value: 'Oil filter bypass allowed contaminated lubricant into bearing housing. Pressure decay indicates progressive system failure.' })
-    details.push({ label: 'Consequence', value: 'Auxiliary pump auto-started to maintain minimum pressure. Bearing lubrication compromised.' })
-    details.push({ label: 'Recommendations', value: 'Replace oil filters. Sample oil for contamination analysis. Inspect filter bypass valve.' })
-  } else if (msg.includes('discharge pressure') || msg.includes('seal')) {
-    details.push({ label: 'Cause', value: 'Mechanical seal wear causing minor internal leakage. Third seal replacement in 6 months suggests underlying alignment or shaft runout issue.' })
-    details.push({ label: 'Consequence', value: 'Discharge pressure 8% below normal. No immediate production impact but degradation will continue.' })
-    details.push({ label: 'Recommendations', value: 'Complete seal inspection (WO-4483). Investigate shaft runout and alignment as root cause (CS-0894).' })
-  } else if (msg.includes('shutdown') || msg.includes('emergency')) {
-    details.push({ label: 'Cause', value: 'Automatic emergency shutdown triggered by vibration protection system at 7.8 mm/s (threshold 7.1 mm/s).' })
-    details.push({ label: 'Consequence', value: 'Compressor isolated safely. No secondary damage detected. OEE impact of -5.9%.' })
-    details.push({ label: 'Recommendations', value: 'Verify shutdown sequence completed correctly. Check all isolation valves. Do not attempt restart until bearing inspection complete.' })
-  } else if (msg.includes('work order')) {
-    details.push({ label: 'Cause', value: 'Work order created in response to compressor trip event at 2:03 AM.' })
-    details.push({ label: 'Consequence', value: 'Maintenance task queued. Assigned technician notified.' })
-    details.push({ label: 'Recommendations', value: 'Prioritize completion before next shift change. Coordinate with reliability team on root cause investigation.' })
-  } else if (msg.includes('case') || msg.includes('root cause')) {
-    details.push({ label: 'Cause', value: 'Investigation initiated due to recurring bearing degradation pattern. Vibration alerts were present for 3 days prior to trip.' })
-    details.push({ label: 'Consequence', value: 'Formal root cause analysis underway. Linked to WO-4481 and WO-4482.' })
-    details.push({ label: 'Recommendations', value: 'Review historical alarm data. Assess whether earlier intervention would have prevented the trip. Update alarm thresholds if warranted.' })
-  } else if (msg.includes('maintenance') || msg.includes('planned')) {
-    details.push({ label: 'Cause', value: 'Scheduled preventive maintenance at 12,000-hour combustion inspection interval.' })
-    details.push({ label: 'Consequence', value: 'Turbine T-401 offline for planned duration. No unplanned production impact.' })
-    details.push({ label: 'Recommendations', value: 'Follow standard combustion inspection checklist. Document any findings for trend analysis.' })
-  } else {
-    details.push({ label: 'Cause', value: 'Under investigation.' })
-    details.push({ label: 'Consequence', value: 'Impact assessment in progress.' })
-    details.push({ label: 'Recommendations', value: 'Monitor and escalate if condition worsens.' })
+  if (notification.subAsset) {
+    details.push({ label: 'Sub-Asset', value: `${notification.subAsset} (${notification.subAssetId})` })
+  }
+
+  if (notification.cause) {
+    details.push({ label: 'Cause', value: notification.cause })
+  }
+  if (notification.consequence) {
+    details.push({ label: 'Consequence', value: notification.consequence })
+  }
+  if (notification.recommendation) {
+    details.push({ label: 'Recommendation', value: notification.recommendation })
+  }
+
+  if (notification.linkedWOs && notification.linkedWOs.length > 0) {
+    details.push({ label: 'Linked Work Orders', value: notification.linkedWOs.join(', ') })
+  }
+  if (notification.linkedInvestigations && notification.linkedInvestigations.length > 0) {
+    details.push({ label: 'Linked Investigations', value: notification.linkedInvestigations.join(', ') })
   }
 
   return details
