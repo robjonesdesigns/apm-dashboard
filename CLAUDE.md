@@ -96,6 +96,11 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography
 
+## Story Index
+
+STORY-001 Baytown Refinery (K-101 24-hour timeline, 10 assets, KPI data)
+STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, failure stories)
+
 ## Shared Components
 
 - `Badge.jsx` -- event severity (tally + fill hierarchy). Events and notifications only.
