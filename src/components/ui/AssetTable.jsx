@@ -389,7 +389,7 @@ const ALARM_LABELS = {
   newEvents: 'New Events',
 }
 
-export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, actorFilter, onClearRiskFilter, onClearAlarmFilter, onClearActorFilter }) {
+export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, actorFilter, onClearRiskFilter, onClearAlarmFilter, onClearActorFilter, onClearAllFilters }) {
   const [filters, setFilters] = useState({ criticality: [], status: [], processUnit: [] })
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState(null)
@@ -533,6 +533,28 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
               filters[cat.key].map(val => (
                 <FilterChip key={`${cat.key}-${val}`} label={cat.labelFn(val)} onClear={() => removeFilter(cat.key, val)} />
               ))
+            )}
+            {/* Clear all -- show when 2+ filter sources are active */}
+            {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
+              <button
+                onClick={() => {
+                  onClearAllFilters?.()
+                  setFilters({ criticality: [], status: [], processUnit: [] })
+                  setSearch('')
+                  setPage(0)
+                }}
+                className="type-link"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  font: 'inherit',
+                  padding: 0,
+                  flexShrink: 0,
+                }}
+              >
+                Clear all
+              </button>
             )}
           </div>
 
