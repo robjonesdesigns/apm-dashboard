@@ -46,6 +46,28 @@ export const OEE_TREND = [
   { month: 'Mar', oee: 76.3, availability: 78.4, performance: 93.8, quality: 99.1 },
 ]
 
+// ── KPI 24-Hour Trend ────────────────────────────────────────────────────────
+// Hourly snapshots from 7 PM yesterday to 7 AM today.
+// Shows the step change at 2:03 AM when K-101 tripped.
+// Performance and quality barely moved. Availability and OEE fell off a cliff.
+
+export const KPI_24H = [
+  { time: '7 PM',  oee: 87.4, availability: 94.2, performance: 94.8, quality: 99.2 },
+  { time: '8 PM',  oee: 87.4, availability: 94.2, performance: 94.8, quality: 99.2 },
+  { time: '9 PM',  oee: 87.3, availability: 94.1, performance: 94.8, quality: 99.2 },
+  { time: '10 PM', oee: 87.3, availability: 94.1, performance: 94.7, quality: 99.2 },
+  { time: '11 PM', oee: 87.3, availability: 94.1, performance: 94.7, quality: 99.2 },
+  { time: '12 AM', oee: 87.4, availability: 94.2, performance: 94.8, quality: 99.2 },
+  { time: '1 AM',  oee: 87.4, availability: 94.2, performance: 94.8, quality: 99.2 },
+  { time: '2 AM',  oee: 87.4, availability: 94.2, performance: 94.8, quality: 99.2 },
+  // 2:03 AM -- K-101 trips. Availability crashes, OEE follows.
+  { time: '3 AM',  oee: 78.1, availability: 80.2, performance: 94.0, quality: 99.1 },
+  { time: '4 AM',  oee: 77.2, availability: 79.3, performance: 93.9, quality: 99.1 },
+  { time: '5 AM',  oee: 76.8, availability: 78.9, performance: 93.8, quality: 99.1 },
+  { time: '6 AM',  oee: 76.5, availability: 78.6, performance: 93.8, quality: 99.1 },
+  { time: '7 AM',  oee: 76.3, availability: 78.4, performance: 93.8, quality: 99.1 },
+]
+
 // ── Assets (all 10) ───────────────────────────────────────────────────────────
 // criticality: A=Safety/Critical, B=High, C=Medium, D=Low
 // status: running | tripped | degraded | planned-outage

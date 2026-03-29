@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { PLANT, OEE_TREND } from '../../data/assets'
+import { PLANT, KPI_24H } from '../../data/assets'
 
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
 
@@ -241,19 +241,19 @@ function KpiCard({ config, onClick, isSelected }) {
             boxShadow: 'var(--shadow-overlay)',
           }}
         >
-          {/* Sparkline with threshold */}
+          {/* Sparkline with threshold -- last 24 hours */}
           <Sparkline
-            data={OEE_TREND}
+            data={KPI_24H}
             dataKey={config.key}
             threshold={THRESHOLDS[config.key]?.warning}
             width={200}
             height={56}
           />
 
-          {/* Month range */}
+          {/* Time range */}
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{OEE_TREND[0].month}</span>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{OEE_TREND[OEE_TREND.length - 1].month}</span>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[0].time}</span>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[KPI_24H.length - 1].time}</span>
           </div>
 
           {/* Before / After */}
