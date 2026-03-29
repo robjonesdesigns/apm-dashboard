@@ -116,7 +116,7 @@ export default function ImpactStrip() {
           onClick={() => console.log('Navigate to Event Log')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}
         >
-          See full timeline &rarr;
+          Go to Events &rarr;
         </button>
       </div>
     </section>
