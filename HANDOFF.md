@@ -9,11 +9,8 @@ Full WCAG 2.1 AA sweep complete. All remaining a11y gaps fixed (ARIA table, keyb
 
 ## Next session priorities
 
-### 1. Event Feed tab indexes
-NotificationsPanel internal links (incident links, related event links, WO links, investigation links, Quick Access links) are currently `<span className="type-link">` with `onClick={console.log}`. They need `tabIndex={0}`, `role="link"`, and `onKeyDown` handlers. Same pattern as the tabbable rows.
-
-### 2. Mobile view pass
-Mobile layout needs a simplification pass. Engineers on the floor need quick decision-making, not the full desktop density. Consider:
+### 1. Mobile view pass
+Mobile layout needs a simplification pass. Engineers on the floor need quick decision-making, not the full desktop density. This is what hiring managers will check first on their phones. Consider:
 - Collapsing or hiding Needs Action section (Event Triage, Alarm Quality, Watch List) on mobile
 - Simplifying KPI cards (value + health indicator only, no delta)
 - Impact Strip as a single summary line instead of three cards
@@ -21,16 +18,19 @@ Mobile layout needs a simplification pass. Engineers on the floor need quick dec
 - Event Feed: full-screen overlay already works, check spacing and touch targets
 - Fix any weird layout issues at mobile breakpoints
 
-### 3. Asset Inspection screen
-All the rules are in place. Drill-down view for a single asset. Three-level IA:
+### 2. Event Feed tab indexes
+NotificationsPanel internal links (incident links, related event links, WO links, investigation links, Quick Access links) are currently `<span className="type-link">` with `onClick={console.log}`. They need `tabIndex={0}`, `role="link"`, and `onKeyDown` handlers. Same pattern as the tabbable rows.
+
+### 3. Deploy
+Push all session 15 changes to Vercel. Nothing matters if it's not live.
+
+### 4. Asset Inspection screen
+All the rules are in place. Biggest build, needs the other fixes shipped first. Drill-down view for a single asset. Three-level IA:
 - **Reliability**: failure risk, remaining useful life, event history
 - **Maintenance**: alerts, work orders, case management
 - **Performance**: OEE, operational metrics, trend data
 
 65 sub-assets with sensors, thresholds, statuses, narratives, and lessons already in the data model (`src/data/assets.js`). Sub-asset tree lets engineers isolate which components are affected without leaving the page.
-
-### 4. Deploy
-Push all session 15 changes to Vercel (7 commits since last deploy).
 
 ## What was completed this session
 
