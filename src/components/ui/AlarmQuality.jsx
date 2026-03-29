@@ -17,19 +17,39 @@ const ALARM_SEGMENTS = [
   { key: 'newEvents',      label: 'New',             value: EVENT_SUMMARY.newEvents,      color: DONUT_COLORS.newEvents },
 ]
 
-// ── Arc path helper ─────────────────────────────────────────────────────────
+// ── Rounded arc path helper ──────────────────────────────────────────────────
+// Quadratic bezier at each corner gives a true soft radius on all four corners.
 
-function describeArc(cx, cy, innerR, outerR, startAngle, endAngle) {
+function describeRoundedArc(cx, cy, innerR, outerR, startAngle, endAngle, cornerR = 2) {
   const toRad = (deg) => (deg * Math.PI) / 180
+  const cos = Math.cos
+  const sin = Math.sin
+
+  const outerCornerDeg = (cornerR / outerR) * (180 / Math.PI)
+  const innerCornerDeg = (cornerR / innerR) * (180 / Math.PI)
+
   const s = toRad(startAngle)
   const e = toRad(endAngle)
-  const largeArc = endAngle - startAngle > 180 ? 1 : 0
+  const sO = toRad(startAngle + outerCornerDeg)
+  const eO = toRad(endAngle - outerCornerDeg)
+  const sI = toRad(startAngle + innerCornerDeg)
+  const eI = toRad(endAngle - innerCornerDeg)
+
+  const sweepOuter = endAngle - startAngle - 2 * outerCornerDeg
+  const sweepInner = endAngle - startAngle - 2 * innerCornerDeg
+  const largeOuter = sweepOuter > 180 ? 1 : 0
+  const largeInner = sweepInner > 180 ? 1 : 0
 
   return [
-    `M ${cx + outerR * Math.cos(s)} ${cy + outerR * Math.sin(s)}`,
-    `A ${outerR} ${outerR} 0 ${largeArc} 1 ${cx + outerR * Math.cos(e)} ${cy + outerR * Math.sin(e)}`,
-    `L ${cx + innerR * Math.cos(e)} ${cy + innerR * Math.sin(e)}`,
-    `A ${innerR} ${innerR} 0 ${largeArc} 0 ${cx + innerR * Math.cos(s)} ${cy + innerR * Math.sin(s)}`,
+    `M ${cx + outerR * cos(sO)} ${cy + outerR * sin(sO)}`,
+    `A ${outerR} ${outerR} 0 ${largeOuter} 1 ${cx + outerR * cos(eO)} ${cy + outerR * sin(eO)}`,
+    `Q ${cx + outerR * cos(e)} ${cy + outerR * sin(e)} ${cx + (outerR - cornerR) * cos(e)} ${cy + (outerR - cornerR) * sin(e)}`,
+    `L ${cx + (innerR + cornerR) * cos(e)} ${cy + (innerR + cornerR) * sin(e)}`,
+    `Q ${cx + innerR * cos(e)} ${cy + innerR * sin(e)} ${cx + innerR * cos(eI)} ${cy + innerR * sin(eI)}`,
+    `A ${innerR} ${innerR} 0 ${largeInner} 0 ${cx + innerR * cos(sI)} ${cy + innerR * sin(sI)}`,
+    `Q ${cx + innerR * cos(s)} ${cy + innerR * sin(s)} ${cx + (innerR + cornerR) * cos(s)} ${cy + (innerR + cornerR) * sin(s)}`,
+    `L ${cx + (outerR - cornerR) * cos(s)} ${cy + (outerR - cornerR) * sin(s)}`,
+    `Q ${cx + outerR * cos(s)} ${cy + outerR * sin(s)} ${cx + outerR * cos(sO)} ${cy + outerR * sin(sO)}`,
     'Z',
   ].join(' ')
 }
@@ -75,7 +95,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
   const innerR = outerR - ringWidth
   const svgSize = size + 20
   const gapDeg = 1.5
-  const cornerRadius = 2 // px -- subtle squircle effect
+  const cornerR = 2
 
   // Build angle map
   const segmentAngles = []
@@ -89,15 +109,6 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
   return (
     <div style={{ position: 'relative', width: svgSize, height: svgSize, margin: '0 auto' }}>
       <svg width={svgSize} height={svgSize}>
-        {/* SVG filter for subtle corner rounding */}
-        <defs>
-          <filter id="donut-round" x="-5%" y="-5%" width="110%" height="110%">
-            <feMorphology operator="erode" radius={cornerRadius} in="SourceGraphic" result="eroded" />
-            <feMorphology operator="dilate" radius={cornerRadius} in="eroded" result="rounded" />
-            <feComposite in="SourceGraphic" in2="rounded" operator="in" />
-          </filter>
-        </defs>
-
         <g transform={`translate(${(svgSize - size) / 2}, ${(svgSize - size) / 2})`}>
           {/* Background ring */}
           <circle
@@ -114,35 +125,32 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
             const isHovered = hoveredKey === seg.key
             const isSelected = selectedKey === seg.key
             const expand = isHovered || isSelected ? 3 : 0
-            const path = describeArc(center, center, innerR - expand, outerR + expand, seg.startAngle, seg.endAngle)
+            const path = describeRoundedArc(center, center, innerR - expand, outerR + expand, seg.startAngle, seg.endAngle, cornerR)
 
             return (
               <g key={seg.key}>
                 {/* Teal selection ring */}
                 {isSelected && (
                   <path
-                    d={describeArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle)}
+                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, cornerR)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={2}
-                    filter="url(#donut-round)"
                   />
                 )}
                 {/* Teal hover ring */}
                 {isHovered && !isSelected && (
                   <path
-                    d={describeArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle)}
+                    d={describeRoundedArc(center, center, innerR - 5, outerR + 5, seg.startAngle, seg.endAngle, cornerR)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={1.5}
                     opacity={0.5}
-                    filter="url(#donut-round)"
                   />
                 )}
                 <path
                   d={path}
                   fill={seg.color}
-                  filter="url(#donut-round)"
                   style={{
                     transition: 'opacity var(--motion-fast) var(--ease-productive)',
                     opacity: (hoveredKey || selectedKey) && !isHovered && !isSelected ? 0.35 : 1,
