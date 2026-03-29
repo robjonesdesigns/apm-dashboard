@@ -94,7 +94,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
   const outerR = size / 2 - 2
   const innerR = outerR - ringWidth
   const svgSize = size + 20
-  const gapDeg = 1.5
+  const gapDeg = 2.5
   const cornerR = 2
 
   // Build angle map
