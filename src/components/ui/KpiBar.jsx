@@ -307,15 +307,21 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
 
   const thresholdY = threshold ? toY(threshold) : null
 
+  // Positions as percentages for overlay labels
+  const eventPct = eventIndex != null ? ((px + eventIndex * stepX) / vbWidth) * 100 : null
+  const thresholdPct = threshold ? ((toY(threshold) / vbHeight) * 100) : null
+  const lastDotLeftPct = (lastX / vbWidth) * 100
+  const lastDotTopPct = (lastY / vbHeight) * 100
+
   return (
-    <svg
-      viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-      preserveAspectRatio="none"
-      style={{ display: 'block', width: '100%', height: 56 }}
-    >
-      {/* Threshold line */}
-      {threshold && (
-        <>
+    <div style={{ position: 'relative', width: '100%', height: 56 }}>
+      <svg
+        viewBox={`0 0 ${vbWidth} ${vbHeight}`}
+        preserveAspectRatio="none"
+        style={{ display: 'block', width: '100%', height: '100%' }}
+      >
+        {/* Threshold line */}
+        {threshold && (
           <line
             x1={px}
             y1={thresholdY}
@@ -325,22 +331,12 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
             strokeWidth={1}
             strokeDasharray="3 3"
             opacity={0.5}
+            vectorEffect="non-scaling-stroke"
           />
-          <text
-            x={px + chartWidth + 4}
-            y={thresholdY + 3}
-            className="type-meta"
-            fill="var(--color-text-helper)"
-            fontSize={10}
-          >
-            {threshold}%
-          </text>
-        </>
-      )}
+        )}
 
-      {/* Event marker -- vertical dashed line at the drop point */}
-      {eventIndex != null && (
-        <>
+        {/* Event marker -- vertical dashed line */}
+        {eventIndex != null && (
           <line
             x1={px + eventIndex * stepX}
             y1={py}
@@ -350,42 +346,87 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
             strokeWidth={1}
             strokeDasharray="2 2"
             opacity={0.5}
+            vectorEffect="non-scaling-stroke"
           />
-          <text
-            x={px + eventIndex * stepX}
-            y={vbHeight - 1}
-            fill="var(--color-error)"
-            fontSize={8}
-            textAnchor="middle"
-            opacity={0.7}
-          >
-            2:03 AM
-          </text>
-        </>
+        )}
+
+        {/* Trend line */}
+        <polyline
+          points={points}
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth={1.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+
+      {/* HTML overlay labels -- not affected by SVG scaling */}
+
+      {/* Threshold label */}
+      {threshold && (
+        <span
+          className="type-meta"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: `${thresholdPct}%`,
+            transform: 'translateY(-50%)',
+            color: 'var(--color-text-helper)',
+            fontSize: 10,
+          }}
+        >
+          {threshold}%
+        </span>
       )}
 
-      {/* Trend line */}
-      <polyline
-        points={points}
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth={1.5}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
+      {/* Event label */}
+      {eventIndex != null && (
+        <span
+          className="type-meta"
+          style={{
+            position: 'absolute',
+            left: `${eventPct}%`,
+            bottom: 0,
+            transform: 'translateX(-50%)',
+            color: 'var(--color-error)',
+            fontSize: 9,
+            opacity: 0.7,
+          }}
+        >
+          2:03 AM
+        </span>
+      )}
 
       {/* Current value dot + label */}
-      <circle cx={lastX} cy={lastY} r={3} fill="var(--color-accent)" />
-      <text
-        x={lastX + 6}
-        y={lastY + 3}
-        fill="var(--color-accent)"
-        fontSize={10}
-        fontWeight={600}
+      <span
+        style={{
+          position: 'absolute',
+          left: `${lastDotLeftPct}%`,
+          top: `${lastDotTopPct}%`,
+          transform: 'translate(-4px, -4px)',
+          width: 8,
+          height: 8,
+          borderRadius: 'var(--radius-full)',
+          background: 'var(--color-accent)',
+        }}
+      />
+      <span
+        className="type-meta"
+        style={{
+          position: 'absolute',
+          left: `calc(${lastDotLeftPct}% + 6px)`,
+          top: `${lastDotTopPct}%`,
+          transform: 'translateY(-50%)',
+          color: 'var(--color-accent)',
+          fontSize: 10,
+          fontWeight: 600,
+        }}
       >
         {lastValue}%
-      </text>
-    </svg>
+      </span>
+    </div>
   )
 }
 
