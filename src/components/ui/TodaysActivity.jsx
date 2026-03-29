@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { WORK_ORDERS, CASES, TIMELINE, INCIDENTS } from '../../data/assets'
+import { WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/assets'
 import WoPriority from './WoPriority'
 
 function getEventName(eventId) {
@@ -166,7 +166,7 @@ function WorkOrdersCard() {
             onMouseEnter={() => setHoveredId(wo.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: WO ID + task (clickable, truncated) | urgency */}
+            {/* Line 1: WO ID + task | urgency */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
                 <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
@@ -178,27 +178,29 @@ function WorkOrdersCard() {
               </div>
             </div>
 
-            {/* Line 2: asset + event/incident | assignee + timestamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0 }}>
-                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                  {wo.asset}
-                </span>
-                {wo.eventId && getEventName(wo.eventId) && (
-                  <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)', marginTop: '1px' }}>
-                    <span>{getEventName(wo.eventId)}</span>
-                    {getIncidentForEvent(wo.eventId) && (
-                      <>
-                        <span>·</span>
-                        <span>{getIncidentForEvent(wo.eventId)}</span>
-                      </>
-                    )}
-                  </div>
+            {/* Line 2: asset | assignee */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                {wo.asset}
+              </span>
+              <span className="type-label" style={{ flexShrink: 0, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                {wo.assignee || 'Unassigned'}
+              </span>
+            </div>
+
+            {/* Line 3: event + incident | timestamp */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                {wo.eventId && getEventName(wo.eventId) ? (
+                  <>
+                    {getEventName(wo.eventId)}
+                    {getIncidentForEvent(wo.eventId) && ` · ${getIncidentForEvent(wo.eventId)}`}
+                  </>
+                ) : (
+                  'Routine maintenance'
                 )}
-              </div>
-              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)', textAlign: 'right' }}>
-                {wo.assignee ? wo.assignee : 'Unassigned'}
-                {' · '}
+              </span>
+              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)' }}>
                 {wo.created}
               </span>
             </div>
@@ -218,9 +220,9 @@ function WorkOrdersCard() {
 
 function InvestigationsCard() {
   const [hoveredId, setHoveredId] = useState(null)
-  const summary = buildCaseSummary(CASES)
+  const summary = buildCaseSummary(INVESTIGATIONS)
 
-  const visible = CASES.slice(0, 5)
+  const visible = INVESTIGATIONS.slice(0, 5)
 
   return (
     <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -228,7 +230,7 @@ function InvestigationsCard() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
         <span className="type-card-title">Investigations</span>
-        <span className="type-label">{CASES.length} Total</span>
+        <span className="type-label">{INVESTIGATIONS.length} Total</span>
       </div>
 
       {/* Summary */}
@@ -243,7 +245,7 @@ function InvestigationsCard() {
             onMouseEnter={() => setHoveredId(c.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            {/* Line 1: Case ID + description (clickable, truncated) | status badge with dot */}
+            {/* Line 1: Investigation ID + description | status */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
                 <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
@@ -255,29 +257,26 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 2: asset + scope/incident | assignee + timestamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0 }}>
-                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                  {c.asset}
-                </span>
-                {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0 || c.incidentId) && (
-                  <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)', marginTop: '1px' }}>
-                    {c.linkedEvents.length > 0 && (
-                      <span>{c.linkedEvents.length} event{c.linkedEvents.length !== 1 ? 's' : ''}</span>
-                    )}
-                    {c.linkedEvents.length > 0 && c.linkedWorkOrders.length > 0 && <span>·</span>}
-                    {c.linkedWorkOrders.length > 0 && (
-                      <span>{c.linkedWorkOrders.length} WO{c.linkedWorkOrders.length !== 1 ? 's' : ''}</span>
-                    )}
-                    {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0) && c.incidentId && <span>·</span>}
-                    {c.incidentId && <span>{getIncidentName(c.incidentId)}</span>}
-                  </div>
-                )}
-              </div>
-              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)', textAlign: 'right' }}>
-                {c.assignee ? c.assignee : 'Unassigned'}
-                {' · '}
+            {/* Line 2: asset | assignee */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                {c.asset}
+              </span>
+              <span className="type-label" style={{ flexShrink: 0, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                {c.assignee || 'Unassigned'}
+              </span>
+            </div>
+
+            {/* Line 3: scope + incident | timestamp */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                {[
+                  c.linkedEvents.length > 0 && `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
+                  c.linkedWorkOrders.length > 0 && `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
+                  c.incidentId && getIncidentName(c.incidentId),
+                ].filter(Boolean).join(' · ')}
+              </span>
+              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)' }}>
                 {c.opened}
               </span>
             </div>

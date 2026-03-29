@@ -148,7 +148,7 @@ export const ASSETS = [
     eventHistory: [
       { id: 'EVT-K101-H1', name: 'Vibration Alert', date: '3 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration trending upward. 5.1 mm/s, approaching 7.1 alarm threshold. Alert generated but no intervention taken.' },
       { id: 'EVT-K101-H2', name: 'Vibration Alert', date: '2 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 5.8 mm/s. Second consecutive alert with no response. Vibration trend accelerating.' },
-      { id: 'EVT-K101-H3', name: 'Vibration Alert', date: '1 day ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 6.3 mm/s. Third alert in 3 days. No work order created. This is the gap the root cause investigation (CS-0891) is focused on.' },
+      { id: 'EVT-K101-H3', name: 'Vibration Alert', date: '1 day ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 6.3 mm/s. Third alert in 3 days. No work order created. This is the gap the root cause investigation (IN-0891) is focused on.' },
     ],
   },
   {
@@ -236,8 +236,8 @@ export const ASSETS = [
     // activeEvents: 4 = 1 timeline + 3 historical. repetitiveEvents: 2 = system flagged recurring pattern.
     eventHistory: [
       { id: 'EVT-P203-H1', name: 'Seal Failure', date: '4 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'First mechanical seal failure. Leakage detected at 3.8 L/hr. Seal replaced. No alignment check performed. Pump returned to service after 6 hours.' },
-      { id: 'EVT-P203-H2', name: 'Seal Failure', date: '2 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'Second mechanical seal failure. Same failure mode -- leakage at 4.0 L/hr. Seal replaced again. Alignment not checked. Investigation CS-0894 opened to find root cause.' },
-      { id: 'EVT-P203-H3', name: 'Alignment Drift Detected', date: '3 weeks ago', eventType: 'anomaly', subAssetId: 'P-203-CPL', status: 'in-progress', description: 'Coupling alignment measured at 0.09 mm and trending toward 0.15 mm alarm. Correlated with recurring seal failures by CS-0894. Alignment correction planned but not yet scheduled.' },
+      { id: 'EVT-P203-H2', name: 'Seal Failure', date: '2 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'Second mechanical seal failure. Same failure mode -- leakage at 4.0 L/hr. Seal replaced again. Alignment not checked. Investigation IN-0894 opened to find root cause.' },
+      { id: 'EVT-P203-H3', name: 'Alignment Drift Detected', date: '3 weeks ago', eventType: 'anomaly', subAssetId: 'P-203-CPL', status: 'in-progress', description: 'Coupling alignment measured at 0.09 mm and trending toward 0.15 mm alarm. Correlated with recurring seal failures by IN-0894. Alignment correction planned but not yet scheduled.' },
     ],
   },
   {
@@ -433,7 +433,7 @@ export const ASSETS = [
     mtbf: 4800,
     mttr: 12.0,
     pmCompliance: 97,
-    narrative: 'E-105 preheats hydrocracker feed using hot reactor effluent. Two months ago the refinery shifted to a heavier crude slate. Heavier feed produces more asphaltene precursors that deposit on tube surfaces faster than the fouling model predicted. Feed outlet temperature is 6C lower than expected. Model predicted this fouling at month 8; happened at month 4. Investigation CS-0896 checking whether accelerated fouling is purely from feed change or if there is a tube leak. Lab results pending. Exchanger still running, fired heater downstream compensates but burns more fuel.',
+    narrative: 'E-105 preheats hydrocracker feed using hot reactor effluent. Two months ago the refinery shifted to a heavier crude slate. Heavier feed produces more asphaltene precursors that deposit on tube surfaces faster than the fouling model predicted. Feed outlet temperature is 6C lower than expected. Model predicted this fouling at month 8; happened at month 4. Investigation IN-0896 checking whether accelerated fouling is purely from feed change or if there is a tube leak. Lab results pending. Exchanger still running, fired heater downstream compensates but burns more fuel.',
     lesson: 'Not all problems have alarms. Some are trends that need explaining. Tests whether the dashboard supports slow-burn investigation, not just crisis response.',
     subAssets: [
       {
@@ -492,7 +492,7 @@ export const ASSETS = [
     ],
     // E-105 has 0 events in TIMELINE. The 1 new event is the fouling rate anomaly detected by the model.
     eventHistory: [
-      { id: 'EVT-E105-H1', name: 'Accelerated Fouling Detected', date: '1 week ago', eventType: 'anomaly', subAssetId: 'E-105-TUB-P', status: 'new', description: 'Fouling model predicted current fouling rate at month 8. Actual fouling reached this level at month 4 after crude slate change. Feed outlet temperature 6C below expected. Investigation CS-0896 opened to determine if accelerated fouling is from feed change or tube leak.' },
+      { id: 'EVT-E105-H1', name: 'Accelerated Fouling Detected', date: '1 week ago', eventType: 'anomaly', subAssetId: 'E-105-TUB-P', status: 'new', description: 'Fouling model predicted current fouling rate at month 8. Actual fouling reached this level at month 4 after crude slate change. Feed outlet temperature 6C below expected. Investigation IN-0896 opened to determine if accelerated fouling is from feed change or tube leak.' },
     ],
   },
   {
@@ -607,7 +607,7 @@ export const ASSETS = [
     mtbf: 6500,
     mttr: 24,
     pmCompliance: 98,
-    narrative: 'V-501 separates hydrogen-rich gas from liquid product downstream of reactor. When K-101 tripped, sudden loss of recycle gas compression caused pressure transient. V-501 saw brief spike from 152 bar to 161 bar over 90 seconds before control systems stabilized it. Design pressure is 180 bar. Relief valve did not lift. No damage. Operations flagged because any unexpected pressure excursion on a high-pressure hydrogen vessel gets documented. Investigation CS-0898 is verification: confirm no damage, review pressure trace, close it out.',
+    narrative: 'V-501 separates hydrogen-rich gas from liquid product downstream of reactor. When K-101 tripped, sudden loss of recycle gas compression caused pressure transient. V-501 saw brief spike from 152 bar to 161 bar over 90 seconds before control systems stabilized it. Design pressure is 180 bar. Relief valve did not lift. No damage. Operations flagged because any unexpected pressure excursion on a high-pressure hydrogen vessel gets documented. Investigation IN-0898 is verification: confirm no damage, review pressure trace, close it out.',
     lesson: 'Not every investigation means something is broken. Sometimes it is due diligence.',
     subAssets: [
       {
@@ -775,7 +775,7 @@ export const ASSETS = [
     mtbf: 980,
     mttr: 3.8,
     pmCompliance: 87,
-    narrative: 'Operations noticed discharge temperature swinging by 8-10C every few minutes. Control room initially blamed the anti-surge control valve (hunting). WO-4494 opened to stroke-test the valve. Investigation CS-0893 started as a controls issue. Root cause: polymer fouling on the first-stage impeller blades. FCC wet gas carries heavy hydrocarbons that polymerize on blade surfaces. Buildup is uneven, so compressor oscillates between restricted flow (fouled) and partial break-off (cleaner). Control valve is responding correctly to the oscillation, not causing it.',
+    narrative: 'Operations noticed discharge temperature swinging by 8-10C every few minutes. Control room initially blamed the anti-surge control valve (hunting). WO-4494 opened to stroke-test the valve. Investigation IN-0893 started as a controls issue. Root cause: polymer fouling on the first-stage impeller blades. FCC wet gas carries heavy hydrocarbons that polymerize on blade surfaces. Buildup is uneven, so compressor oscillates between restricted flow (fouled) and partial break-off (cleaner). Control valve is responding correctly to the oscillation, not causing it.',
     lesson: 'Discharge temperature oscillates but suction conditions are stable. If it were a valve issue, suction pressure would fluctuate too. Steady suction with oscillating discharge points to something inside the compressor.',
     subAssets: [
       {
@@ -848,7 +848,7 @@ export const ASSETS = [
     // K-302 has 1 event in TIMELINE (EVT-001). 2 historical events are the repeated temperature oscillation triggers.
     // The system flagged the oscillation 3 times (repetitiveEvents: 3) as discharge temp exceeded rate-of-change threshold each cycle.
     eventHistory: [
-      { id: 'EVT-K302-H1', name: 'Discharge Temp Rate-of-Change', date: '2 days ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Discharge temperature swing exceeded rate-of-change threshold. First occurrence of the oscillation pattern. Opened CS-0893 to investigate.' },
+      { id: 'EVT-K302-H1', name: 'Discharge Temp Rate-of-Change', date: '2 days ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Discharge temperature swing exceeded rate-of-change threshold. First occurrence of the oscillation pattern. Opened IN-0893 to investigate.' },
       { id: 'EVT-K302-H2', name: 'Discharge Temp Rate-of-Change', date: '1 day ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Second occurrence of temperature oscillation exceeding rate-of-change threshold. Same pattern as previous day. Fouling hypothesis emerging.' },
     ],
   },
@@ -872,7 +872,7 @@ export const ASSETS = [
     mtbf: 2200,
     mttr: 14.0,
     pmCompliance: 95,
-    narrative: 'T-102 recovers energy from FCC flue gas. Running 14 months since last overhaul. Exhaust temperature spread widening over three weeks: 12C three weeks ago, now 22C. Alarm threshold is 30C. Root cause: two of eight fuel nozzles developing coke deposits. Coking restricts fuel flow, those nozzles run lean, other six compensate rich. Uneven combustion creates hot spots near clean nozzles, cool spots near coked ones. At current rate, spread hits 30C alarm in about two weeks, triggering forced outage. Investigation CS-0895 monitoring to decide whether to schedule cleaning now or wait.',
+    narrative: 'T-102 recovers energy from FCC flue gas. Running 14 months since last overhaul. Exhaust temperature spread widening over three weeks: 12C three weeks ago, now 22C. Alarm threshold is 30C. Root cause: two of eight fuel nozzles developing coke deposits. Coking restricts fuel flow, those nozzles run lean, other six compensate rich. Uneven combustion creates hot spots near clean nozzles, cool spots near coked ones. At current rate, spread hits 30C alarm in about two weeks, triggering forced outage. Investigation IN-0895 monitoring to decide whether to schedule cleaning now or wait.',
     lesson: 'Parallel to K-101: K-101 had signals for days before the trip and nobody acted. T-102 has signals now. Will this time be different?',
     subAssets: [
       {
@@ -946,7 +946,7 @@ export const ASSETS = [
     ],
     // T-102 has 0 events in TIMELINE. The 1 new event is the exhaust spread widening trend.
     eventHistory: [
-      { id: 'EVT-T102-H1', name: 'Exhaust Temperature Spread Widening', date: '1 week ago', eventType: 'anomaly', subAssetId: 'T-102-CMB', status: 'new', description: 'Exhaust temperature spread increased from 12C to 22C over three weeks. Two of eight fuel nozzles (3 and 7) running 15C cool vs average. Alarm threshold is 30C. At current rate, spread hits alarm in about two weeks. Investigation CS-0895 monitoring trend.' },
+      { id: 'EVT-T102-H1', name: 'Exhaust Temperature Spread Widening', date: '1 week ago', eventType: 'anomaly', subAssetId: 'T-102-CMB', status: 'new', description: 'Exhaust temperature spread increased from 12C to 22C over three weeks. Two of eight fuel nozzles (3 and 7) running 15C cool vs average. Alarm threshold is 30C. At current rate, spread hits alarm in about two weeks. Investigation IN-0895 monitoring trend.' },
     ],
   },
 ]
@@ -1005,7 +1005,7 @@ export const TIMELINE = [
     },
     kpiImpact: null,
     linkedWOs: ['WO-4494'],
-    linkedInvestigations: ['CS-0893'],
+    linkedInvestigations: ['IN-0893'],
   },
   {
     id: 'EVT-002',
@@ -1176,7 +1176,7 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     recommendation: {
-      text: 'Verify all isolation valves in correct locked-out position. Confirm zero residual pressure in casing. Maintain lube oil circulation for bearing cooldown. Complete bearing inspection (WO-4481). Flush and replace lube oil system filters (WO-4482). Do not attempt restart until both are complete. Initiate formal root cause analysis (CS-0891) with focus on: why did vibration alerts go unaddressed for 3 days? Why was filter DP alarm threshold set too high to catch the bypass? Review alarm threshold adequacy across all critical compressors (CS-0897).',
+      text: 'Verify all isolation valves in correct locked-out position. Confirm zero residual pressure in casing. Maintain lube oil circulation for bearing cooldown. Complete bearing inspection (WO-4481). Flush and replace lube oil system filters (WO-4482). Do not attempt restart until both are complete. Initiate formal root cause analysis (IN-0891) with focus on: why did vibration alerts go unaddressed for 3 days? Why was filter DP alarm threshold set too high to catch the bypass? Review alarm threshold adequacy across all critical compressors (IN-0897).',
       source: 'human',
       confidence: null,
       updatedBy: 'Carlos Mendez',
@@ -1185,7 +1185,7 @@ export const TIMELINE = [
     },
     kpiImpact: 'Availability -12.1%, OEE -5.9%',
     linkedWOs: ['WO-4481', 'WO-4482'],
-    linkedInvestigations: ['CS-0891', 'CS-0897'],
+    linkedInvestigations: ['IN-0891', 'IN-0897'],
   },
   {
     id: 'EVT-006',
@@ -1220,7 +1220,7 @@ export const TIMELINE = [
       status: 'under-review',
     },
     recommendation: {
-      text: 'Pull the pressure trace from the historian and confirm no sustained overpressure above 165 bar (alarm threshold). Verify vessel integrity per API 510 standard protocol. Review whether control system response time was adequate or if a faster depressure path is needed. Close investigation CS-0898 once documentation is complete.',
+      text: 'Pull the pressure trace from the historian and confirm no sustained overpressure above 165 bar (alarm threshold). Verify vessel integrity per API 510 standard protocol. Review whether control system response time was adequate or if a faster depressure path is needed. Close investigation IN-0898 once documentation is complete.',
       source: 'human',
       confidence: null,
       updatedBy: 'Carlos Mendez',
@@ -1229,7 +1229,7 @@ export const TIMELINE = [
     },
     kpiImpact: 'Pressure excursion to 161 bar',
     linkedWOs: [],
-    linkedInvestigations: ['CS-0898'],
+    linkedInvestigations: ['IN-0898'],
   },
   {
     id: 'EVT-007',
@@ -1256,7 +1256,7 @@ export const TIMELINE = [
       status: 'under-review',
     },
     consequence: {
-      text: 'Cooler process side is completely unaffected -- tubes are clean, fouling factor normal at 0.0003 m2K/W, heat transfer performance is fine. This is purely a mechanical issue on the air side. The investigation question (CS-0892) is whether this was triggered by the K-101 trip or was developing independently. Answer: both. The belt was already degrading; the transient accelerated the failure. If belt tension drops below 75%, the fan could stall entirely and interstage cooling would be lost, forcing a compression limit.',
+      text: 'Cooler process side is completely unaffected -- tubes are clean, fouling factor normal at 0.0003 m2K/W, heat transfer performance is fine. This is purely a mechanical issue on the air side. The investigation question (IN-0892) is whether this was triggered by the K-101 trip or was developing independently. Answer: both. The belt was already degrading; the transient accelerated the failure. If belt tension drops below 75%, the fan could stall entirely and interstage cooling would be lost, forcing a compression limit.',
       source: 'human',
       confidence: null,
       updatedBy: 'Carlos Mendez',
@@ -1264,7 +1264,7 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     recommendation: {
-      text: 'Schedule belt tension adjustment or replacement (WO-4498 already open). Inspect sheave alignment while belt is off. Determine whether belt replacement interval needs shortening based on condition found. Close investigation CS-0892 with finding: pre-existing degradation accelerated by trip transient -- both causes contributed.',
+      text: 'Schedule belt tension adjustment or replacement (WO-4498 already open). Inspect sheave alignment while belt is off. Determine whether belt replacement interval needs shortening based on condition found. Close investigation IN-0892 with finding: pre-existing degradation accelerated by trip transient -- both causes contributed.',
       source: 'human',
       confidence: null,
       updatedBy: 'Carlos Mendez',
@@ -1273,7 +1273,7 @@ export const TIMELINE = [
     },
     kpiImpact: null,
     linkedWOs: ['WO-4498'],
-    linkedInvestigations: ['CS-0892'],
+    linkedInvestigations: ['IN-0892'],
   },
   {
     id: 'EVT-009',
@@ -1306,7 +1306,7 @@ export const TIMELINE = [
       status: 'under-review',
     },
     recommendation: {
-      text: 'Complete seal inspection (WO-4483) but do not just replace the seal again. Investigate shaft runout and coupling alignment as root cause (CS-0894). Measure alignment offset before and after any seal work. If alignment exceeds 0.10 mm, correct it before installing the new seal. Review maintenance records for the second seal replacement to determine when alignment was last verified.',
+      text: 'Complete seal inspection (WO-4483) but do not just replace the seal again. Investigate shaft runout and coupling alignment as root cause (IN-0894). Measure alignment offset before and after any seal work. If alignment exceeds 0.10 mm, correct it before installing the new seal. Review maintenance records for the second seal replacement to determine when alignment was last verified.',
       source: 'human',
       confidence: null,
       updatedBy: 'Sarah Chen',
@@ -1315,7 +1315,7 @@ export const TIMELINE = [
     },
     kpiImpact: null,
     linkedWOs: ['WO-4483'],
-    linkedInvestigations: ['CS-0894'],
+    linkedInvestigations: ['IN-0894'],
   },
   {
     id: 'EVT-011',
@@ -1351,7 +1351,7 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     recommendation: {
-      text: 'Expedite bearing procurement -- confirm lead time and availability of replacement journal bearing set. Schedule replacement coordinated with lube oil system flush (WO-4482) so both are completed before restart attempt. Photograph bearing damage for CS-0891 root cause report. Continue alarm threshold review (CS-0897) -- the filter DP alarm was set too high to catch the bypass, and vibration alerts were generated but not acted on for 3 days. Both failures in the alert system need to be addressed before this compressor returns to service.',
+      text: 'Expedite bearing procurement -- confirm lead time and availability of replacement journal bearing set. Schedule replacement coordinated with lube oil system flush (WO-4482) so both are completed before restart attempt. Photograph bearing damage for IN-0891 root cause report. Continue alarm threshold review (IN-0897) -- the filter DP alarm was set too high to catch the bypass, and vibration alerts were generated but not acted on for 3 days. Both failures in the alert system need to be addressed before this compressor returns to service.',
       source: 'human',
       confidence: null,
       updatedBy: 'Sarah Chen',
@@ -1360,7 +1360,7 @@ export const TIMELINE = [
     },
     kpiImpact: 'RUL revised to 5 days',
     linkedWOs: ['WO-4481', 'WO-4482'],
-    linkedInvestigations: ['CS-0891', 'CS-0897'],
+    linkedInvestigations: ['IN-0891', 'IN-0897'],
   },
 ]
 
@@ -1381,7 +1381,7 @@ export const INCIDENTS = [
     triggerEventId: 'EVT-005',
     eventIds: ['EVT-002', 'EVT-003', 'EVT-004', 'EVT-005', 'EVT-006', 'EVT-007', 'EVT-011'],
     linkedWOs: ['WO-4481', 'WO-4482', 'WO-4498'],
-    linkedInvestigations: ['CS-0891', 'CS-0892', 'CS-0897', 'CS-0898'],
+    linkedInvestigations: ['IN-0891', 'IN-0892', 'IN-0897', 'IN-0898'],
   },
 ]
 
@@ -1398,7 +1398,7 @@ export const WORK_ORDERS = [
     status: 'in-progress',
     created: '2:15 AM',
     eventId: 'EVT-005',
-    linkedInvestigations: ['CS-0891'],
+    linkedInvestigations: ['IN-0891'],
   },
   {
     id: 'WO-4482',
@@ -1410,7 +1410,7 @@ export const WORK_ORDERS = [
     status: 'open',
     created: '2:30 AM',
     eventId: 'EVT-005',
-    linkedInvestigations: ['CS-0891'],
+    linkedInvestigations: ['IN-0891'],
   },
   {
     id: 'WO-4483',
@@ -1422,7 +1422,7 @@ export const WORK_ORDERS = [
     status: 'in-progress',
     created: '5:00 AM',
     eventId: 'EVT-009',
-    linkedInvestigations: ['CS-0894'],
+    linkedInvestigations: ['IN-0894'],
   },
   {
     id: 'WO-4484',
@@ -1440,18 +1440,18 @@ export const WORK_ORDERS = [
   // Additional work orders -- eventId null for routine/preventive WOs not triggered by an acute event
   { id: 'WO-4485', assetId: 'P-102', asset: 'Pump P-102', task: 'Quarterly vibration baseline measurement', urgency: 'scheduled', assignee: 'James Park', status: 'in-progress', created: 'Yesterday', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4486', assetId: 'V-501', asset: 'Vessel V-501', task: 'Pressure relief valve test and recertification', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: 'Yesterday', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4487', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Tube bundle fouling assessment', urgency: 'scheduled', assignee: null, status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['CS-0896'] },
-  { id: 'WO-4488', assetId: 'T-102', asset: 'Turbine T-102', task: 'Borescope inspection preparation', urgency: 'scheduled', assignee: 'Mike Torres', status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['CS-0895'] },
+  { id: 'WO-4487', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Tube bundle fouling assessment', urgency: 'scheduled', assignee: null, status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['IN-0896'] },
+  { id: 'WO-4488', assetId: 'T-102', asset: 'Turbine T-102', task: 'Borescope inspection preparation', urgency: 'scheduled', assignee: 'Mike Torres', status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['IN-0895'] },
   { id: 'WO-4489', assetId: 'R-301', asset: 'Reactor R-301', task: 'Catalyst bed thermocouple calibration', urgency: 'scheduled', assignee: null, status: 'open', created: '3 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4490', assetId: 'K-302', asset: 'Compressor K-302', task: 'Discharge temperature sensor replacement', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '3 days ago', eventId: null, linkedInvestigations: ['CS-0893'] },
+  { id: 'WO-4490', assetId: 'K-302', asset: 'Compressor K-302', task: 'Discharge temperature sensor replacement', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '3 days ago', eventId: null, linkedInvestigations: ['IN-0893'] },
   { id: 'WO-4491', assetId: 'P-102', asset: 'Pump P-102', task: 'Coupling alignment check', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4492', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Shell-side UT thickness survey', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4493', assetId: 'V-501', asset: 'Vessel V-501', task: 'Level transmitter recalibration', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4494', assetId: 'K-302', asset: 'Compressor K-302', task: 'Anti-surge valve stroke test', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', eventId: 'EVT-001', linkedInvestigations: ['CS-0893'] },
-  { id: 'WO-4495', assetId: 'T-102', asset: 'Turbine T-102', task: 'Exhaust temperature profile review', urgency: 'scheduled', assignee: null, status: 'open', created: '6 days ago', eventId: null, linkedInvestigations: ['CS-0895'] },
+  { id: 'WO-4494', assetId: 'K-302', asset: 'Compressor K-302', task: 'Anti-surge valve stroke test', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', eventId: 'EVT-001', linkedInvestigations: ['IN-0893'] },
+  { id: 'WO-4495', assetId: 'T-102', asset: 'Turbine T-102', task: 'Exhaust temperature profile review', urgency: 'scheduled', assignee: null, status: 'open', created: '6 days ago', eventId: null, linkedInvestigations: ['IN-0895'] },
   { id: 'WO-4496', assetId: 'P-203', asset: 'Pump P-203', task: 'Suction strainer cleaning', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4497', assetId: 'R-301', asset: 'Reactor R-301', task: 'Hydrogen analyzer calibration', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4498', assetId: 'C-201', asset: 'Cooler C-201', task: 'Fan belt tension check', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: 'EVT-007', linkedInvestigations: ['CS-0892'] },
+  { id: 'WO-4498', assetId: 'C-201', asset: 'Cooler C-201', task: 'Fan belt tension check', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: 'EVT-007', linkedInvestigations: ['IN-0892'] },
   { id: 'WO-4499', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Gasket inventory verification', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4500', assetId: 'K-302', asset: 'Compressor K-302', task: 'Lube oil sample and analysis', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
   { id: 'WO-4501', assetId: 'T-401', asset: 'Turbine T-401', task: 'Inlet air filter differential pressure check', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', eventId: null, linkedInvestigations: [] },
@@ -1463,9 +1463,9 @@ export const WORK_ORDERS = [
 
 // ── Cases (active at 7:00 AM) ─────────────────────────────────────────────────
 
-export const CASES = [
+export const INVESTIGATIONS = [
   {
-    id: 'CS-0891',
+    id: 'IN-0891',
     assetId: 'K-101',
     asset: 'Compressor K-101',
     description: 'Root cause analysis: recurring bearing degradation. Vibration alerts ignored for 3 days. Oil filter bypass suspected. Threshold review needed.',
@@ -1477,7 +1477,7 @@ export const CASES = [
     opened: '3:00 AM',
   },
   {
-    id: 'CS-0892',
+    id: 'IN-0892',
     assetId: 'C-201',
     asset: 'Cooler C-201',
     description: 'Vibration anomaly on fan assembly. Determine if related to K-101 trip transient or independent belt degradation.',
@@ -1488,19 +1488,19 @@ export const CASES = [
     incidentId: 'INC-001',
     opened: '2:15 AM',
   },
-  { id: 'CS-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4494'], linkedEvents: ['EVT-001'], incidentId: null, opened: '2 days ago' },
-  { id: 'CS-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', assignee: 'Sarah Chen', linkedWorkOrders: ['WO-4483'], linkedEvents: ['EVT-009'], incidentId: null, opened: '4 days ago' },
-  { id: 'CS-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4488', 'WO-4495'], linkedEvents: [], incidentId: null, opened: '1 week ago' },
-  { id: 'CS-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4487'], linkedEvents: [], incidentId: null, opened: '1 week ago' },
-  { id: 'CS-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-005'], incidentId: 'INC-001', opened: '3:30 AM' },
-  { id: 'CS-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
+  { id: 'IN-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4494'], linkedEvents: ['EVT-001'], incidentId: null, opened: '2 days ago' },
+  { id: 'IN-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', assignee: 'Sarah Chen', linkedWorkOrders: ['WO-4483'], linkedEvents: ['EVT-009'], incidentId: null, opened: '4 days ago' },
+  { id: 'IN-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4488', 'WO-4495'], linkedEvents: [], incidentId: null, opened: '1 week ago' },
+  { id: 'IN-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4487'], linkedEvents: [], incidentId: null, opened: '1 week ago' },
+  { id: 'IN-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-005'], incidentId: 'INC-001', opened: '3:30 AM' },
+  { id: 'IN-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
 ]
 
 // ── Computed: WO and investigation counts on assets ──────────────────────────
 // Derived from WORK_ORDERS and CASES after both are defined.
 ASSETS.forEach(a => {
   a.workOrders = WORK_ORDERS.filter(wo => wo.assetId === a.id).length
-  a.investigations = CASES.filter(c => c.assetId === a.id).length
+  a.investigations = INVESTIGATIONS.filter(c => c.assetId === a.id).length
 })
 
 // ── Notifications (most recent first) ────────────────────────────────────────

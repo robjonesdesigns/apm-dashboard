@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { ASSETS, WORK_ORDERS, CASES } from '../../data/assets'
+import { ASSETS, WORK_ORDERS, INVESTIGATIONS } from '../../data/assets'
 import CriticalityIndicator from './CriticalityIndicator'
 import FilterChip from './FilterChip'
 import FilterButton from './FilterButton'
@@ -25,7 +25,7 @@ const woCountByAsset = {}
 WORK_ORDERS.forEach(wo => { woCountByAsset[wo.assetId] = (woCountByAsset[wo.assetId] || 0) + 1 })
 
 const invCountByAsset = {}
-CASES.forEach(c => { invCountByAsset[c.assetId] = (invCountByAsset[c.assetId] || 0) + 1 })
+INVESTIGATIONS.forEach(c => { invCountByAsset[c.assetId] = (invCountByAsset[c.assetId] || 0) + 1 })
 
 const COL_DIVIDER = '1px solid var(--color-border-divider)'
 const cellBase = {
@@ -122,7 +122,7 @@ function AssetRow({ asset, onAssetClick }) {
         {woCountByAsset[asset.id] || 0}
       </div>
 
-      {/* Investigations (derived from CASES) */}
+      {/* Investigations (derived from INVESTIGATIONS) */}
       <div className="type-body" style={COL_STYLES.invs}>
         {invCountByAsset[asset.id] || 0}
       </div>
