@@ -390,8 +390,23 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
   const [sortDir, setSortDir] = useState('asc')
   const [page, setPage] = useState(0)
   const [rowHeight, setRowHeight] = useState(0)
+  const [showScrollHint, setShowScrollHint] = useState(false)
   const rowsRef = useRef(null)
+  const scrollRef = useRef(null)
   const rowsPerPage = 10
+
+  // Check if table overflows and show/hide scroll hint
+  function handleScroll() {
+    if (!scrollRef.current) return
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+    setShowScrollHint(scrollLeft < scrollWidth - clientWidth - 8)
+  }
+
+  useEffect(() => {
+    if (!scrollRef.current) return
+    const { scrollWidth, clientWidth } = scrollRef.current
+    setShowScrollHint(scrollWidth > clientWidth + 8)
+  })
 
   // Measure actual row height on first render
   useEffect(() => {
@@ -502,8 +517,13 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
           </div>
         </div>
 
-        {/* Table area — pull to card edges, horizontal scroll on narrow viewports */}
-        <div style={{ margin: '0 calc(-1 * var(--spacing-24))', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        {/* Table area — horizontal scroll within card padding */}
+        <div style={{ position: 'relative' }}>
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+        >
           {/* Fixed header */}
           <div
             style={{
@@ -544,6 +564,22 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
               </div>
             )}
           </div>
+        </div>
+        {/* Scroll fade hint — visible when table overflows right */}
+        {showScrollHint && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: 48,
+              background: 'linear-gradient(to right, transparent, var(--color-layer-01))',
+              pointerEvents: 'none',
+              zIndex: 2,
+            }}
+          />
+        )}
         </div>
 
         {/* Pagination */}
