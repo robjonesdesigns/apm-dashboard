@@ -16,37 +16,7 @@ const ALARM_SEGMENTS = [
   { key: 'newEvents',      label: 'New',             value: EVENT_SUMMARY.newEvents,      color: DONUT_COLORS.newEvents },
 ]
 
-// ── Arc path helper ─────────────────────────────────────────────────────────
-
-function describeArc(cx, cy, innerR, outerR, startAngle, endAngle) {
-  const toRad = (deg) => (deg * Math.PI) / 180
-  const cos = Math.cos
-  const sin = Math.sin
-
-  const s = toRad(startAngle)
-  const e = toRad(endAngle)
-
-  const outerStartX = cx + outerR * cos(s)
-  const outerStartY = cy + outerR * sin(s)
-  const outerEndX = cx + outerR * cos(e)
-  const outerEndY = cy + outerR * sin(e)
-  const innerStartX = cx + innerR * cos(e)
-  const innerStartY = cy + innerR * sin(e)
-  const innerEndX = cx + innerR * cos(s)
-  const innerEndY = cy + innerR * sin(s)
-
-  const largeArc = endAngle - startAngle > 180 ? 1 : 0
-
-  return [
-    `M ${outerStartX} ${outerStartY}`,
-    `A ${outerR} ${outerR} 0 ${largeArc} 1 ${outerEndX} ${outerEndY}`,
-    `L ${innerStartX} ${innerStartY}`,
-    `A ${innerR} ${innerR} 0 ${largeArc} 0 ${innerEndX} ${innerEndY}`,
-    'Z',
-  ].join(' ')
-}
-
-// ── Donut (pure SVG with arc paths) ─────────────────────────────────────────
+// ── Donut (stroke-based with rounded linecaps) ──────────────────────────────
 
 function DonutTooltip({ segment, total, x, y }) {
   if (!segment) return null
@@ -82,99 +52,77 @@ function DonutTooltip({ segment, total, x, y }) {
 }
 
 function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, selectedKey, onHover, onLeave, onClick }) {
-  const center = size / 2
-  const outerR = size / 2 - 2
-  const innerR = outerR - ringWidth
-  const glowOuterR = outerR + 8
-  const glowInnerR = outerR + 2
   const svgSize = size + 20
-  const svgCenter = svgSize / 2
-  const gapDeg = 1.5
+  const center = svgSize / 2
+  const midR = (size / 2 - 2) - ringWidth / 2
+  const circumference = 2 * Math.PI * midR
+  const gapLength = 6 // px gap between segments
 
-  // Build angle map
-  const segmentAngles = []
-  let angle = -90 // start at top
+  // Build stroke-dasharray segments
+  const segmentData = []
+  let offset = circumference * 0.25 // start at top (90deg rotation via offset)
   segments.forEach(seg => {
-    const sweep = (seg.value / total) * 360
-    segmentAngles.push({ ...seg, startAngle: angle + gapDeg / 2, endAngle: angle + sweep - gapDeg / 2, sweep })
-    angle += sweep
+    const segLength = (seg.value / total) * circumference - gapLength
+    segmentData.push({ ...seg, dashLength: Math.max(segLength, 2), dashOffset: -offset + gapLength / 2 })
+    offset += (seg.value / total) * circumference
   })
 
   return (
     <div style={{ position: 'relative', width: svgSize, height: svgSize, margin: '0 auto' }}>
       <svg width={svgSize} height={svgSize}>
-        <g transform={`translate(${(svgSize - size) / 2}, ${(svgSize - size) / 2})`}>
-          {/* Background ring */}
-          <circle
-            cx={center}
-            cy={center}
-            r={(outerR + innerR) / 2}
-            fill="none"
-            stroke="var(--color-layer-02)"
-            strokeWidth={ringWidth}
-          />
+        {/* Background ring */}
+        <circle
+          cx={center}
+          cy={center}
+          r={midR}
+          fill="none"
+          stroke="var(--color-layer-02)"
+          strokeWidth={ringWidth}
+        />
 
-          {/* Segments */}
-          {segmentAngles.map(seg => {
-            const isHovered = hoveredKey === seg.key
-            const isSelected = selectedKey === seg.key
-            const expand = isHovered || isSelected ? 4 : 0
-            const path = describeArc(center, center, innerR - expand, outerR + expand, seg.startAngle, seg.endAngle)
-
-            return (
-              <g key={seg.key}>
-                {/* Teal selection ring behind segment */}
-                {isSelected && (
-                  <path
-                    d={describeArc(center, center, innerR - 6, outerR + 6, seg.startAngle, seg.endAngle)}
-                    fill="none"
-                    stroke="var(--color-accent)"
-                    strokeWidth={2}
-                  />
-                )}
-                {/* Teal hover ring */}
-                {isHovered && !isSelected && (
-                  <path
-                    d={describeArc(center, center, innerR - 6, outerR + 6, seg.startAngle, seg.endAngle)}
-                    fill="none"
-                    stroke="var(--color-accent)"
-                    strokeWidth={1.5}
-                    opacity={0.6}
-                  />
-                )}
-                <path
-                  d={path}
-                  fill={seg.color}
-                  rx={2}
-                  style={{
-                    transition: 'opacity var(--motion-fast) var(--ease-productive)',
-                    opacity: (hoveredKey || selectedKey) && !isHovered && !isSelected ? 0.35 : 1,
-                    cursor: 'pointer',
-                  }}
-                  onMouseEnter={() => onHover(seg.key)}
-                  onMouseLeave={onLeave}
-                  onClick={() => onClick?.(seg.key)}
-                />
-              </g>
-            )
-          })}
-        </g>
-
-        {/* Outer glow band on hovered segment */}
-        {segmentAngles.map(seg => {
-          if (hoveredKey !== seg.key) return null
-          const offsetX = (svgSize - size) / 2
-          const offsetY = (svgSize - size) / 2
-          const path = describeArc(center + offsetX, center + offsetY, glowInnerR, glowOuterR, seg.startAngle, seg.endAngle)
+        {/* Segments -- stroke-based with rounded linecaps */}
+        {segmentData.map(seg => {
+          const isHovered = hoveredKey === seg.key
+          const isSelected = selectedKey === seg.key
+          const activeWidth = isHovered || isSelected ? ringWidth + 8 : ringWidth
 
           return (
-            <path
-              key={`glow-${seg.key}`}
-              d={path}
-              fill={seg.color}
-              opacity={0.3}
-              style={{ transition: 'opacity var(--motion-fast) var(--ease-productive)' }}
-            />
+            <g key={seg.key}>
+              {/* Teal selection/hover ring */}
+              {(isSelected || isHovered) && (
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={midR}
+                  fill="none"
+                  stroke="var(--color-accent)"
+                  strokeWidth={activeWidth + 4}
+                  strokeLinecap="round"
+                  strokeDasharray={`${seg.dashLength + 4} ${circumference - seg.dashLength - 4}`}
+                  strokeDashoffset={seg.dashOffset - 2}
+                  opacity={isSelected ? 1 : 0.5}
+                />
+              )}
+              <circle
+                cx={center}
+                cy={center}
+                r={midR}
+                fill="none"
+                stroke={seg.color}
+                strokeWidth={activeWidth}
+                strokeLinecap="round"
+                strokeDasharray={`${seg.dashLength} ${circumference - seg.dashLength}`}
+                strokeDashoffset={seg.dashOffset}
+                style={{
+                  transition: 'opacity var(--motion-fast) var(--ease-productive), stroke-width var(--motion-fast) var(--ease-productive)',
+                  opacity: (hoveredKey || selectedKey) && !isHovered && !isSelected ? 0.35 : 1,
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={() => onHover(seg.key)}
+                onMouseLeave={onLeave}
+                onClick={() => onClick?.(seg.key)}
+              />
+            </g>
           )
         })}
       </svg>
