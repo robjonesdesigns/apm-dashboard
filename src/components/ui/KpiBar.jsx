@@ -246,6 +246,7 @@ function KpiCard({ config, onClick, isSelected }) {
             data={KPI_24H}
             dataKey={config.key}
             threshold={THRESHOLDS[config.key]?.warning}
+            eventIndex={7}
           />
 
           {/* Time range */}
@@ -276,7 +277,7 @@ function KpiCard({ config, onClick, isSelected }) {
 
 // ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
 
-function Sparkline({ data, dataKey, threshold }) {
+function Sparkline({ data, dataKey, threshold, eventIndex }) {
   if (!data || data.length === 0) return null
 
   const vbWidth = 280
@@ -333,6 +334,32 @@ function Sparkline({ data, dataKey, threshold }) {
             fontSize={10}
           >
             {threshold}%
+          </text>
+        </>
+      )}
+
+      {/* Event marker -- vertical dashed line at the drop point */}
+      {eventIndex != null && (
+        <>
+          <line
+            x1={px + eventIndex * stepX}
+            y1={py}
+            x2={px + eventIndex * stepX}
+            y2={vbHeight - py}
+            stroke="var(--color-error)"
+            strokeWidth={1}
+            strokeDasharray="2 2"
+            opacity={0.5}
+          />
+          <text
+            x={px + eventIndex * stepX}
+            y={vbHeight - 1}
+            fill="var(--color-error)"
+            fontSize={8}
+            textAnchor="middle"
+            opacity={0.7}
+          >
+            2:03 AM
           </text>
         </>
       )}
