@@ -68,7 +68,6 @@ export const ASSETS = [
     falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '5h',
-    workOrders: 2,
     rul: '5 days',
     mtbf: 312,
     mttr: 4.2,
@@ -168,7 +167,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 2,
     downtime: '0h',
-    workOrders: 1,
     rul: '45 days',
     mtbf: 1820,
     mttr: 6.1,
@@ -258,7 +256,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 1,
     downtime: '0h',
-    workOrders: 0,
     rul: '110 days',
     mtbf: 3200,
     mttr: 8.4,
@@ -336,7 +333,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 1,
     rul: '180 days',
     mtbf: 2800,
     mttr: 96,
@@ -433,7 +429,6 @@ export const ASSETS = [
     falsePositives: 1,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 0,
     rul: '240 days',
     mtbf: 4800,
     mttr: 12.0,
@@ -516,7 +511,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 0,
     rul: '365 days',
     mtbf: 8760,
     mttr: 168,
@@ -609,7 +603,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 0,
     rul: '300 days',
     mtbf: 6500,
     mttr: 24,
@@ -698,7 +691,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 0,
     rul: '280 days',
     mtbf: 2400,
     mttr: 5.2,
@@ -779,7 +771,6 @@ export const ASSETS = [
     falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '0h',
-    workOrders: 0,
     rul: '95 days',
     mtbf: 980,
     mttr: 3.8,
@@ -877,7 +868,6 @@ export const ASSETS = [
     falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
-    workOrders: 0,
     rul: '200 days',
     mtbf: 2200,
     mttr: 14.0,
@@ -1505,6 +1495,13 @@ export const CASES = [
   { id: 'CS-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-005'], incidentId: 'INC-001', opened: '3:30 AM' },
   { id: 'CS-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
 ]
+
+// ── Computed: WO and investigation counts on assets ──────────────────────────
+// Derived from WORK_ORDERS and CASES after both are defined.
+ASSETS.forEach(a => {
+  a.workOrders = WORK_ORDERS.filter(wo => wo.assetId === a.id).length
+  a.investigations = CASES.filter(c => c.assetId === a.id).length
+})
 
 // ── Notifications (most recent first) ────────────────────────────────────────
 // Derived from TIMELINE events. Same data, reverse chronological for the panel.
