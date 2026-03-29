@@ -535,7 +535,8 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
               borderTop:       '1px solid var(--color-border-subtle)',
               borderBottom:    '1px solid var(--color-border-subtle)',
               borderLeft:      '2px solid transparent',
-              minWidth:        700,
+              width:           'max-content',
+              minWidth:        '100%',
             }}
           >
             <SortableHeader label="Status"         sortKey="status"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.status} />
@@ -550,7 +551,7 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
           </div>
 
           {/* Rows — paginated, always 10 row slots */}
-          <div ref={rowsRef} style={{ minWidth: 700, minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
+          <div ref={rowsRef} style={{ width: 'max-content', minWidth: '100%', minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
             {pageAssets.map(asset => (
               <AssetRow
                 key={asset.id}
