@@ -118,7 +118,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
           {segmentAngles.map(seg => {
             const isHovered = hoveredKey === seg.key
             const isSelected = selectedKey === seg.key
-            const expand = isHovered || isSelected ? 2 : 0
+            const expand = isHovered || isSelected ? 4 : 0
             const path = describeArc(center, center, innerR - expand, outerR + expand, seg.startAngle, seg.endAngle)
 
             return (
@@ -126,7 +126,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                 {/* Teal selection ring behind segment */}
                 {isSelected && (
                   <path
-                    d={describeArc(center, center, innerR - 4, outerR + 4, seg.startAngle, seg.endAngle)}
+                    d={describeArc(center, center, innerR - 6, outerR + 6, seg.startAngle, seg.endAngle)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={2}
@@ -135,7 +135,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                 {/* Teal hover ring */}
                 {isHovered && !isSelected && (
                   <path
-                    d={describeArc(center, center, innerR - 4, outerR + 4, seg.startAngle, seg.endAngle)}
+                    d={describeArc(center, center, innerR - 6, outerR + 6, seg.startAngle, seg.endAngle)}
                     fill="none"
                     stroke="var(--color-accent)"
                     strokeWidth={1.5}
