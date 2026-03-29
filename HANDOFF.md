@@ -85,11 +85,21 @@ We were finding issues right up to the end:
 - Need to verify each event name reads well on the notification card (no redundancy with asset name)
 - eventType field is not yet rendered in the UI -- could show as a subtle tag on cards
 
-### ImpactStrip
-Section header still says "What Happened" -- discussion to rename to "Impact Summary" or similar. Three-act cards now:
-1. Trigger: EVT-005 High Vibration Trip
-2. Consequence: EVT-006 Pressure Transient
-3. Confirmation: EVT-011 Bearing Damage Detected
+### Naming updates (end of session)
+All pushed and deployed:
+- Section headers: System Health, What Happened?, In Progress, Needs Action, Assets
+- Sidebar/TopBar: Root Cause -> Fault Tree
+- Notification panel header: Notifications -> Event Feed
+- Quick Access links: Asset Details -> Asset Inspection, Event Trend -> Trends
+
+### Needs Action cards: consistent filter-to-table interaction
+All three cards (Risk Matrix, Alarm Quality, Bad Actors) should filter the Asset Table on click with the same affordance:
+- Hover: teal border around the card + transparent teal overlay on the data viz area
+- Click: filter Asset Table + smooth scroll to it + filter chip in toolbar
+- Risk Matrix: filter by criticality/event combination
+- Alarm Quality: filter by event validation status (confirmed, false positive, new)
+- Bad Actors: filter to specific asset
+Currently only Risk Matrix filters. Alarm Quality and Bad Actors need wiring.
 
 ### WO-4484 (T-401)
 Now has `status: 'pending-decision'` and a `note` field with the maintenance scheduling context that was on EVT-010. TodaysActivity may need to handle this new status and note field.
