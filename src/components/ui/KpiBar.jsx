@@ -184,7 +184,7 @@ function KpiCard({ config, onClick, isSelected }) {
     : `Below ${threshold.warning}%`
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
       <button
         className="card card-accent-top card-interactive"
         onClick={() => onClick(config.key)}
@@ -224,11 +224,16 @@ function KpiCard({ config, onClick, isSelected }) {
         </div>
       </button>
 
-      {/* Inline drawer */}
+      {/* Inline drawer -- overlays content below */}
       {isSelected && (
         <div
           className="card"
           style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 10,
             borderTop: 'none',
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
@@ -238,6 +243,7 @@ function KpiCard({ config, onClick, isSelected }) {
             flexDirection: 'column',
             gap: 'var(--spacing-8)',
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
+            boxShadow: 'var(--shadow-overlay)',
           }}
         >
           {/* Sparkline */}
