@@ -223,14 +223,7 @@ function EventDetails({ notification, onBack, onClose }) {
           }}>
             <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
               Part of{' '}
-              <span
-                className="type-link"
-                style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}
-                role="link"
-                tabIndex={0}
-                onClick={() => console.log('Navigate to incident', notification.incidentId)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to incident', notification.incidentId) } }}
-              >
+              <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>
                 {getIncidentName(notification.incidentId)}
               </span>
               {' '}incident
@@ -248,14 +241,7 @@ function EventDetails({ notification, onBack, onClose }) {
               {notification.relationships.map((rel) => (
                 <span key={`${rel.type}-${rel.eventId}`} className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
                   {REL_LABELS[rel.type] || rel.type}:{' '}
-                  <span
-                    className="type-link"
-                    style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}
-                    role="link"
-                    tabIndex={0}
-                    onClick={() => console.log('Navigate to event', rel.eventId)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to event', rel.eventId) } }}
-                  >
+                  <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>
                     {rel.eventId} {getEventName(rel.eventId)}
                   </span>
                 </span>
@@ -272,15 +258,7 @@ function EventDetails({ notification, onBack, onClose }) {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               {notification.linkedWOs.map((wo) => (
-                <span
-                  key={wo}
-                  className="type-link"
-                  style={{ cursor: 'pointer' }}
-                  role="link"
-                  tabIndex={0}
-                  onClick={() => console.log('Navigate to', wo)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to', wo) } }}
-                >
+                <span key={wo} className="type-link">
                   {wo}
                 </span>
               ))}
@@ -296,15 +274,7 @@ function EventDetails({ notification, onBack, onClose }) {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               {notification.linkedInvestigations.map((inv) => (
-                <span
-                  key={inv}
-                  className="type-link"
-                  style={{ cursor: 'pointer' }}
-                  role="link"
-                  tabIndex={0}
-                  onClick={() => console.log('Navigate to', inv)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to', inv) } }}
-                >
+                <span key={inv} className="type-link">
                   {inv}
                 </span>
               ))}
@@ -319,7 +289,7 @@ function EventDetails({ notification, onBack, onClose }) {
         <p className="type-card-title" style={{ margin: '0 0 var(--spacing-8) 0' }}>Quick Access</p>
         {['Asset Inspection', 'Trends', 'Fault Tree'].map((link) => (
           <p key={link} style={{ margin: '0 0 var(--spacing-8) 0' }}>
-            <span className="type-link" style={{ cursor: 'pointer' }} role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.preventDefault() }}>{link}</span>
+            <span className="type-link">{link}</span>
           </p>
         ))}
       </div>
@@ -602,7 +572,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
             textAlign: 'right',
             flexShrink: 0,
           }}>
-            <span className="type-link" style={{ cursor: 'pointer' }} role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.preventDefault() }}>Go to Event Log &rarr;</span>
+            <span className="type-link">Go to Event Log &rarr;</span>
           </div>
         </>
       )}

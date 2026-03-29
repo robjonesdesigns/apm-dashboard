@@ -273,7 +273,7 @@ function KpiCard({ config, onClick, isSelected }) {
 
           {/* Go to Trends */}
           <div style={{ textAlign: 'right', paddingTop: 'var(--spacing-4)' }}>
-            <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>Go to Trends &rarr;</span>
+            <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>Go to Trends &rarr;</span>
           </div>
         </div>
       )}

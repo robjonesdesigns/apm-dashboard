@@ -111,13 +111,7 @@ export default function ImpactStrip() {
       ))}
 
       <div style={{ marginTop: 'var(--spacing-8)', textAlign: 'right' }}>
-        <button
-          className="type-link"
-          onClick={() => console.log('Navigate to Event Log')}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}
-        >
-          Go to Events &rarr;
-        </button>
+        <span className="type-link">Go to Events &rarr;</span>
       </div>
     </section>
   )
