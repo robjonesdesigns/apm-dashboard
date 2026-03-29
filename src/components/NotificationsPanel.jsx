@@ -82,7 +82,7 @@ function NotificationItem({ notification, isNew, onSelect }) {
         }} />
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', minWidth: 0, flex: 1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-8)', minWidth: 0, flex: 1 }}>
         {/* Row 1: severity badge + timestamp */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
           <Badge level={notification.type} />
@@ -186,6 +186,9 @@ function EventDetails({ notification, onBack, onClose }) {
           <span className="type-meta">{notification.time}</span>
         </div>
         <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--spacing-4)' }}>
+          {notification.name}
+        </p>
+        <p className="type-label" style={{ margin: '0 0 var(--spacing-8) 0', color: 'var(--color-accent)' }}>
           {notification.asset}
         </p>
         <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
@@ -198,7 +201,7 @@ function EventDetails({ notification, onBack, onClose }) {
         <p className="type-card-title" style={{ margin: '0 0 var(--spacing-16) 0' }}>Event Details</p>
 
         {details.map((section) => (
-          <div key={section.label} style={{ marginBottom: 'var(--spacing-16)' }}>
+          <div key={section.label} style={{ marginBottom: 'var(--spacing-24)' }}>
             <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
               {section.label}
             </p>
