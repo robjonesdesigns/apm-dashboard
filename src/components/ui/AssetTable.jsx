@@ -502,8 +502,8 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
           </div>
         </div>
 
-        {/* Table area — pull to card edges with negative margin */}
-        <div style={{ margin: '0 calc(-1 * var(--spacing-24))' }}>
+        {/* Table area — pull to card edges, horizontal scroll on narrow viewports */}
+        <div style={{ margin: '0 calc(-1 * var(--spacing-24))', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {/* Fixed header */}
           <div
             style={{
