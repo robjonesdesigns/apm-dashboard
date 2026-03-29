@@ -9,6 +9,7 @@ import { BAD_ACTORS } from '../../data/assets'
 import { colors } from '../../styles/tokens'
 import Legend from './Legend'
 import CriticalityIndicator from './CriticalityIndicator'
+import FilterChip from './FilterChip'
 
 function barColor(criticality) {
   if (criticality === 'A') return colors.error
@@ -65,8 +66,9 @@ function WatchListTooltip({ item, x, y }) {
 
 // ── Bar row ─────────────────────────────────────────────────────────────────
 
-function BarRow({ item, isHovered, isDimmed, onHover, onLeave, onClick }) {
+function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onClick }) {
   const pct = (item.events / maxEvents) * 100
+  const showBorder = isHovered || isSelected
 
   return (
     <div
@@ -77,10 +79,13 @@ function BarRow({ item, isHovered, isDimmed, onHover, onLeave, onClick }) {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--spacing-8)',
-        padding: 'var(--spacing-4) 0',
+        padding: 'var(--spacing-4) var(--spacing-8)',
         cursor: 'pointer',
         opacity: isDimmed ? 0.35 : 1,
-        transition: 'opacity var(--motion-fast) var(--ease-productive)',
+        transition: 'all var(--motion-fast) var(--ease-productive)',
+        borderRadius: 'var(--radius-4)',
+        border: showBorder ? '1.5px solid var(--color-accent)' : '1.5px solid transparent',
+        background: isSelected ? 'var(--color-accent-bg)' : 'transparent',
       }}
     >
       {/* Asset name */}
@@ -133,11 +138,12 @@ function BarRow({ item, isHovered, isDimmed, onHover, onLeave, onClick }) {
 
 // ── BadActors (Watch List) ──────────────────────────────────────────────────
 
-export default function BadActors({ onAssetClick }) {
+export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }) {
   const [hoveredIdx, setHoveredIdx] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   const hoveredItem = hoveredIdx !== null ? BAD_ACTORS[hoveredIdx] : null
+  const selectedName = selectedAsset ? BAD_ACTORS.find(a => a.assetId === selectedAsset)?.name : null
 
   return (
     <div
@@ -146,9 +152,13 @@ export default function BadActors({ onAssetClick }) {
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
     >
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
         <span className="type-card-title">Watch List</span>
-        <span className="type-meta">Last 30 days</span>
+        {selectedAsset ? (
+          <FilterChip label={selectedName || selectedAsset} onClear={onClearFilter} />
+        ) : (
+          <span className="type-meta">Last 30 days</span>
+        )}
       </div>
 
       {/* Bars -- centered vertically in card */}
@@ -158,7 +168,8 @@ export default function BadActors({ onAssetClick }) {
             key={item.assetId}
             item={item}
             isHovered={hoveredIdx === i}
-            isDimmed={hoveredIdx !== null && hoveredIdx !== i}
+            isSelected={selectedAsset === item.assetId}
+            isDimmed={(hoveredIdx !== null && hoveredIdx !== i) || (selectedAsset && selectedAsset !== item.assetId)}
             onHover={() => setHoveredIdx(i)}
             onLeave={() => setHoveredIdx(null)}
             onClick={(id) => onAssetClick?.(id)}

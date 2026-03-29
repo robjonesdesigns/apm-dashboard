@@ -85,10 +85,16 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
         <span className="type-card-title">Event Triage</span>
         {selectedCell && (
-          <FilterChip
-            label={`${CRIT_LABELS[selectedCell.criticality] || selectedCell.criticality} / ${selectedCell.status}`}
-            onClear={onClearFilter}
-          />
+          <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
+            <FilterChip
+              label={CRIT_LABELS[selectedCell.criticality] || selectedCell.criticality}
+              onClear={onClearFilter}
+            />
+            <FilterChip
+              label={selectedCell.status}
+              onClear={onClearFilter}
+            />
+          </div>
         )}
       </div>
 

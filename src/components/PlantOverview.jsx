@@ -20,31 +20,54 @@ import BadActors from './ui/BadActors'
 import AssetTable from './ui/AssetTable'
 
 export default function PlantOverview({ onNavigate }) {
-  const [riskFilter, setRiskFilter] = useState(null)
+  // Independent filter states -- stack as AND filters on the Asset Table
+  const [riskFilter, setRiskFilter] = useState(null)        // { criticality, status }
+  const [alarmFilter, setAlarmFilter] = useState(null)       // 'confirmed' | 'falsePositives' | 'newEvents'
+  const [actorFilter, setActorFilter] = useState(null)       // assetId string
   const assetTableRef = useRef(null)
 
-  const handleAssetClick = (assetIdOrObj) => {
-    const asset = typeof assetIdOrObj === 'string'
-      ? { id: assetIdOrObj }
-      : assetIdOrObj
-    onNavigate('details', { asset })
+  const scrollToTable = () => {
+    requestAnimationFrame(() => {
+      assetTableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
-  const clearFilter = useCallback(() => setRiskFilter(null), [])
+  const clearRiskFilter = useCallback(() => setRiskFilter(null), [])
+  const clearAlarmFilter = useCallback(() => setAlarmFilter(null), [])
+  const clearActorFilter = useCallback(() => setActorFilter(null), [])
+  const clearAllFilters = useCallback(() => {
+    setRiskFilter(null)
+    setAlarmFilter(null)
+    setActorFilter(null)
+  }, [])
 
+  // Risk Matrix: toggle criticality + status
   const handleRiskCellClick = (cell) => {
-    if (!cell) {
-      setRiskFilter(null)
-      return
-    }
-    // Toggle: click same cell deselects
+    if (!cell) { setRiskFilter(null); return }
     setRiskFilter(prev => {
       if (prev?.criticality === cell.criticality && prev?.status === cell.status) return null
-      // Scroll to asset table when applying a new filter
-      requestAnimationFrame(() => {
-        assetTableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+      scrollToTable()
       return cell
+    })
+  }
+
+  // Alarm Quality: toggle event validation status
+  const handleAlarmClick = (segmentKey) => {
+    if (!segmentKey) { setAlarmFilter(null); return }
+    setAlarmFilter(prev => {
+      if (prev === segmentKey) return null
+      scrollToTable()
+      return segmentKey
+    })
+  }
+
+  // Bad Actors: toggle specific asset
+  const handleBadActorClick = (assetId) => {
+    if (!assetId) { setActorFilter(null); return }
+    setActorFilter(prev => {
+      if (prev === assetId) return null
+      scrollToTable()
+      return assetId
     })
   }
 
@@ -70,9 +93,21 @@ export default function PlantOverview({ onNavigate }) {
       <section>
         <p className="section-header">Needs Action</p>
         <div className="grid-thirds">
-          <RiskMatrix selectedCell={riskFilter} onCellClick={handleRiskCellClick} onClearFilter={clearFilter} />
-          <AlarmQuality />
-          <BadActors onAssetClick={handleAssetClick} />
+          <RiskMatrix
+            selectedCell={riskFilter}
+            onCellClick={handleRiskCellClick}
+            onClearFilter={clearRiskFilter}
+          />
+          <AlarmQuality
+            selectedSegment={alarmFilter}
+            onSegmentClick={handleAlarmClick}
+            onClearFilter={clearAlarmFilter}
+          />
+          <BadActors
+            selectedAsset={actorFilter}
+            onAssetClick={handleBadActorClick}
+            onClearFilter={clearActorFilter}
+          />
         </div>
       </section>
 
@@ -81,7 +116,11 @@ export default function PlantOverview({ onNavigate }) {
         <p className="section-header">Assets</p>
         <AssetTable
           riskFilter={riskFilter}
-          onClearFilter={clearFilter}
+          alarmFilter={alarmFilter}
+          actorFilter={actorFilter}
+          onClearRiskFilter={clearRiskFilter}
+          onClearAlarmFilter={clearAlarmFilter}
+          onClearActorFilter={clearActorFilter}
           onAssetClick={(asset) => onNavigate('details', { asset })}
         />
       </section>

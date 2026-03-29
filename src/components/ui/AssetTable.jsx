@@ -383,7 +383,13 @@ function AssetSearch({ value, onChange, onAssetClick }) {
 
 // ── AssetTable ──────────────────────────────────────────────────────────────
 
-export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) {
+const ALARM_LABELS = {
+  confirmed: 'Confirmed Events',
+  falsePositives: 'False Positives',
+  newEvents: 'New Events',
+}
+
+export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, actorFilter, onClearRiskFilter, onClearAlarmFilter, onClearActorFilter }) {
   const [filters, setFilters] = useState({ criticality: [], status: [], processUnit: [] })
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState(null)
@@ -448,6 +454,16 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
       if (riskFilter.status === 'New' && a.newEvents <= 0) return false
       if (riskFilter.status === 'In Progress' && a.inProgressEvents <= 0) return false
     }
+    // Alarm Quality filter (from donut segment click)
+    if (alarmFilter) {
+      if (alarmFilter === 'confirmed' && a.activeEvents <= 0) return false
+      if (alarmFilter === 'falsePositives' && a.repetitiveEvents <= 0) return false
+      if (alarmFilter === 'newEvents' && a.newEvents <= 0) return false
+    }
+    // Bad Actors filter (from bar row click)
+    if (actorFilter) {
+      if (a.id !== actorFilter) return false
+    }
     // Toolbar filters (multi-select: asset must match ANY checked value in each active category)
     if (filters.criticality.length && !filters.criticality.includes(a.criticality)) return false
     if (filters.status.length && !filters.status.includes(a.status)) return false
@@ -464,7 +480,7 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
   const pageAssets = sortedAssets.slice(startIdx, startIdx + rowsPerPage)
 
   const activeChipCount = filters.criticality.length + filters.status.length + filters.processUnit.length
-  const hasAnyFilter = riskFilter || activeChipCount > 0 || search
+  const hasAnyFilter = riskFilter || alarmFilter || actorFilter || activeChipCount > 0 || search
 
   return (
     <div className="grid-12">
@@ -490,9 +506,27 @@ export default function AssetTable({ onAssetClick, riskFilter, onClearFilter }) 
           {/* Left: active filter chips */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', flex: 1, minHeight: 28 }}>
             {riskFilter && (
+              <>
+                <FilterChip
+                  label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality}
+                  onClear={onClearRiskFilter}
+                />
+                <FilterChip
+                  label={riskFilter.status}
+                  onClear={onClearRiskFilter}
+                />
+              </>
+            )}
+            {alarmFilter && (
               <FilterChip
-                label={`${CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} / ${riskFilter.status}`}
-                onClear={onClearFilter}
+                label={ALARM_LABELS[alarmFilter] || alarmFilter}
+                onClear={onClearAlarmFilter}
+              />
+            )}
+            {actorFilter && (
+              <FilterChip
+                label={ASSETS.find(a => a.id === actorFilter)?.name || actorFilter}
+                onClear={onClearActorFilter}
               />
             )}
             {FILTER_CATEGORIES.map(cat =>

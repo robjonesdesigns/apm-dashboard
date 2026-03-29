@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { EVENT_SUMMARY } from '../../data/assets'
+import FilterChip from './FilterChip'
 
 // ── Donut palette (Carbon tokens, desaturated for dark-and-quiet) ────────────
 
@@ -77,7 +78,7 @@ function DonutTooltip({ segment, total, x, y }) {
   )
 }
 
-function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, onHover, onLeave }) {
+function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, selectedKey, onHover, onLeave, onClick }) {
   const center = size / 2
   const outerR = size / 2 - 2
   const innerR = outerR - ringWidth
@@ -113,23 +114,45 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, onHove
           {/* Segments */}
           {segmentAngles.map(seg => {
             const isHovered = hoveredKey === seg.key
-            const r = isHovered ? 2 : 0
-            const path = describeArc(center, center, innerR - (isHovered ? 2 : 0), outerR + (isHovered ? 2 : 0), seg.startAngle, seg.endAngle)
+            const isSelected = selectedKey === seg.key
+            const expand = isHovered || isSelected ? 2 : 0
+            const path = describeArc(center, center, innerR - expand, outerR + expand, seg.startAngle, seg.endAngle)
 
             return (
-              <path
-                key={seg.key}
-                d={path}
-                fill={seg.color}
-                rx={2}
-                style={{
-                  transition: 'opacity var(--motion-fast) var(--ease-productive)',
-                  opacity: hoveredKey && !isHovered ? 0.35 : 1,
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={() => onHover(seg.key)}
-                onMouseLeave={onLeave}
-              />
+              <g key={seg.key}>
+                {/* Teal selection ring behind segment */}
+                {isSelected && (
+                  <path
+                    d={describeArc(center, center, innerR - 4, outerR + 4, seg.startAngle, seg.endAngle)}
+                    fill="none"
+                    stroke="var(--color-accent)"
+                    strokeWidth={2}
+                  />
+                )}
+                {/* Teal hover ring */}
+                {isHovered && !isSelected && (
+                  <path
+                    d={describeArc(center, center, innerR - 4, outerR + 4, seg.startAngle, seg.endAngle)}
+                    fill="none"
+                    stroke="var(--color-accent)"
+                    strokeWidth={1.5}
+                    opacity={0.6}
+                  />
+                )}
+                <path
+                  d={path}
+                  fill={seg.color}
+                  rx={2}
+                  style={{
+                    transition: 'opacity var(--motion-fast) var(--ease-productive)',
+                    opacity: (hoveredKey || selectedKey) && !isHovered && !isSelected ? 0.35 : 1,
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={() => onHover(seg.key)}
+                  onMouseLeave={onLeave}
+                  onClick={() => onClick?.(seg.key)}
+                />
+              </g>
             )
           })}
         </g>
@@ -174,7 +197,13 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, onHove
 
 // ── Alarm Quality view ──────────────────────────────────────────────────────
 
-function AlarmQualityView() {
+const SEGMENT_LABELS = {
+  confirmed: 'Confirmed',
+  falsePositives: 'False Positives',
+  newEvents: 'New',
+}
+
+function AlarmQualityView({ selectedSegment, onSegmentClick }) {
   const total = EVENT_SUMMARY.total
   const [hoveredKey, setHoveredKey] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
@@ -190,8 +219,10 @@ function AlarmQualityView() {
           segments={ALARM_SEGMENTS}
           total={total}
           hoveredKey={hoveredKey}
+          selectedKey={selectedSegment}
           onHover={setHoveredKey}
           onLeave={() => setHoveredKey(null)}
+          onClick={onSegmentClick}
         />
         <DonutTooltip segment={hoveredSegment} total={total} x={mousePos.x} y={mousePos.y} />
       </div>
@@ -215,12 +246,20 @@ function AlarmQualityView() {
 
 // ── AlarmQuality card ───────────────────────────────────────────────────────
 
-export default function AlarmQuality() {
+export default function AlarmQuality({ selectedSegment, onSegmentClick, onClearFilter }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
-      <span className="type-card-title">Alarm Quality</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+        <span className="type-card-title">Alarm Quality</span>
+        {selectedSegment && (
+          <FilterChip
+            label={SEGMENT_LABELS[selectedSegment] || selectedSegment}
+            onClear={onClearFilter}
+          />
+        )}
+      </div>
 
-      <AlarmQualityView />
+      <AlarmQualityView selectedSegment={selectedSegment} onSegmentClick={onSegmentClick} />
     </div>
   )
 }
