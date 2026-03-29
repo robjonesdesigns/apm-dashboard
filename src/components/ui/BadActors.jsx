@@ -60,6 +60,7 @@ function WatchListTooltip({ item, x, y }) {
         <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Asset Criticality</span>
         <CriticalityIndicator level={item.criticality} inverted />
       </div>
+      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter assets</span>
     </div>
   )
 }

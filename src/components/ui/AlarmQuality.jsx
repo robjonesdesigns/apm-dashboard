@@ -74,6 +74,7 @@ function DonutTooltip({ segment, total, x, y }) {
       <div style={{ width: 10, height: 10, borderRadius: 2, background: segment.color, flexShrink: 0 }} />
       <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>{segment.label}</span>
       <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{segment.value} ({pct}%)</span>
+      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6, marginLeft: 'var(--spacing-4)' }}>Click to filter</span>
     </div>
   )
 }

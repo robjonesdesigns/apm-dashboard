@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { RISK_MATRIX } from '../../data/assets'
 import FilterChip from './FilterChip'
+import CriticalityIndicator from './CriticalityIndicator'
 
 const CRITICALITY_CONFIG = [
   { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg)' },
@@ -57,8 +58,51 @@ function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, o
 
 const CRIT_LABELS = { A: 'A (Safety)', B: 'B (Production)', C: 'C (Support)' }
 
+function MatrixTooltip({ hoveredCell, dataByCriticality, x, y }) {
+  if (!hoveredCell) return null
+
+  const [crit, status] = hoveredCell.split('-')
+  const statusKey = status === 'New' ? 'newEvents' : 'inProgress'
+  const row = dataByCriticality[crit]
+  const count = row ? row[statusKey] : 0
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: x + 12,
+        top: y - 8,
+        background: 'var(--color-tooltip-bg)',
+        borderRadius: 'var(--radius-4)',
+        padding: 'var(--spacing-8) var(--spacing-12)',
+        boxShadow: 'var(--shadow-tooltip)',
+        whiteSpace: 'nowrap',
+        zIndex: 100,
+        pointerEvents: 'none',
+        animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--spacing-4)',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+        <CriticalityIndicator level={crit} inverted />
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
+          {status} Events
+        </span>
+      </div>
+      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Count</span>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{count}</span>
+      </div>
+      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter assets</span>
+    </div>
+  )
+}
+
 export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter }) {
   const [hoveredCell, setHoveredCell] = useState(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   function isSelected(criticality, status) {
     if (!selectedCell) return false
@@ -80,7 +124,14 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
   })
 
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
+    <div
+      className="card"
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}
+      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+    >
+      {/* Tooltip */}
+      <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={mousePos.x} y={mousePos.y} />
+
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
         <span className="type-card-title">Event Triage</span>
