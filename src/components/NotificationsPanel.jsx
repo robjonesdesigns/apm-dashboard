@@ -209,7 +209,7 @@ function EventDetails({ notification, onBack, onClose }) {
             <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
               Linked Work Orders
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               {notification.linkedWOs.map((wo) => (
                 <span
                   key={wo}
@@ -230,7 +230,7 @@ function EventDetails({ notification, onBack, onClose }) {
             <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
               Linked Investigations
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               {notification.linkedInvestigations.map((inv) => (
                 <span
                   key={inv}
