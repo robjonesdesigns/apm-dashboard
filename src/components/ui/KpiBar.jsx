@@ -241,17 +241,19 @@ function KpiCard({ config, onClick, isSelected }) {
             boxShadow: 'var(--shadow-overlay)',
           }}
         >
-          {/* Sparkline with threshold -- last 24 hours */}
+          {/* Sparkline -- last 24 hours */}
           <Sparkline
             data={KPI_24H}
             dataKey={config.key}
             threshold={THRESHOLDS[config.key]?.warning}
             eventIndex={7}
+            label={config.label}
           />
 
-          {/* Time range */}
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {/* Time range with event marker */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[0].time}</span>
+            <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>K-101 Trip 2:03 AM</span>
             <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[KPI_24H.length - 1].time}</span>
           </div>
 
@@ -277,7 +279,7 @@ function KpiCard({ config, onClick, isSelected }) {
 
 // ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
 
-function Sparkline({ data, dataKey, threshold, eventIndex }) {
+function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
   if (!data || data.length === 0) return null
 
   const vbWidth = 280
@@ -287,70 +289,68 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
   const min = Math.min(...allValues) - 2
   const max = Math.max(...allValues) + 2
   const range = max - min || 1
-  const px = 4
+  const px = 2
   const py = 6
-  const rightPad = 36
-  const chartWidth = vbWidth - px - rightPad
+  const chartWidth = vbWidth - px * 2
   const stepX = chartWidth / (values.length - 1)
 
   const toY = (v) => py + (1 - (v - min) / range) * (vbHeight - py * 2)
 
-  const points = values.map((v, i) => {
-    const x = px + i * stepX
-    const y = toY(v)
-    return `${x},${y}`
-  }).join(' ')
+  const points = values.map((v, i) => `${px + i * stepX},${toY(v)}`).join(' ')
 
   const lastX = px + (values.length - 1) * stepX
   const lastY = toY(values[values.length - 1])
   const lastValue = values[values.length - 1]
 
-  const thresholdY = threshold ? toY(threshold) : null
-
-  // Positions as percentages for overlay labels
-  const eventPct = eventIndex != null ? ((px + eventIndex * stepX) / vbWidth) * 100 : null
-  const thresholdPct = threshold ? ((toY(threshold) / vbHeight) * 100) : null
+  // Percentage positions for HTML overlays
   const lastDotLeftPct = (lastX / vbWidth) * 100
   const lastDotTopPct = (lastY / vbHeight) * 100
 
+  // Aria label for accessibility
+  const ariaText = label
+    ? `${label} trend: ${values[0]}% to ${lastValue}%${threshold ? `, warning threshold at ${threshold}%` : ''}`
+    : undefined
+
   return (
-    <div style={{ position: 'relative', width: '100%', height: 56 }}>
+    <div
+      style={{ position: 'relative', width: '100%', height: 56 }}
+      role="img"
+      aria-label={ariaText}
+    >
       <svg
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
         preserveAspectRatio="none"
         style={{ display: 'block', width: '100%', height: '100%' }}
+        aria-hidden="true"
       >
-        {/* Threshold line */}
+        {/* Normal range band -- everything above threshold is safe */}
         {threshold && (
-          <line
-            x1={px}
-            y1={thresholdY}
-            x2={px + chartWidth}
-            y2={thresholdY}
-            stroke="var(--color-text-helper)"
-            strokeWidth={1}
-            strokeDasharray="3 3"
-            opacity={0.5}
-            vectorEffect="non-scaling-stroke"
+          <rect
+            x={0}
+            y={0}
+            width={vbWidth}
+            height={toY(threshold)}
+            fill="var(--color-accent)"
+            opacity={0.06}
           />
         )}
 
-        {/* Event marker -- vertical dashed line */}
+        {/* Event marker -- subtle vertical line at the drop point */}
         {eventIndex != null && (
           <line
             x1={px + eventIndex * stepX}
-            y1={py}
+            y1={0}
             x2={px + eventIndex * stepX}
-            y2={vbHeight - py}
-            stroke="var(--color-error)"
+            y2={vbHeight}
+            stroke="var(--color-text-helper)"
             strokeWidth={1}
             strokeDasharray="2 2"
-            opacity={0.5}
+            opacity={0.3}
             vectorEffect="non-scaling-stroke"
           />
         )}
 
-        {/* Trend line */}
+        {/* Trend line -- dominant element */}
         <polyline
           points={points}
           fill="none"
@@ -362,69 +362,20 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
         />
       </svg>
 
-      {/* HTML overlay labels -- not affected by SVG scaling */}
-
-      {/* Threshold label */}
-      {threshold && (
-        <span
-          className="type-meta"
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: `${thresholdPct}%`,
-            transform: 'translateY(-50%)',
-            color: 'var(--color-text-helper)',
-            fontSize: 10,
-          }}
-        >
-          {threshold}%
-        </span>
-      )}
-
-      {/* Event label */}
-      {eventIndex != null && (
-        <span
-          className="type-meta"
-          style={{
-            position: 'absolute',
-            left: `${eventPct}%`,
-            bottom: 0,
-            transform: 'translateX(-50%)',
-            color: 'var(--color-text-secondary)',
-            fontSize: 10,
-          }}
-        >
-          2:03 AM
-        </span>
-      )}
-
-      {/* Current value dot + label */}
+      {/* Current value dot */}
       <span
         style={{
           position: 'absolute',
           left: `${lastDotLeftPct}%`,
           top: `${lastDotTopPct}%`,
-          transform: 'translate(-4px, -4px)',
-          width: 8,
-          height: 8,
+          transform: 'translate(-3px, -3px)',
+          width: 6,
+          height: 6,
           borderRadius: 'var(--radius-full)',
           background: 'var(--color-accent)',
+          pointerEvents: 'none',
         }}
       />
-      <span
-        className="type-meta"
-        style={{
-          position: 'absolute',
-          left: `calc(${lastDotLeftPct}% + 6px)`,
-          top: `${lastDotTopPct}%`,
-          transform: 'translateY(-50%)',
-          color: 'var(--color-accent)',
-          fontSize: 10,
-          fontWeight: 600,
-        }}
-      >
-        {lastValue}%
-      </span>
     </div>
   )
 }
