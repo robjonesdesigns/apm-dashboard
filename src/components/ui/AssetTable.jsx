@@ -3,6 +3,7 @@ import { ASSETS, WORK_ORDERS, INVESTIGATIONS } from '../../data/assets'
 import CriticalityIndicator from './CriticalityIndicator'
 import FilterChip from './FilterChip'
 import FilterButton from './FilterButton'
+import useIsMobile from '../../hooks/useIsMobile'
 
 // Status dot variant from asset status
 function statusDotVariant(status) {
@@ -138,6 +139,323 @@ function AssetRow({ asset, onAssetClick }) {
         {asset.rul}
       </div>
     </div>
+  )
+}
+
+// ── Mobile row (stacked list: status+name, type, metrics) ───────────────────
+
+function MobileAssetRow({ asset, onAssetClick }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <div
+      data-row
+      role="row"
+      tabIndex={0}
+      aria-label={`${asset.name}, ${statusLabel(asset.status)}, OEE ${asset.oee}%, ${asset.activeEvents} events`}
+      onClick={() => onAssetClick?.(asset)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick?.(asset) } }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--spacing-4)',
+        padding: 'var(--spacing-12)',
+        cursor: 'pointer',
+        transition: 'all var(--motion-fast) var(--ease-productive)',
+        borderBottom: '1px solid var(--color-border-subtle)',
+        borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
+        background: hovered ? 'var(--color-hover-01)' : 'transparent',
+      }}
+    >
+      {/* Row 1: status dot + asset name */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+        <span className={statusDotVariant(asset.status)} style={{ flexShrink: 0 }} />
+        <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {asset.name}
+        </span>
+      </div>
+
+      {/* Row 2: asset type */}
+      <span className="type-meta" style={{ color: 'var(--color-text-secondary)', paddingLeft: 'var(--spacing-16)' }}>
+        {asset.type}
+      </span>
+
+      {/* Row 3: metrics */}
+      <div style={{ display: 'flex', gap: 'var(--spacing-16)', paddingLeft: 'var(--spacing-16)' }}>
+        <span className="type-meta">
+          <span style={{ color: 'var(--color-text-helper)' }}>Events </span>
+          <span style={{ color: 'var(--color-text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{asset.activeEvents}</span>
+        </span>
+        <span className="type-meta">
+          <span style={{ color: 'var(--color-text-helper)' }}>OEE </span>
+          <span style={{ color: 'var(--color-text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{asset.oee}%</span>
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ── Mobile filter/sort icon (Feather sliders) ───────────────────────────────
+
+const featherSmall = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }
+
+const SlidersIcon = () => (
+  <svg {...featherSmall} aria-hidden="true">
+    <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
+    <line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" />
+    <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" />
+    <line x1="17" y1="16" x2="23" y2="16" />
+  </svg>
+)
+
+const CloseIconSmall = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+  </svg>
+)
+
+// ── Combined mobile filter + sort drawer ────────────────────────────────────
+
+const MOBILE_SORT_OPTIONS = [
+  { key: 'status', label: 'Status' },
+  { key: 'name', label: 'Name' },
+  { key: 'oee', label: 'OEE' },
+  { key: 'events', label: 'Events' },
+]
+
+function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categories }) {
+  const [open, setOpen] = useState(false)
+  const drawerRef = useRef(null)
+
+  const activeCount = Object.values(filters).flat().length + (sortKey ? 1 : 0)
+
+  useEffect(() => {
+    if (!open) return
+    function handleKey(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [open])
+
+  // Focus trap
+  useEffect(() => {
+    if (!open || !drawerRef.current) return
+    drawerRef.current.focus()
+  }, [open])
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        aria-expanded={open}
+        aria-label="Filter and sort"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 32,
+          height: 32,
+          borderRadius: 'var(--radius-4)',
+          border: `1px solid ${activeCount > 0 ? 'var(--color-accent)' : 'var(--color-border-subtle)'}`,
+          background: 'var(--color-layer-02)',
+          color: activeCount > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+          cursor: 'pointer',
+          position: 'relative',
+          flexShrink: 0,
+        }}
+      >
+        <SlidersIcon />
+        {activeCount > 0 && (
+          <span style={{
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            width: 14,
+            height: 14,
+            borderRadius: 'var(--radius-full)',
+            background: 'var(--color-accent)',
+            color: 'var(--color-layer-01)',
+            fontSize: '10px',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            {activeCount}
+          </span>
+        )}
+      </button>
+
+      {/* Backdrop */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9998,
+          }}
+        />
+      )}
+
+      {/* Drawer */}
+      {open && (
+        <div
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filter and sort assets"
+          tabIndex={-1}
+          style={{
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            maxHeight: '80vh',
+            background: 'var(--color-layer-01)',
+            borderTop: '1px solid var(--color-border-subtle)',
+            borderRadius: '12px 12px 0 0',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'slideUp var(--motion-moderate) var(--ease-productive)',
+          }}
+        >
+          {/* Drawer handle + header */}
+          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)', flexShrink: 0 }}>
+            {/* Drag handle */}
+            <div style={{ width: 32, height: 4, borderRadius: 2, background: 'var(--color-border-strong)', margin: '0 auto var(--spacing-12)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span className="type-card-title">Filter & Sort</span>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 28,
+                  height: 28,
+                  borderRadius: 'var(--radius-4)',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--color-text-helper)',
+                  cursor: 'pointer',
+                }}
+              >
+                <CloseIconSmall />
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable content */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-16)' }}>
+            {/* Sort section */}
+            <div style={{ marginBottom: 'var(--spacing-16)' }}>
+              <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--spacing-8)' }}>Sort by</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+                {MOBILE_SORT_OPTIONS.map(s => {
+                  const isActive = sortKey === s.key
+                  return (
+                    <button
+                      key={s.key}
+                      onClick={() => onSort(s.key)}
+                      className="type-body"
+                      style={{
+                        background: isActive ? 'var(--color-accent-bg)' : 'var(--color-layer-02)',
+                        border: `1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border-subtle)'}`,
+                        borderRadius: 'var(--radius-4)',
+                        padding: 'var(--spacing-8) var(--spacing-12)',
+                        color: isActive ? 'var(--color-accent)' : 'var(--color-text-primary)',
+                        cursor: 'pointer',
+                        font: 'inherit',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--spacing-4)',
+                      }}
+                    >
+                      {s.label}
+                      {isActive && <SortIndicator isActive direction={sortDir} />}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: 1, background: 'var(--color-border-subtle)', marginBottom: 'var(--spacing-16)' }} />
+
+            {/* Filter sections */}
+            {categories.map((cat, i) => (
+              <div key={cat.key} style={{ marginBottom: i < categories.length - 1 ? 'var(--spacing-16)' : 0 }}>
+                <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--spacing-8)' }}>{cat.label}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+                  {cat.options.map(opt => {
+                    const checked = filters[cat.key]?.includes(opt)
+                    return (
+                      <label
+                        key={opt}
+                        className="type-body"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 'var(--spacing-12)',
+                          padding: 'var(--spacing-8) var(--spacing-12)',
+                          cursor: 'pointer',
+                          borderRadius: 'var(--radius-4)',
+                          background: checked ? 'var(--color-accent-bg)' : 'transparent',
+                          transition: 'background var(--motion-fast) var(--ease-productive)',
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => onToggle(cat.key, opt)}
+                          style={{ accentColor: 'var(--color-accent)', width: 16, height: 16 }}
+                        />
+                        <span style={{ color: checked ? 'var(--color-accent)' : 'var(--color-text-primary)' }}>
+                          {cat.labelFn(opt)}
+                        </span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Done button */}
+          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderTop: '1px solid var(--color-border-subtle)', flexShrink: 0 }}>
+            <button
+              onClick={() => setOpen(false)}
+              style={{
+                width: '100%',
+                padding: 'var(--spacing-12)',
+                borderRadius: 'var(--radius-4)',
+                border: 'none',
+                background: 'var(--color-accent)',
+                color: 'var(--color-layer-01)',
+                fontSize: 'var(--text-14)',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -346,7 +664,7 @@ function AssetSearch({ value, onChange, onAssetClick }) {
             fontSize: 'var(--text-12)',
             padding: '0 var(--spacing-12) 0 var(--spacing-32)',
             height: 32,
-            width: 220,
+            width: '100%',
             outline: 'none',
             transition: 'border-color var(--motion-fast) var(--ease-productive)',
           }}
@@ -410,6 +728,7 @@ const ALARM_LABELS = {
 }
 
 export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, actorFilter, onClearRiskFilter, onClearAlarmFilter, onClearActorFilter, onClearAllFilters }) {
+  const isMobile = useIsMobile()
   const [filters, setFilters] = useState({ criticality: [], status: [], processUnit: [] })
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState(null)
@@ -515,152 +834,178 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
           )}
         </div>
 
-        {/* Toolbar: chips left, search + filter button right */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 'var(--spacing-12)',
-          padding: 'var(--spacing-12) 0',
-        }}>
-          {/* Left: active filter chips */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', flex: 1, minHeight: 28 }}>
-            {riskFilter && (
-              <>
-                <FilterChip
-                  label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality}
-                  onClear={onClearRiskFilter}
+        {/* Toolbar */}
+        {isMobile ? (
+          /* ── Mobile toolbar: search + combined filter/sort icon ───── */
+          <div style={{ padding: 'var(--spacing-12) 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+              <div style={{ flex: 1 }}>
+                <AssetSearch
+                  value={search}
+                  onChange={val => { setSearch(val); setPage(0) }}
+                  onAssetClick={onAssetClick}
                 />
-                <FilterChip
-                  label={riskFilter.status}
-                  onClear={onClearRiskFilter}
-                />
-              </>
-            )}
-            {alarmFilter && (
-              <FilterChip
-                label={ALARM_LABELS[alarmFilter] || alarmFilter}
-                onClear={onClearAlarmFilter}
+              </div>
+              <MobileFilterSort
+                filters={filters}
+                onToggle={toggleFilter}
+                sortKey={sortKey}
+                sortDir={sortDir}
+                onSort={handleSort}
+                categories={FILTER_CATEGORIES}
               />
-            )}
-            {actorFilter && (
-              <FilterChip
-                label={ASSETS.find(a => a.id === actorFilter)?.name || actorFilter}
-                onClear={onClearActorFilter}
-              />
-            )}
-            {FILTER_CATEGORIES.map(cat =>
-              filters[cat.key].map(val => (
-                <FilterChip key={`${cat.key}-${val}`} label={cat.labelFn(val)} onClear={() => removeFilter(cat.key, val)} />
-              ))
-            )}
-            {/* Clear all -- show when 2+ filter sources are active */}
-            {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
-              <button
-                onClick={() => {
-                  onClearAllFilters?.()
-                  setFilters({ criticality: [], status: [], processUnit: [] })
-                  setSearch('')
-                  setPage(0)
-                }}
-                className="type-link"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  font: 'inherit',
-                  padding: 0,
-                  flexShrink: 0,
-                }}
-              >
-                Clear all
-              </button>
-            )}
-          </div>
-
-          {/* Right: search + filter button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-            <AssetSearch
-              value={search}
-              onChange={val => { setSearch(val); setPage(0) }}
-              onAssetClick={onAssetClick}
-            />
-            <FilterButton
-              categories={FILTER_CATEGORIES}
-              filters={filters}
-              onToggle={toggleFilter}
-            />
-          </div>
-        </div>
-
-        {/* Table area — horizontal scroll within card padding */}
-        <div style={{ position: 'relative' }}>
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          role="table"
-          aria-label="All Assets"
-          style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
-        >
-          {/* Fixed header */}
-          <div
-            role="row"
-            style={{
-              display:         'flex',
-              alignItems:      'center',
-              gap:             0,
-              padding:         'var(--spacing-8) var(--spacing-12)',
-              background:      'var(--color-layer-02)',
-              borderTop:       '1px solid var(--color-border-subtle)',
-              borderBottom:    '1px solid var(--color-border-subtle)',
-              borderLeft:      '2px solid transparent',
-              width:           'max-content',
-              minWidth:        '100%',
-            }}
-          >
-            <SortableHeader label="Status"         sortKey="status"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.status} />
-            <SortableHeader label="Asset"          sortKey="name"             activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.asset} />
-            <SortableHeader label="Criticality"    sortKey="criticality"      activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.priority} />
-            <SortableHeader label="OEE"            sortKey="oee"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.oee} />
-            <SortableHeader label="Events"         sortKey="events"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.events} />
-            <SortableHeader label="Downtime"       sortKey="downtime"         activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.downtime} />
-            <SortableHeader label="Work Orders"    sortKey="workOrders"       activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.workOrders} />
-            <SortableHeader label="Investigations" sortKey="investigations"   activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.invs} />
-            <SortableHeader label="RUL" sortKey="rul"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.rul} title="Remaining Useful Life" />
-          </div>
-
-          {/* Rows — paginated, always 10 row slots */}
-          <div role="rowgroup" ref={rowsRef} style={{ width: 'max-content', minWidth: '100%', minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
-            {pageAssets.map(asset => (
-              <AssetRow
-                key={asset.id}
-                asset={asset}
-                onAssetClick={onAssetClick}
-              />
-            ))}
-            {totalRows === 0 && (
-              <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
-                <span className="type-meta">No assets match the current filters</span>
+            </div>
+            {/* Active chips below search */}
+            {(activeChipCount > 0 || riskFilter || alarmFilter || actorFilter) && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', marginTop: 'var(--spacing-8)' }}>
+                {riskFilter && (
+                  <>
+                    <FilterChip label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} onClear={onClearRiskFilter} />
+                    <FilterChip label={riskFilter.status} onClear={onClearRiskFilter} />
+                  </>
+                )}
+                {alarmFilter && <FilterChip label={ALARM_LABELS[alarmFilter] || alarmFilter} onClear={onClearAlarmFilter} />}
+                {actorFilter && <FilterChip label={ASSETS.find(a => a.id === actorFilter)?.name || actorFilter} onClear={onClearActorFilter} />}
+                {FILTER_CATEGORIES.map(cat => filters[cat.key].map(val => (
+                  <FilterChip key={`${cat.key}-${val}`} label={cat.labelFn(val)} onClear={() => removeFilter(cat.key, val)} />
+                )))}
+                {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
+                  <button
+                    onClick={() => { onClearAllFilters?.(); setFilters({ criticality: [], status: [], processUnit: [] }); setSearch(''); setPage(0) }}
+                    className="type-link"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}
+                  >
+                    Clear all
+                  </button>
+                )}
               </div>
             )}
           </div>
-        </div>
-        {/* Scroll fade hint — visible when table overflows right */}
-        {showScrollHint && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: 48,
-              background: 'linear-gradient(to right, transparent, var(--color-layer-01))',
-              pointerEvents: 'none',
-              zIndex: 2,
-            }}
-          />
+        ) : (
+          /* ── Desktop toolbar: chips left, search + filter right ───── */
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 'var(--spacing-12)',
+            padding: 'var(--spacing-12) 0',
+          }}>
+            {/* Left: active filter chips */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', flex: 1, minHeight: 28 }}>
+              {riskFilter && (
+                <>
+                  <FilterChip label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} onClear={onClearRiskFilter} />
+                  <FilterChip label={riskFilter.status} onClear={onClearRiskFilter} />
+                </>
+              )}
+              {alarmFilter && <FilterChip label={ALARM_LABELS[alarmFilter] || alarmFilter} onClear={onClearAlarmFilter} />}
+              {actorFilter && <FilterChip label={ASSETS.find(a => a.id === actorFilter)?.name || actorFilter} onClear={onClearActorFilter} />}
+              {FILTER_CATEGORIES.map(cat => filters[cat.key].map(val => (
+                <FilterChip key={`${cat.key}-${val}`} label={cat.labelFn(val)} onClear={() => removeFilter(cat.key, val)} />
+              )))}
+              {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
+                <button
+                  onClick={() => { onClearAllFilters?.(); setFilters({ criticality: [], status: [], processUnit: [] }); setSearch(''); setPage(0) }}
+                  className="type-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0, flexShrink: 0 }}
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+            {/* Right: search + filter button */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+              <AssetSearch value={search} onChange={val => { setSearch(val); setPage(0) }} onAssetClick={onAssetClick} />
+              <FilterButton categories={FILTER_CATEGORIES} filters={filters} onToggle={toggleFilter} />
+            </div>
+          </div>
         )}
-        </div>
+
+        {/* Table area */}
+        {isMobile ? (
+          /* ── Mobile: compact list rows ─────────────────────────────── */
+          <div role="table" aria-label="All Assets">
+            <div role="rowgroup" ref={rowsRef}>
+              {pageAssets.map(asset => (
+                <MobileAssetRow key={asset.id} asset={asset} onAssetClick={onAssetClick} />
+              ))}
+              {totalRows === 0 && (
+                <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
+                  <span className="type-meta">No assets match the current filters</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* ── Desktop: full data table with horizontal scroll ────── */
+          <div style={{ position: 'relative' }}>
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            role="table"
+            aria-label="All Assets"
+            style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+          >
+            {/* Fixed header */}
+            <div
+              role="row"
+              style={{
+                display:         'flex',
+                alignItems:      'center',
+                gap:             0,
+                padding:         'var(--spacing-8) var(--spacing-12)',
+                background:      'var(--color-layer-02)',
+                borderTop:       '1px solid var(--color-border-subtle)',
+                borderBottom:    '1px solid var(--color-border-subtle)',
+                borderLeft:      '2px solid transparent',
+                width:           'max-content',
+                minWidth:        '100%',
+              }}
+            >
+              <SortableHeader label="Status"         sortKey="status"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.status} />
+              <SortableHeader label="Asset"          sortKey="name"             activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.asset} />
+              <SortableHeader label="Criticality"    sortKey="criticality"      activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.priority} />
+              <SortableHeader label="OEE"            sortKey="oee"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.oee} />
+              <SortableHeader label="Events"         sortKey="events"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.events} />
+              <SortableHeader label="Downtime"       sortKey="downtime"         activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.downtime} />
+              <SortableHeader label="Work Orders"    sortKey="workOrders"       activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.workOrders} />
+              <SortableHeader label="Investigations" sortKey="investigations"   activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.invs} />
+              <SortableHeader label="RUL" sortKey="rul"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.rul} title="Remaining Useful Life" />
+            </div>
+
+            {/* Rows — paginated, always 10 row slots */}
+            <div role="rowgroup" ref={rowsRef} style={{ width: 'max-content', minWidth: '100%', minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
+              {pageAssets.map(asset => (
+                <AssetRow
+                  key={asset.id}
+                  asset={asset}
+                  onAssetClick={onAssetClick}
+                />
+              ))}
+              {totalRows === 0 && (
+                <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
+                  <span className="type-meta">No assets match the current filters</span>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Scroll fade hint — visible when table overflows right */}
+          {showScrollHint && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 48,
+                background: 'linear-gradient(to right, transparent, var(--color-layer-01))',
+                pointerEvents: 'none',
+                zIndex: 2,
+              }}
+            />
+          )}
+          </div>
+        )}
 
         {/* Pagination */}
         {totalRows > 0 && (

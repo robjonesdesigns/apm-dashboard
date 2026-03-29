@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import PlantOverview from './components/PlantOverview'
 import AssetInspection from './components/AssetInspection'
 import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
+import useIsMobile from './hooks/useIsMobile'
 
 const VIEWS = {
   // Current screens
@@ -19,20 +20,6 @@ const VIEWS = {
   workorders:     PlantOverview,   // placeholder
   investigations: PlantOverview,   // placeholder
   settings:       PlantOverview,   // placeholder
-}
-
-// ── Responsive hook ─────────────────────────────────────────────────────────
-
-function useIsMobile(breakpoint = 671) {
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`)
-    setIsMobile(mq.matches)
-    const handler = (e) => setIsMobile(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [breakpoint])
-  return isMobile
 }
 
 export default function App() {

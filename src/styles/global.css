@@ -527,9 +527,9 @@ html, body, #root {
   }
 
 /* ─── Mobile visibility helpers ───────────────────────────────────────── */
-.hide-mobile { display: none; }
+.hide-mobile { display: none !important; }
 @media (min-width: 672px) {
-  .hide-mobile { display: flex; }
+  .hide-mobile { display: flex !important; }
 }
 
 /* ─── Animations ──────────────────────────────────────────────────────── */
@@ -540,6 +540,10 @@ html, body, #root {
 @keyframes fadeInOnly {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── Focus ──────────────────────────────────────────────────────────── */
