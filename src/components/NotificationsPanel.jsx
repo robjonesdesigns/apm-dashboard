@@ -304,7 +304,7 @@ function EventDetails({ notification, onBack, onClose }) {
 
         {/* Quick Access links */}
         <p className="type-card-title" style={{ margin: '0 0 var(--spacing-8) 0' }}>Quick Access</p>
-        {['Asset Details', 'Event Trend', 'Fault Tree'].map((link) => (
+        {['Asset Inspection', 'Trends', 'Fault Tree'].map((link) => (
           <p key={link} style={{ margin: '0 0 var(--spacing-8) 0' }}>
             <span className="type-link" style={{ cursor: 'pointer' }}>{link}</span>
           </p>
