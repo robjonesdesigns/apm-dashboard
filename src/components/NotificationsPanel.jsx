@@ -409,7 +409,7 @@ function PanelHeader({ onClose, activeFilters, onToggleFilter }) {
       flexShrink: 0,
     }}>
       <span className="section-header" style={{ margin: 0 }}>
-        Notifications
+        Event Feed
       </span>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
@@ -480,7 +480,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
   return (
     <div
       role="dialog"
-      aria-label="Notifications"
+      aria-label="Event Feed"
       style={isMobile ? {
         // Mobile: full-screen overlay
         position: 'fixed',
