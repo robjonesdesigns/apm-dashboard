@@ -178,35 +178,30 @@ function WorkOrdersCard() {
               </div>
             </div>
 
-            {/* Line 2: asset name | assignee + timestamp */}
+            {/* Line 2: asset + event/incident | assignee + timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                {wo.asset}
+              <div style={{ minWidth: 0 }}>
+                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                  {wo.asset}
+                </span>
+                {wo.eventId && getEventName(wo.eventId) && (
+                  <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)', marginTop: '1px' }}>
+                    <span>{getEventName(wo.eventId)}</span>
+                    {getIncidentForEvent(wo.eventId) && (
+                      <>
+                        <span>·</span>
+                        <span>{getIncidentForEvent(wo.eventId)}</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)', textAlign: 'right' }}>
+                {wo.assignee ? wo.assignee : 'Unassigned'}
+                {' · '}
+                {wo.created}
               </span>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                {wo.assignee ? (
-                  <span className="type-label">{wo.assignee}</span>
-                ) : (
-                  <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>Unassigned</span>
-                )}
-                <div>
-                  <span className="type-meta">{wo.created}</span>
-                </div>
-              </div>
             </div>
-
-            {/* Line 3: triggering event + incident (context, not links) */}
-            {(wo.eventId && getEventName(wo.eventId)) && (
-              <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
-                <span>{getEventName(wo.eventId)}</span>
-                {getIncidentForEvent(wo.eventId) && (
-                  <>
-                    <span>·</span>
-                    <span>{getIncidentForEvent(wo.eventId)}</span>
-                  </>
-                )}
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -260,43 +255,32 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 2: asset name | assignee + timestamp (matches WO row layout) */}
+            {/* Line 2: asset + scope/incident | assignee + timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-8)' }}>
-              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                {c.asset}
+              <div style={{ minWidth: 0 }}>
+                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                  {c.asset}
+                </span>
+                {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0 || c.incidentId) && (
+                  <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)', marginTop: '1px' }}>
+                    {c.linkedEvents.length > 0 && (
+                      <span>{c.linkedEvents.length} event{c.linkedEvents.length !== 1 ? 's' : ''}</span>
+                    )}
+                    {c.linkedEvents.length > 0 && c.linkedWorkOrders.length > 0 && <span>·</span>}
+                    {c.linkedWorkOrders.length > 0 && (
+                      <span>{c.linkedWorkOrders.length} WO{c.linkedWorkOrders.length !== 1 ? 's' : ''}</span>
+                    )}
+                    {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0) && c.incidentId && <span>·</span>}
+                    {c.incidentId && <span>{getIncidentName(c.incidentId)}</span>}
+                  </div>
+                )}
+              </div>
+              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)', textAlign: 'right' }}>
+                {c.assignee ? c.assignee : 'Unassigned'}
+                {' · '}
+                {c.opened}
               </span>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                {c.assignee ? (
-                  <span className="type-label">{c.assignee}</span>
-                ) : (
-                  <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>Unassigned</span>
-                )}
-                <div>
-                  <span className="type-meta">{c.opened}</span>
-                </div>
-              </div>
             </div>
-
-            {/* Line 3: scope + incident (context, not links) */}
-            {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0 || c.incidentId) && (
-              <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
-                {c.linkedEvents.length > 0 && (
-                  <span>{c.linkedEvents.length} event{c.linkedEvents.length !== 1 ? 's' : ''}</span>
-                )}
-                {c.linkedEvents.length > 0 && c.linkedWorkOrders.length > 0 && (
-                  <span>·</span>
-                )}
-                {c.linkedWorkOrders.length > 0 && (
-                  <span>{c.linkedWorkOrders.length} work order{c.linkedWorkOrders.length !== 1 ? 's' : ''}</span>
-                )}
-                {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0) && c.incidentId && (
-                  <span>·</span>
-                )}
-                {c.incidentId && (
-                  <span>{getIncidentName(c.incidentId)}</span>
-                )}
-              </div>
-            )}
           </div>
         ))}
       </div>
