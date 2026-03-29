@@ -40,7 +40,7 @@ const IconAssetInspection = () => (
   </svg>
 )
 
-// Root Cause — Feather "git-branch" (branching investigation)
+// Fault Tree — Feather "git-branch" (branching investigation)
 const IconRootCause = () => (
   <svg {...feather} aria-hidden="true">
     <line x1="6" y1="3" x2="6" y2="15" />
@@ -115,7 +115,7 @@ const NAV_ITEMS = [
   { id: 'overview',        label: 'Plant Overview',   Icon: IconPlantOverview   },
   { id: 'events',          label: 'Events',           Icon: IconEvents          },
   { id: 'inspection',      label: 'Asset Inspection', Icon: IconAssetInspection },
-  { id: 'rootcause',       label: 'Root Cause',       Icon: IconRootCause       },
+  { id: 'rootcause',       label: 'Fault Tree',        Icon: IconRootCause       },
   { id: 'trends',          label: 'Trends',           Icon: IconTrends          },
   { id: 'workorders',      label: 'Work Orders',      Icon: IconWorkOrders      },
   { id: 'investigations',  label: 'Investigations',   Icon: IconInvestigations  },

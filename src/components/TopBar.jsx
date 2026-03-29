@@ -8,7 +8,7 @@ import { PLANT, NOTIFICATIONS } from '../data/assets.js'
 const VIEW_LABELS = {
   overview:      'Plant Overview',
   inspection:    'Asset Inspection',
-  rootcause:     'Root Cause',
+  rootcause:     'Fault Tree',
   trends:        'Trends',
   workorders:    'Work Orders',
   investigations: 'Investigations',
