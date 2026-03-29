@@ -48,9 +48,39 @@ The asset search input uses `role="combobox"` with `aria-expanded`, `aria-haspop
 
 NotificationsPanel receives focus on open via `tabIndex={-1}` and programmatic focus. Escape key closes the panel. Mobile variant uses `aria-modal="true"`.
 
+### Navigable rows
+
+All clickable rows (Asset Table, Work Orders, Investigations) are keyboard-accessible:
+- `tabIndex={0}` for keyboard reachability
+- `role="button"` on WO/Investigation rows (Asset Table rows use `role="row"` within ARIA table)
+- `aria-label` with key row data (name, status, criticality)
+- `onKeyDown` for Enter/Space activation
+- `onFocus`/`onBlur` parity with hover states
+
+### ARIA table structure
+
+The div-based Asset Table uses ARIA roles instead of semantic `<table>` elements (converting would break horizontal scroll and flex column sizing):
+- `role="table"` + `aria-label` on scroll container
+- `role="row"` on header and data rows
+- `role="columnheader"` on sortable header buttons
+- `role="cell"` on data cells
+- `role="rowgroup"` on the rows container
+
+### Focus trap
+
+`useFocusTrap` hook wraps Tab/Shift+Tab at modal boundaries. Applied to NotificationsPanel (mobile) and Sidebar (mobile drawer). Background `<main>` receives `inert` attribute when mobile panels are open.
+
+### Keyboard tooltip positioning
+
+Cursor-following tooltips (RiskMatrix, AlarmQuality, BadActors) use `getBoundingClientRect()` of the focused element when triggered by keyboard, falling back to mouse coordinates for hover.
+
+### Windows High Contrast Mode
+
+`@media (forced-colors: active)` block in global.css: focus rings use `Highlight`, card borders use `CanvasText`, status dots and badges use `forced-color-adjust: none` to preserve semantic colors.
+
 ### Escape key convention
 
-All overlay/dropdown elements close on Escape: NotificationsPanel, FilterButton dropdown, mobile sidebar drawer.
+All overlay/dropdown elements close on Escape: NotificationsPanel, FilterButton dropdown, mobile sidebar drawer, KPI sparkline dropdown.
 
 ## Rationale
 

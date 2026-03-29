@@ -162,9 +162,16 @@ function WorkOrdersCard() {
         {visible.map((wo) => (
           <div
             key={wo.id}
+            role="button"
+            tabIndex={0}
+            aria-label={`${wo.id}: ${wo.task}, ${wo.asset}, ${wo.urgency}`}
             style={rowBaseStyle(hoveredId === wo.id)}
             onMouseEnter={() => setHoveredId(wo.id)}
             onMouseLeave={() => setHoveredId(null)}
+            onFocus={() => setHoveredId(wo.id)}
+            onBlur={() => setHoveredId(null)}
+            onClick={() => console.log('Navigate to WO', wo.id)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to WO', wo.id) } }}
           >
             {/* Line 1: WO ID + task | urgency */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
@@ -241,9 +248,16 @@ function InvestigationsCard() {
         {visible.map((c) => (
           <div
             key={c.id}
+            role="button"
+            tabIndex={0}
+            aria-label={`${c.id}: ${c.description}, ${c.asset}, ${c.status}`}
             style={rowBaseStyle(hoveredId === c.id)}
             onMouseEnter={() => setHoveredId(c.id)}
             onMouseLeave={() => setHoveredId(null)}
+            onFocus={() => setHoveredId(c.id)}
+            onBlur={() => setHoveredId(null)}
+            onClick={() => console.log('Navigate to Investigation', c.id)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); console.log('Navigate to Investigation', c.id) } }}
           >
             {/* Line 1: Investigation ID + description | status */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>

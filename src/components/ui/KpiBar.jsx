@@ -201,13 +201,13 @@ function KpiCard({ config, onClick, isSelected }) {
           <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
         </div>
 
-        {/* Value + health indicator inline */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
-          <span className="type-kpi" style={{ color: valueColor }}>
-            {config.value}%
-          </span>
-          <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
-        </div>
+        {/* Value */}
+        <span className="type-kpi" style={{ color: valueColor, display: 'block' }}>
+          {config.value}%
+        </span>
+
+        {/* Health indicator -- always below value for consistent card height */}
+        <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
 
         {/* Delta */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>

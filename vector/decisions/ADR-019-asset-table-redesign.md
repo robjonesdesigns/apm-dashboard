@@ -11,12 +11,12 @@ The Asset Table had 9 columns with inconsistent data sourcing. Work order counts
 
 ### Columns (9 total)
 
-Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
+Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | RUL
 
 - **Events**: single `activeEvents` count (was three columns: New/In Progress/Repetitive)
 - **Work Orders**: derived from `WORK_ORDERS` by `assetId` (was hardcoded `asset.workOrders`)
-- **Investigations**: new column, derived from `CASES` by `assetId`
-- **Remaining Life**: renamed from "RUL" (spelled out, not truncated)
+- **Investigations**: new column, derived from `INVESTIGATIONS` by `assetId`
+- **RUL**: industry acronym for Remaining Useful Life. Header shows "RUL" with native tooltip for the full term.
 
 ### Toolbar
 

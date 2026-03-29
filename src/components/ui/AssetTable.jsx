@@ -49,7 +49,7 @@ const COL_STYLES = {
   downtime:   { ...cellNum,  minWidth: 112, width: 112 },
   workOrders: { ...cellNum,  minWidth: 140, width: 140 },
   invs:       { ...cellNum,  minWidth: 148, width: 148 },
-  rul:        { ...cellNum,  minWidth: 152, width: 152, borderRight: 'none' },
+  rul:        { ...cellNum,  minWidth: 100, width: 100, borderRight: 'none' },
 }
 
 const ROW_STYLE = {
@@ -70,9 +70,14 @@ function AssetRow({ asset, onAssetClick }) {
     <div
       data-row
       role="row"
+      tabIndex={0}
+      aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}, OEE ${asset.oee}%`}
       onClick={() => onAssetClick && onAssetClick(asset)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick?.(asset) } }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         ...ROW_STYLE,
         background:  hovered ? 'var(--color-hover-01)' : 'transparent',
@@ -206,7 +211,7 @@ function SortIndicator({ isActive, direction }) {
   )
 }
 
-function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }) {
+function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style, title }) {
   const isActive = activeSort === sortKey
   const [hovered, setHovered] = useState(false)
   const ariaSort = isActive ? (activeDir === 'asc' ? 'ascending' : 'descending') : 'none'
@@ -219,6 +224,8 @@ function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       aria-sort={ariaSort}
+      title={title}
+      aria-label={title || label}
       style={{
         ...style,
         cursor: 'pointer',
@@ -619,7 +626,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
             <SortableHeader label="Downtime"       sortKey="downtime"         activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.downtime} />
             <SortableHeader label="Work Orders"    sortKey="workOrders"       activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.workOrders} />
             <SortableHeader label="Investigations" sortKey="investigations"   activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.invs} />
-            <SortableHeader label="Remaining Life" sortKey="rul"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.rul} />
+            <SortableHeader label="RUL" sortKey="rul"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.rul} title="Remaining Useful Life" />
           </div>
 
           {/* Rows — paginated, always 10 row slots */}
