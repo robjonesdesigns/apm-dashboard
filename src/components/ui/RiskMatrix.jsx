@@ -4,9 +4,9 @@ import FilterChip from './FilterChip'
 import CriticalityIndicator from './CriticalityIndicator'
 
 const CRITICALITY_CONFIG = [
-  { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg)' },
-  { key: 'B', label: 'B (Production)', color: 'var(--color-warning)', bg: 'var(--color-warning-bg)' },
-  { key: 'C', label: 'C (Support)',    color: 'var(--color-info)',    bg: 'var(--color-info-bg)' },
+  { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg-strong)' },
+  { key: 'B', label: 'B (Production)', color: 'var(--color-warning)', bg: 'var(--color-warning-bg-strong)' },
+  { key: 'C', label: 'C (Support)',    color: 'var(--color-info)',    bg: 'var(--color-info-bg-strong)' },
 ]
 
 const STATUSES = ['New', 'In Progress']

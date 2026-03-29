@@ -64,12 +64,15 @@
   /* ── Status (Pairing 1: coral-red + true amber, adapted from Carbon) ── */
   --color-error: #f47174;
   --color-error-bg: rgba(244, 113, 116, 0.16);
+  --color-error-bg-strong: rgba(244, 113, 116, 0.24);
   --color-success: #42be65;
   --color-success-bg: rgba(66, 190, 101, 0.16);
   --color-warning: #e8914f;
   --color-warning-bg: rgba(232, 145, 79, 0.16);
+  --color-warning-bg-strong: rgba(232, 145, 79, 0.24);
   --color-info: #4589ff;
   --color-info-bg: rgba(69, 137, 255, 0.16);
+  --color-info-bg-strong: rgba(69, 137, 255, 0.24);
   --color-caution: #ff832b;
 
   /* ── Chart palette (Carbon dark theme categorical) ────────────────── */

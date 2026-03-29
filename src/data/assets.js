@@ -410,7 +410,7 @@ export const ASSETS = [
     ],
     // T-401 has 0 events in TIMELINE (EVT-010 removed). The 1 in-progress event is the maintenance scheduling decision.
     eventHistory: [
-      { id: 'EVT-T401-H1', name: 'Combustion Inspection Due', date: 'Today', eventType: 'alert', subAssetId: 'T-401-CMB', status: 'in-progress', description: '12,000-hour combustion inspection interval reached. Maintenance window opened at 6:00 AM but inspection deferred pending morning huddle decision due to K-101 crisis. Contractors and parts staged.' },
+      { id: 'EVT-T401-H1', name: 'Combustion Inspection Due', date: 'Today', eventType: 'alert', subAssetId: 'T-401-CMB', status: 'in-progress', description: '12,000-hour combustion inspection interval reached. Scheduled for 6:00 AM but inspection deferred pending morning huddle decision due to K-101 crisis. Contractors and parts staged.' },
     ],
   },
   {
@@ -1563,7 +1563,7 @@ export const K101_DEGRADATION = [
 // rootCause: true marks the confirmed initiating failure.
 
 export const K101_FAULT_TREE = {
-  event: 'Compressor Trip',
+  event: 'High Vibration Trip',
   asset: 'K-101',
   time: '2:03 AM',
   type: 'critical',
