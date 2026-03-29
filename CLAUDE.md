@@ -112,4 +112,4 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 ## Handoff
 
-See `HANDOFF.md` for session 13 wrap-up. Deployed to https://apm-dashboard-eosin.vercel.app. 22 ADRs, 15 desk research docs.
+See `HANDOFF.md` for session 13 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 22 ADRs, 15 desk research docs, 2 stories. Next: finish event metadata enrichment (events 2-11), rebuild data, then Asset Inspection screen.
