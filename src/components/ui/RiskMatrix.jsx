@@ -85,17 +85,15 @@ function MatrixTooltip({ hoveredCell, dataByCriticality, x, y }) {
         gap: 'var(--spacing-4)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-        <CriticalityIndicator level={crit} inverted />
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
-          {status} Events
-        </span>
-      </div>
       <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Count</span>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>{status} Events</span>
         <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{count}</span>
       </div>
-      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter assets</span>
+      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
+        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Asset Criticality</span>
+        <CriticalityIndicator level={crit} inverted />
+      </div>
+      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter Asset Table</span>
     </div>
   )
 }
