@@ -203,6 +203,48 @@ function EventDetails({ notification, onBack, onClose }) {
           </div>
         ))}
 
+        {/* Linked Work Orders */}
+        {notification.linkedWOs && notification.linkedWOs.length > 0 && (
+          <div style={{ marginBottom: 'var(--spacing-16)' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+              Linked Work Orders
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+              {notification.linkedWOs.map((wo) => (
+                <span
+                  key={wo}
+                  className="type-link"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => console.log('Navigate to', wo)}
+                >
+                  {wo}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Linked Investigations */}
+        {notification.linkedInvestigations && notification.linkedInvestigations.length > 0 && (
+          <div style={{ marginBottom: 'var(--spacing-16)' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+              Linked Investigations
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+              {notification.linkedInvestigations.map((inv) => (
+                <span
+                  key={inv}
+                  className="type-link"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => console.log('Navigate to', inv)}
+                >
+                  {inv}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Divider */}
         <div style={{ height: '1px', background: 'var(--color-border-subtle)', margin: 'var(--spacing-16) 0' }} />
 
@@ -237,13 +279,6 @@ function getEventDetails(notification) {
   }
   if (notification.recommendation) {
     details.push({ label: 'Recommendation', value: notification.recommendation })
-  }
-
-  if (notification.linkedWOs && notification.linkedWOs.length > 0) {
-    details.push({ label: 'Linked Work Orders', value: notification.linkedWOs.join(', ') })
-  }
-  if (notification.linkedInvestigations && notification.linkedInvestigations.length > 0) {
-    details.push({ label: 'Linked Investigations', value: notification.linkedInvestigations.join(', ') })
   }
 
   return details
