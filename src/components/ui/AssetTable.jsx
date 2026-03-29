@@ -142,7 +142,7 @@ function AssetRow({ asset, onAssetClick }) {
   )
 }
 
-// ── Mobile row (stacked list: status+name, type, metrics) ───────────────────
+// ── Mobile row (stacked: status+name, type+criticality) ─────────────────────
 
 function MobileAssetRow({ asset, onAssetClick }) {
   const [hovered, setHovered] = useState(false)
@@ -152,7 +152,7 @@ function MobileAssetRow({ asset, onAssetClick }) {
       data-row
       role="row"
       tabIndex={0}
-      aria-label={`${asset.name}, ${statusLabel(asset.status)}, OEE ${asset.oee}%, ${asset.activeEvents} events`}
+      aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}`}
       onClick={() => onAssetClick?.(asset)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick?.(asset) } }}
       onMouseEnter={() => setHovered(true)}
@@ -174,26 +174,17 @@ function MobileAssetRow({ asset, onAssetClick }) {
       {/* Row 1: status dot + asset name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
         <span className={statusDotVariant(asset.status)} style={{ flexShrink: 0 }} />
-        <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
           {asset.name}
         </span>
       </div>
 
-      {/* Row 2: asset type */}
-      <span className="type-meta" style={{ color: 'var(--color-text-secondary)', paddingLeft: 'var(--spacing-16)' }}>
-        {asset.type}
-      </span>
-
-      {/* Row 3: metrics */}
-      <div style={{ display: 'flex', gap: 'var(--spacing-16)', paddingLeft: 'var(--spacing-16)' }}>
-        <span className="type-meta">
-          <span style={{ color: 'var(--color-text-helper)' }}>Events </span>
-          <span style={{ color: 'var(--color-text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{asset.activeEvents}</span>
+      {/* Row 2: asset type + criticality */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', paddingLeft: 'var(--spacing-16)' }}>
+        <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
+          {asset.type}
         </span>
-        <span className="type-meta">
-          <span style={{ color: 'var(--color-text-helper)' }}>OEE </span>
-          <span style={{ color: 'var(--color-text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{asset.oee}%</span>
-        </span>
+        <CriticalityIndicator level={asset.criticality} />
       </div>
     </div>
   )
@@ -224,8 +215,7 @@ const CloseIconSmall = () => (
 const MOBILE_SORT_OPTIONS = [
   { key: 'status', label: 'Status' },
   { key: 'name', label: 'Name' },
-  { key: 'oee', label: 'OEE' },
-  { key: 'events', label: 'Events' },
+  { key: 'criticality', label: 'Criticality' },
 ]
 
 function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categories }) {
