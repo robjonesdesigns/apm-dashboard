@@ -62,9 +62,10 @@ export const ASSETS = [
     status: 'tripped',
     urgency: 'urgent',
     oee: 64.2,
-    activeEvents: 8,
     newEvents: 2,
     inProgressEvents: 6,
+    closedEvents: 4,
+    falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '5h',
     workOrders: 2,
@@ -143,6 +144,13 @@ export const ASSETS = [
         ],
       },
     ],
+    // Events beyond the 24-hour TIMELINE. K-101 has 5 events in TIMELINE (EVT-002,003,004,005,011).
+    // 3 additional historical events account for activeEvents: 8 (5 timeline + 3 historical).
+    eventHistory: [
+      { id: 'EVT-K101-H1', name: 'Vibration Alert', date: '3 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration trending upward. 5.1 mm/s, approaching 7.1 alarm threshold. Alert generated but no intervention taken.' },
+      { id: 'EVT-K101-H2', name: 'Vibration Alert', date: '2 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 5.8 mm/s. Second consecutive alert with no response. Vibration trend accelerating.' },
+      { id: 'EVT-K101-H3', name: 'Vibration Alert', date: '1 day ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 6.3 mm/s. Third alert in 3 days. No work order created. This is the gap the root cause investigation (CS-0891) is focused on.' },
+    ],
   },
   {
     id: 'P-203',
@@ -154,9 +162,10 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'urgent',
     oee: 78.4,
-    activeEvents: 4,
     newEvents: 1,
     inProgressEvents: 3,
+    closedEvents: 2,
+    falsePositives: 0,
     repetitiveEvents: 2,
     downtime: '0h',
     workOrders: 1,
@@ -225,6 +234,13 @@ export const ASSETS = [
         ],
       },
     ],
+    // P-203 has 1 event in TIMELINE (EVT-009). 3 historical seal failures account for the remaining counts.
+    // activeEvents: 4 = 1 timeline + 3 historical. repetitiveEvents: 2 = system flagged recurring pattern.
+    eventHistory: [
+      { id: 'EVT-P203-H1', name: 'Seal Failure', date: '4 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'First mechanical seal failure. Leakage detected at 3.8 L/hr. Seal replaced. No alignment check performed. Pump returned to service after 6 hours.' },
+      { id: 'EVT-P203-H2', name: 'Seal Failure', date: '2 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'Second mechanical seal failure. Same failure mode -- leakage at 4.0 L/hr. Seal replaced again. Alignment not checked. Investigation CS-0894 opened to find root cause.' },
+      { id: 'EVT-P203-H3', name: 'Alignment Drift Detected', date: '3 weeks ago', eventType: 'anomaly', subAssetId: 'P-203-CPL', status: 'in-progress', description: 'Coupling alignment measured at 0.09 mm and trending toward 0.15 mm alarm. Correlated with recurring seal failures by CS-0894. Alignment correction planned but not yet scheduled.' },
+    ],
   },
   {
     id: 'C-201',
@@ -236,9 +252,10 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 82.1,
-    activeEvents: 3,
     newEvents: 2,
     inProgressEvents: 1,
+    closedEvents: 0,
+    falsePositives: 0,
     repetitiveEvents: 1,
     downtime: '0h',
     workOrders: 0,
@@ -296,6 +313,12 @@ export const ASSETS = [
         ],
       },
     ],
+    // C-201 has 1 event in TIMELINE (EVT-007). 2 historical events for belt degradation trend.
+    // activeEvents: 3 = 1 timeline + 2 historical.
+    eventHistory: [
+      { id: 'EVT-C201-H1', name: 'Belt Tension Low', date: '3 weeks ago', eventType: 'alert', subAssetId: 'C-201-FAN', status: 'in-progress', description: 'Fan belt tension measured at 88% during routine check. Below optimal but above 75% alarm. Replacement scheduled but not prioritized.' },
+      { id: 'EVT-C201-H2', name: 'Belt Tension Declining', date: '1 week ago', eventType: 'anomaly', subAssetId: 'C-201-FAN', status: 'new', description: 'Belt tension declined to 85%. Rate of decline suggests replacement needed within 2 weeks. WO-4498 opened for belt tension check.' },
+    ],
   },
   {
     id: 'T-401',
@@ -307,9 +330,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 88.1,
-    activeEvents: 1,
     newEvents: 0,
     inProgressEvents: 1,
+    closedEvents: 1,
+    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 1,
@@ -388,6 +412,10 @@ export const ASSETS = [
         ],
       },
     ],
+    // T-401 has 0 events in TIMELINE (EVT-010 removed). The 1 in-progress event is the maintenance scheduling decision.
+    eventHistory: [
+      { id: 'EVT-T401-H1', name: 'Combustion Inspection Due', date: 'Today', eventType: 'alert', subAssetId: 'T-401-CMB', status: 'in-progress', description: '12,000-hour combustion inspection interval reached. Maintenance window opened at 6:00 AM but inspection deferred pending morning huddle decision due to K-101 crisis. Contractors and parts staged.' },
+    ],
   },
   {
     id: 'E-105',
@@ -399,9 +427,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 93.7,
-    activeEvents: 1,
     newEvents: 1,
     inProgressEvents: 0,
+    closedEvents: 0,
+    falsePositives: 1,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -466,6 +495,10 @@ export const ASSETS = [
         ],
       },
     ],
+    // E-105 has 0 events in TIMELINE. The 1 new event is the fouling rate anomaly detected by the model.
+    eventHistory: [
+      { id: 'EVT-E105-H1', name: 'Accelerated Fouling Detected', date: '1 week ago', eventType: 'anomaly', subAssetId: 'E-105-TUB-P', status: 'new', description: 'Fouling model predicted current fouling rate at month 8. Actual fouling reached this level at month 4 after crude slate change. Feed outlet temperature 6C below expected. Investigation CS-0896 opened to determine if accelerated fouling is from feed change or tube leak.' },
+    ],
   },
   {
     id: 'R-301',
@@ -477,9 +510,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 95.2,
-    activeEvents: 0,
     newEvents: 0,
     inProgressEvents: 0,
+    closedEvents: 2,
+    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -569,9 +603,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 94.8,
-    activeEvents: 0,
-    newEvents: 0,
+    newEvents: 1,
     inProgressEvents: 0,
+    closedEvents: 0,
+    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -657,9 +692,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 96.1,
-    activeEvents: 0,
     newEvents: 0,
     inProgressEvents: 0,
+    closedEvents: 1,
+    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -737,9 +773,10 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 79.3,
-    activeEvents: 3,
     newEvents: 1,
     inProgressEvents: 2,
+    closedEvents: 0,
+    falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '0h',
     workOrders: 0,
@@ -817,6 +854,12 @@ export const ASSETS = [
         ],
       },
     ],
+    // K-302 has 1 event in TIMELINE (EVT-001). 2 historical events are the repeated temperature oscillation triggers.
+    // The system flagged the oscillation 3 times (repetitiveEvents: 3) as discharge temp exceeded rate-of-change threshold each cycle.
+    eventHistory: [
+      { id: 'EVT-K302-H1', name: 'Discharge Temp Rate-of-Change', date: '2 days ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Discharge temperature swing exceeded rate-of-change threshold. First occurrence of the oscillation pattern. Opened CS-0893 to investigate.' },
+      { id: 'EVT-K302-H2', name: 'Discharge Temp Rate-of-Change', date: '1 day ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Second occurrence of temperature oscillation exceeding rate-of-change threshold. Same pattern as previous day. Fouling hypothesis emerging.' },
+    ],
   },
   {
     id: 'T-102',
@@ -828,9 +871,10 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 91.4,
-    activeEvents: 1,
     newEvents: 1,
     inProgressEvents: 0,
+    closedEvents: 1,
+    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     workOrders: 0,
@@ -910,11 +954,22 @@ export const ASSETS = [
         ],
       },
     ],
+    // T-102 has 0 events in TIMELINE. The 1 new event is the exhaust spread widening trend.
+    eventHistory: [
+      { id: 'EVT-T102-H1', name: 'Exhaust Temperature Spread Widening', date: '1 week ago', eventType: 'anomaly', subAssetId: 'T-102-CMB', status: 'new', description: 'Exhaust temperature spread increased from 12C to 22C over three weeks. Two of eight fuel nozzles (3 and 7) running 15C cool vs average. Alarm threshold is 30C. At current rate, spread hits alarm in about two weeks. Investigation CS-0895 monitoring trend.' },
+    ],
   },
 ]
 
+// ── Computed fields on assets ────────────────────────────────────────────────
+// activeEvents and totalEvents are derived, not stored.
+ASSETS.forEach(a => {
+  a.activeEvents = a.newEvents + a.inProgressEvents
+  a.totalEvents = a.newEvents + a.inProgressEvents + a.closedEvents + a.falsePositives
+})
+
 // ── Timeline of Events (last 24 hours) ───────────────────────────────────────
-// 11 real equipment events. Chronological (earliest first).
+// 9 real equipment events. Chronological (earliest first).
 // WO creation and case opening are system actions, tracked in WORK_ORDERS/CASES.
 // Each event has full metadata with provenance (source, confidence, status) and relationships.
 
@@ -1655,30 +1710,33 @@ export const PERFORMANCE_ATTRIBUTES = [
   { attribute: 'Bearing Temperature', value: 112,   expected: 68,    unit: 'C',    deviation: 64.7  },
 ]
 
-// ── Bad Actors (plant level, top 5 by event count) ───────────────────────────
+// ── Bad Actors (plant level, top 5 by total event count) ─────────────────────
+// Computed from ASSETS. Sorted by totalEvents descending, top 5.
 
-export const BAD_ACTORS = [
-  { assetId: 'K-101', name: 'Compressor K-101',    events: 18, criticality: 'A' },
-  { assetId: 'P-203', name: 'Pump P-203',          events: 8,  criticality: 'B' },
-  { assetId: 'K-302', name: 'Compressor K-302',    events: 6,  criticality: 'A' },
-  { assetId: 'C-201', name: 'Cooler C-201',        events: 4,  criticality: 'B' },
-  { assetId: 'T-401', name: 'Turbine T-401',       events: 2,  criticality: 'B' },
-]
+export const BAD_ACTORS = ASSETS
+  .filter(a => a.totalEvents > 0)
+  .map(a => ({ assetId: a.id, name: a.name, events: a.totalEvents, criticality: a.criticality }))
+  .sort((a, b) => b.events - a.events)
+  .slice(0, 5)
 
 // ── Risk Matrix ───────────────────────────────────────────────────────────────
+// Computed from ASSETS. Groups by criticality, sums event counts.
 
-export const RISK_MATRIX = [
-  { criticality: 'A', newEvents: 3, inProgress: 8 },
-  { criticality: 'B', newEvents: 4, inProgress: 5 },
-  { criticality: 'C', newEvents: 1, inProgress: 0 },
-]
+export const RISK_MATRIX = ['A', 'B', 'C'].map(crit => {
+  const group = ASSETS.filter(a => a.criticality === crit)
+  return {
+    criticality: crit,
+    newEvents: group.reduce((sum, a) => sum + a.newEvents, 0),
+    inProgress: group.reduce((sum, a) => sum + a.inProgressEvents, 0),
+  }
+})
 
 // ── Event Summary (Alarm Quality donut) ───────────────────────────────────────
-// "New" here = unvalidated signal (different from "New" in RISK_MATRIX = unassigned)
+// Computed from ASSETS. Confirmed = inProgress + closed (validated as real).
 
 export const EVENT_SUMMARY = {
-  confirmed:      13,
-  falsePositives: 3,
-  newEvents:      5,
-  total:          21,
+  confirmed:      ASSETS.reduce((sum, a) => sum + a.inProgressEvents + a.closedEvents, 0),
+  falsePositives: ASSETS.reduce((sum, a) => sum + a.falsePositives, 0),
+  newEvents:      ASSETS.reduce((sum, a) => sum + a.newEvents, 0),
+  get total() { return this.confirmed + this.falsePositives + this.newEvents },
 }
