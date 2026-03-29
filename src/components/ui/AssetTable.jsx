@@ -179,11 +179,13 @@ function MobileAssetRow({ asset, onAssetClick }) {
         </span>
       </div>
 
-      {/* Row 2: asset type + criticality */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', paddingLeft: 'var(--spacing-16)' }}>
-        <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
-          {asset.type}
-        </span>
+      {/* Row 2: asset type */}
+      <span className="type-meta" style={{ color: 'var(--color-text-secondary)', paddingLeft: 'var(--spacing-16)' }}>
+        {asset.type}
+      </span>
+
+      {/* Row 3: criticality */}
+      <div style={{ paddingLeft: 'var(--spacing-16)' }}>
         <CriticalityIndicator level={asset.criticality} />
       </div>
     </div>
