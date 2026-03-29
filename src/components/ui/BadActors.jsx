@@ -34,7 +34,7 @@ function WatchListTooltip({ item, x, y }) {
     <div
       style={{
         position: 'fixed',
-        left: x + 12,
+        left: Math.min(x + 12, window.innerWidth - 240),
         top: y - 8,
         background: 'var(--color-tooltip-bg)',
         borderRadius: 'var(--radius-4)',
