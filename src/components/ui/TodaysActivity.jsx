@@ -267,14 +267,13 @@ function InvestigationsCard() {
               </span>
             </div>
 
-            {/* Line 3: scope + incident | timestamp */}
+            {/* Line 3: scope (events + WOs) | timestamp */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
               <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
                 {[
-                  c.linkedEvents.length > 0 && `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
-                  c.linkedWorkOrders.length > 0 && `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
-                  c.incidentId && getIncidentName(c.incidentId),
-                ].filter(Boolean).join(' · ')}
+                  `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
+                  `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
+                ].join(' · ')}
               </span>
               <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)' }}>
                 {c.opened}
