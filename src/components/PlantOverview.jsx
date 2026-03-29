@@ -122,7 +122,7 @@ export default function PlantOverview({ onNavigate }) {
           onClearAlarmFilter={clearAlarmFilter}
           onClearActorFilter={clearActorFilter}
           onClearAllFilters={clearAllFilters}
-          onAssetClick={(asset) => onNavigate('details', { asset })}
+          onAssetClick={null}
         />
       </section>
 

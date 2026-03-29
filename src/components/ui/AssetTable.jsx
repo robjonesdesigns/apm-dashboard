@@ -58,7 +58,6 @@ const ROW_STYLE = {
   alignItems:    'center',
   gap:           0,
   padding:       'var(--spacing-12) var(--spacing-12)',
-  cursor:        'pointer',
   transition:    'all var(--motion-fast) var(--ease-productive)',
   borderBottom:  '1px solid var(--color-border-subtle)',
   borderLeft:    '2px solid transparent',
@@ -66,21 +65,23 @@ const ROW_STYLE = {
 
 function AssetRow({ asset, onAssetClick }) {
   const [hovered, setHovered] = useState(false)
+  const clickable = !!onAssetClick
 
   return (
     <div
       data-row
       role="row"
-      tabIndex={0}
+      tabIndex={clickable ? 0 : undefined}
       aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}, OEE ${asset.oee}%`}
-      onClick={() => onAssetClick && onAssetClick(asset)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick?.(asset) } }}
+      onClick={clickable ? () => onAssetClick(asset) : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick(asset) } } : undefined}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
       style={{
         ...ROW_STYLE,
+        cursor: clickable ? 'pointer' : 'default',
         background:  hovered ? 'var(--color-hover-01)' : 'transparent',
         borderLeft:  hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
       }}
@@ -146,15 +147,16 @@ function AssetRow({ asset, onAssetClick }) {
 
 function MobileAssetRow({ asset, onAssetClick }) {
   const [hovered, setHovered] = useState(false)
+  const clickable = !!onAssetClick
 
   return (
     <div
       data-row
       role="row"
-      tabIndex={0}
+      tabIndex={clickable ? 0 : undefined}
       aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}`}
-      onClick={() => onAssetClick?.(asset)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick?.(asset) } }}
+      onClick={clickable ? () => onAssetClick(asset) : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick(asset) } } : undefined}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
@@ -164,7 +166,7 @@ function MobileAssetRow({ asset, onAssetClick }) {
         flexDirection: 'column',
         gap: 'var(--spacing-4)',
         padding: 'var(--spacing-12)',
-        cursor: 'pointer',
+        cursor: clickable ? 'pointer' : 'default',
         transition: 'all var(--motion-fast) var(--ease-productive)',
         borderBottom: '1px solid var(--color-border-subtle)',
         borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
