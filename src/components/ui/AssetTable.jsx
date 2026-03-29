@@ -69,6 +69,7 @@ function AssetRow({ asset, onAssetClick }) {
   return (
     <div
       data-row
+      role="row"
       onClick={() => onAssetClick && onAssetClick(asset)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -79,13 +80,13 @@ function AssetRow({ asset, onAssetClick }) {
       }}
     >
       {/* Status */}
-      <div style={{ ...COL_STYLES.status, display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+      <div role="cell" style={{ ...COL_STYLES.status, display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
         <span className={statusDotVariant(asset.status)} />
         <span className="type-body">{statusLabel(asset.status)}</span>
       </div>
 
       {/* Asset name + type */}
-      <div style={{ ...COL_STYLES.asset, flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+      <div role="cell" style={{ ...COL_STYLES.asset, flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
         <div
           className="type-body"
           style={{
@@ -98,37 +99,37 @@ function AssetRow({ asset, onAssetClick }) {
       </div>
 
       {/* Criticality */}
-      <div style={COL_STYLES.priority}>
+      <div role="cell" style={COL_STYLES.priority}>
         <CriticalityIndicator level={asset.criticality} />
       </div>
 
       {/* OEE */}
-      <div className="type-body" style={COL_STYLES.oee}>
+      <div role="cell" className="type-body" style={COL_STYLES.oee}>
         {asset.oee}%
       </div>
 
       {/* Events */}
-      <div className="type-body" style={COL_STYLES.events}>
+      <div role="cell" className="type-body" style={COL_STYLES.events}>
         {asset.activeEvents}
       </div>
 
       {/* Downtime */}
-      <div className="type-body" style={COL_STYLES.downtime}>
+      <div role="cell" className="type-body" style={COL_STYLES.downtime}>
         {asset.downtime}
       </div>
 
       {/* Work Orders (derived from WORK_ORDERS) */}
-      <div className="type-body" style={COL_STYLES.workOrders}>
+      <div role="cell" className="type-body" style={COL_STYLES.workOrders}>
         {woCountByAsset[asset.id] || 0}
       </div>
 
       {/* Investigations (derived from INVESTIGATIONS) */}
-      <div className="type-body" style={COL_STYLES.invs}>
+      <div role="cell" className="type-body" style={COL_STYLES.invs}>
         {invCountByAsset[asset.id] || 0}
       </div>
 
       {/* RUL */}
-      <div className="type-body" style={COL_STYLES.rul}>
+      <div role="cell" className="type-body" style={COL_STYLES.rul}>
         {asset.rul}
       </div>
     </div>
@@ -213,6 +214,7 @@ function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style }
   return (
     <button
       className="type-table-header"
+      role="columnheader"
       onClick={() => onSort(sortKey)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -589,10 +591,13 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
         <div
           ref={scrollRef}
           onScroll={handleScroll}
+          role="table"
+          aria-label="All Assets"
           style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
         >
           {/* Fixed header */}
           <div
+            role="row"
             style={{
               display:         'flex',
               alignItems:      'center',
@@ -618,7 +623,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
           </div>
 
           {/* Rows — paginated, always 10 row slots */}
-          <div ref={rowsRef} style={{ width: 'max-content', minWidth: '100%', minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
+          <div role="rowgroup" ref={rowsRef} style={{ width: 'max-content', minWidth: '100%', minHeight: rowHeight > 0 ? rowHeight * rowsPerPage : undefined }}>
             {pageAssets.map(asset => (
               <AssetRow
                 key={asset.id}

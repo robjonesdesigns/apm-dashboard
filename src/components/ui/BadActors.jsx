@@ -4,7 +4,7 @@
 // Bars color-coded by asset criticality (A=red, B=amber, C=blue).
 // Cursor-following tooltip matches dashboard pattern.
 
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { BAD_ACTORS } from '../../data/assets'
 import { colors } from '../../styles/tokens'
 import Legend from './Legend'
@@ -67,7 +67,7 @@ function WatchListTooltip({ item, x, y }) {
 
 // ── Bar row ─────────────────────────────────────────────────────────────────
 
-function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onClick }) {
+function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onClick, onFocusEl, onBlurEl }) {
   const pct = (item.events / maxEvents) * 100
   const showBorder = isHovered || isSelected
 
@@ -79,8 +79,8 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
       aria-pressed={isSelected}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      onFocus={onHover}
-      onBlur={onLeave}
+      onFocus={(e) => { onFocusEl?.(e.currentTarget); onHover() }}
+      onBlur={() => { onBlurEl?.(); onLeave() }}
       onClick={() => onClick(item.assetId)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(item.assetId) } }}
       style={{
@@ -149,9 +149,18 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
 export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }) {
   const [hoveredIdx, setHoveredIdx] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const focusedElRef = useRef(null)
 
   const hoveredItem = hoveredIdx !== null ? BAD_ACTORS[hoveredIdx] : null
   const selectedName = selectedAsset ? BAD_ACTORS.find(a => a.assetId === selectedAsset)?.name : null
+
+  const getTooltipPos = useCallback(() => {
+    if (focusedElRef.current) {
+      const r = focusedElRef.current.getBoundingClientRect()
+      return { x: r.right, y: r.top }
+    }
+    return mousePos
+  }, [mousePos])
 
   return (
     <div
@@ -181,12 +190,14 @@ export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }
             onHover={() => setHoveredIdx(i)}
             onLeave={() => setHoveredIdx(null)}
             onClick={(id) => onAssetClick?.(id)}
+            onFocusEl={(el) => { focusedElRef.current = el }}
+            onBlurEl={() => { focusedElRef.current = null }}
           />
         ))}
       </div>
 
       {/* Tooltip */}
-      <WatchListTooltip item={hoveredItem} x={mousePos.x} y={mousePos.y} />
+      <WatchListTooltip item={hoveredItem} x={getTooltipPos().x} y={getTooltipPos().y} />
 
       {/* Legend */}
       <Legend items={LEGEND_ITEMS} shape="square" title="Asset Criticality" />

@@ -566,6 +566,36 @@ html, body, #root {
   }
 }
 
+/* ─── Windows High Contrast Mode ─────────────────────────────────────── */
+/* WCAG: ensure UI remains usable when forced-colors override our tokens. */
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+  .card {
+    border-color: CanvasText;
+  }
+  .card-interactive:hover,
+  .card-interactive:focus-visible {
+    border-color: Highlight;
+  }
+  .status-dot {
+    forced-color-adjust: none;
+  }
+  .badge,
+  .badge-critical,
+  .badge-high,
+  .badge-medium,
+  .badge-low {
+    forced-color-adjust: none;
+  }
+  .chip-active {
+    border-color: Highlight;
+    color: Highlight;
+  }
+}
+
 /* ─── Scrollbar ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

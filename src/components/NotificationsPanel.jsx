@@ -6,6 +6,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { NOTIFICATIONS, INCIDENTS, TIMELINE } from '../data/assets.js'
+import useFocusTrap from '../hooks/useFocusTrap'
 import Badge from './ui/Badge'
 import FilterButton from './ui/FilterButton'
 
@@ -450,6 +451,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
   const [selectedNotification, setSelectedNotification] = useState(null)
   const [severityFilters, setSeverityFilters] = useState([])
   const panelRef = useRef(null)
+  useFocusTrap(panelRef, open && isMobile)
 
   // Focus management: move focus into panel on open, trap Escape
   useEffect(() => {

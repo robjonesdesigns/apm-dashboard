@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { EVENT_SUMMARY } from '../../data/assets'
 import FilterChip from './FilterChip'
 import Legend from './Legend'
@@ -96,7 +96,7 @@ function handleKeyDown(e, callback) {
   }
 }
 
-function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, selectedKey, onHover, onLeave, onClick }) {
+function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, selectedKey, onHover, onLeave, onClick, onFocusSegment, onBlurSegment }) {
   const center = size / 2
   const outerR = size / 2 - 2
   const innerR = outerR - ringWidth
@@ -169,8 +169,8 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
                   }}
                   onMouseEnter={() => onHover(seg.key)}
                   onMouseLeave={onLeave}
-                  onFocus={() => onHover(seg.key)}
-                  onBlur={onLeave}
+                  onFocus={(e) => onFocusSegment ? onFocusSegment(seg.key, e.currentTarget) : onHover(seg.key)}
+                  onBlur={() => onBlurSegment ? onBlurSegment() : onLeave()}
                   onClick={() => onClick?.(seg.key)}
                   onKeyDown={(e) => handleKeyDown(e, () => onClick?.(seg.key))}
                 />
@@ -211,8 +211,17 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
   const total = EVENT_SUMMARY.total
   const [hoveredKey, setHoveredKey] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const focusedElRef = useRef(null)
 
   const hoveredSegment = hoveredKey ? ALARM_SEGMENTS.find(s => s.key === hoveredKey) : null
+
+  const getTooltipPos = useCallback(() => {
+    if (focusedElRef.current) {
+      const r = focusedElRef.current.getBoundingClientRect()
+      return { x: r.right, y: r.top }
+    }
+    return mousePos
+  }, [mousePos])
 
   return (
     <>
@@ -227,8 +236,10 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
           onHover={setHoveredKey}
           onLeave={() => setHoveredKey(null)}
           onClick={onSegmentClick}
+          onFocusSegment={(key, el) => { focusedElRef.current = el; setHoveredKey(key) }}
+          onBlurSegment={() => { focusedElRef.current = null; setHoveredKey(null) }}
         />
-        <DonutTooltip segment={hoveredSegment} total={total} x={mousePos.x} y={mousePos.y} />
+        <DonutTooltip segment={hoveredSegment} total={total} x={getTooltipPos().x} y={getTooltipPos().y} />
       </div>
 
       {/* Legend */}

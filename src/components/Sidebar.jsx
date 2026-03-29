@@ -2,8 +2,9 @@
 // Desktop: 48px rail, hover to expand 256px overlay.
 // Mobile: full-screen drawer with branding header.
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { PLANT } from '../data/assets'
+import useFocusTrap from '../hooks/useFocusTrap'
 
 // ── Nav icons (Feather Icons, 24x24 viewBox rendered at 20x20) ──────────────
 // Source: https://feathericons.com — stroke-based, consistent weight.
@@ -193,6 +194,8 @@ function NavItem({ item, isActive, expanded, onClick }) {
 
 export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
   const [hovered, setHovered] = useState(false)
+  const sidebarRef = useRef(null)
+  useFocusTrap(sidebarRef, isMobile && open)
 
   // Escape key closes mobile drawer
   useEffect(() => {
@@ -224,6 +227,7 @@ export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
   return (
     <>
       <aside
+        ref={sidebarRef}
         role="navigation"
         aria-label="Main navigation"
         onMouseEnter={isMobile ? undefined : () => setHovered(true)}

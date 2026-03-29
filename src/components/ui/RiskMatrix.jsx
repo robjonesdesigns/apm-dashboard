@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { RISK_MATRIX } from '../../data/assets'
 import FilterChip from './FilterChip'
 import CriticalityIndicator from './CriticalityIndicator'
@@ -104,6 +104,15 @@ function MatrixTooltip({ hoveredCell, dataByCriticality, x, y }) {
 export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter }) {
   const [hoveredCell, setHoveredCell] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const focusedElRef = useRef(null)
+
+  const getTooltipPos = useCallback(() => {
+    if (focusedElRef.current) {
+      const r = focusedElRef.current.getBoundingClientRect()
+      return { x: r.right, y: r.top }
+    }
+    return mousePos
+  }, [mousePos])
 
   function isSelected(criticality, status) {
     if (!selectedCell) return false
@@ -131,7 +140,7 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
     >
       {/* Tooltip */}
-      <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={mousePos.x} y={mousePos.y} />
+      <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={getTooltipPos().x} y={getTooltipPos().y} />
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
@@ -183,8 +192,8 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
                       onClick={() => handleClick(c.key, status)}
                       onMouseEnter={() => setHoveredCell(key)}
                       onMouseLeave={() => setHoveredCell(null)}
-                      onFocus={() => setHoveredCell(key)}
-                      onBlur={() => setHoveredCell(null)}
+                      onFocus={(e) => { focusedElRef.current = e.currentTarget; setHoveredCell(key) }}
+                      onBlur={() => { focusedElRef.current = null; setHoveredCell(null) }}
                       label={`${count} ${status.toLowerCase()} events on criticality ${c.key} assets`}
                     />
                   )

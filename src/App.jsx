@@ -94,6 +94,7 @@ export default function App() {
         >
           <main
             id="main-content"
+            {...(isMobile && (sidebarOpen || notificationsOpen) ? { inert: '' } : {})}
             style={{
               flex: '1 1 auto',
               overflowY: 'auto',
