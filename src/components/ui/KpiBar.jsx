@@ -144,8 +144,7 @@ function InfoButton({ description }) {
 // ── Health indicator ─────────────────────────────────────────────────────────
 
 function HealthIndicator({ state, thresholdLabel }) {
-  if (state === 'normal') return null
-
+  const isNormal = state === 'normal'
   const isWarning = state === 'warning'
   const color = isWarning ? 'var(--color-warning)' : 'var(--color-error)'
   const Icon = isWarning ? WarningIcon : CriticalIcon
@@ -157,13 +156,15 @@ function HealthIndicator({ state, thresholdLabel }) {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--spacing-4)',
-        color,
+        color: isNormal ? undefined : color,
+        visibility: isNormal ? 'hidden' : 'visible',
       }}
-      aria-label={`${label}: ${thresholdLabel}`}
+      aria-label={isNormal ? undefined : `${label}: ${thresholdLabel}`}
+      aria-hidden={isNormal ? true : undefined}
     >
       <Icon />
-      <span className="type-meta" style={{ color }}>
-        {label}
+      <span className="type-meta" style={{ color: isNormal ? undefined : color }}>
+        {isNormal ? '\u00A0' : label}
       </span>
     </div>
   )
@@ -193,6 +194,9 @@ function KpiCard({ config, onClick, isSelected }) {
         style={{
           textAlign: 'left',
           width: '100%',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         {/* Label + info */}
@@ -418,7 +422,7 @@ export default function KpiBar({ onKpiClick }) {
       ))}
 
       {/* Trains */}
-      <div className="card" style={{ textAlign: 'left' }}>
+      <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
           <span className="type-card-title">Trains</span>
           <InfoButton description={KPI_DESCRIPTIONS.trains} />
@@ -426,10 +430,15 @@ export default function KpiBar({ onKpiClick }) {
         <span className="type-kpi" style={{ display: 'block' }}>
           {PLANT.trains}
         </span>
+        {/* Placeholder rows to match KPI card height */}
+        <div style={{ visibility: 'hidden' }} aria-hidden="true">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}><span className="type-meta">&nbsp;</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}><span className="type-meta">&nbsp;</span></div>
+        </div>
       </div>
 
       {/* Active Assets */}
-      <div className="card" style={{ textAlign: 'left' }}>
+      <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
           <span className="type-card-title">Active Assets</span>
           <InfoButton description={KPI_DESCRIPTIONS.activeAssets} />
@@ -438,6 +447,10 @@ export default function KpiBar({ onKpiClick }) {
           <span className="type-kpi">{PLANT.activeAssets}</span>
           <span className="type-kpi" style={{ color: 'var(--color-text-secondary)' }}>/{PLANT.totalAssets}</span>
         </span>
+        {/* Placeholder health indicator row to match KPI card height */}
+        <div style={{ visibility: 'hidden' }} aria-hidden="true">
+          <span className="type-meta">&nbsp;</span>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
           <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
             -4 vs yesterday
