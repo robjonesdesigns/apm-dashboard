@@ -124,6 +124,7 @@
   --text-14: 14px;
   --text-16: 16px;
   --text-20: 20px;
+  --text-24: 24px;
   --text-28: 28px;
   --text-32: 32px;
   --text-48: 48px;
@@ -234,12 +235,17 @@ html, body, #root {
 
   /* ── KPI ─────────────────────────────────────────────────────── */
   .type-kpi {
-    font-size: var(--text-28);
+    font-size: var(--text-24);
     font-weight: 700;
     line-height: 1.286;
     letter-spacing: 0px;
     color: var(--color-text-primary);
     font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 672px) {
+    .type-kpi {
+      font-size: var(--text-28);
+    }
   }
 
   /* ── KPI hero ────────────────────────────────────────────────── */
@@ -272,8 +278,13 @@ html, body, #root {
     background: var(--color-layer-01);
     border: 1px solid var(--color-border-subtle);
     border-radius: 10px;
-    padding: var(--spacing-24);
+    padding: var(--spacing-16);
     transition: border-color var(--motion-fast) var(--ease-productive);
+  }
+  @media (min-width: 672px) {
+    .card {
+      padding: var(--spacing-24);
+    }
   }
   .card-accent-top {
   border-top: 3px solid var(--color-accent);
@@ -484,7 +495,12 @@ html, body, #root {
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-24);
+  gap: var(--spacing-16);
+}
+@media (min-width: 672px) {
+  .kpi-grid {
+    gap: var(--spacing-24);
+  }
 }
 @media (min-width: 672px) {
   .kpi-grid {
@@ -501,13 +517,20 @@ html, body, #root {
   .grid-thirds {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--spacing-24);
+    gap: var(--spacing-16);
   }
   @media (min-width: 672px) {
     .grid-thirds {
       grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-24);
     }
   }
+
+/* ─── Mobile visibility helpers ───────────────────────────────────────── */
+.hide-mobile { display: none; }
+@media (min-width: 672px) {
+  .hide-mobile { display: flex; }
+}
 
 /* ─── Animations ──────────────────────────────────────────────────────── */
 @keyframes fadeIn {
