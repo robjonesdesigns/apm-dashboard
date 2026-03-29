@@ -195,21 +195,15 @@ function WorkOrdersCard() {
               </div>
             </div>
 
-            {/* Line 3: triggering event + incident (if linked) */}
-            {(wo.eventId || getIncidentForEvent(wo.eventId)) && (
+            {/* Line 3: triggering event + incident (context, not links) */}
+            {(wo.eventId && getEventName(wo.eventId)) && (
               <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
-                {getEventName(wo.eventId) && (
-                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
-                    {getEventName(wo.eventId)}
-                  </span>
-                )}
-                {getEventName(wo.eventId) && getIncidentForEvent(wo.eventId) && (
-                  <span style={{ color: 'var(--color-text-helper)' }}>·</span>
-                )}
+                <span>{getEventName(wo.eventId)}</span>
                 {getIncidentForEvent(wo.eventId) && (
-                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
-                    {getIncidentForEvent(wo.eventId)}
-                  </span>
+                  <>
+                    <span>·</span>
+                    <span>{getIncidentForEvent(wo.eventId)}</span>
+                  </>
                 )}
               </div>
             )}
@@ -283,7 +277,7 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 3: scope (events + WOs) + incident */}
+            {/* Line 3: scope + incident (context, not links) */}
             {(c.linkedEvents.length > 0 || c.linkedWorkOrders.length > 0 || c.incidentId) && (
               <div className="type-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-helper)' }}>
                 {c.linkedEvents.length > 0 && (
@@ -299,9 +293,7 @@ function InvestigationsCard() {
                   <span>·</span>
                 )}
                 {c.incidentId && (
-                  <span className="type-link" style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}>
-                    {getIncidentName(c.incidentId)}
-                  </span>
+                  <span>{getIncidentName(c.incidentId)}</span>
                 )}
               </div>
             )}
