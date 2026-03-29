@@ -5,7 +5,7 @@
 // ADR-009: mutually exclusive with expanded sidebar.
 
 import { useState } from 'react'
-import { NOTIFICATIONS } from '../data/assets.js'
+import { NOTIFICATIONS, INCIDENTS, TIMELINE } from '../data/assets.js'
 import Badge from './ui/Badge'
 import FilterButton from './ui/FilterButton'
 
@@ -200,8 +200,54 @@ function EventDetails({ notification, onBack, onClose }) {
             <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
               {section.value}
             </p>
+            <ProvenanceLine provenance={section.provenance} />
           </div>
         ))}
+
+        {/* Incident membership */}
+        {notification.incidentId && (
+          <div style={{
+            marginBottom: 'var(--spacing-16)',
+            padding: 'var(--spacing-8) var(--spacing-12)',
+            background: 'var(--color-accent-bg-subtle)',
+            borderRadius: 'var(--radius-4)',
+          }}>
+            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+              Part of{' '}
+              <span
+                className="type-link"
+                style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}
+                onClick={() => console.log('Navigate to incident', notification.incidentId)}
+              >
+                {getIncidentName(notification.incidentId)}
+              </span>
+              {' '}incident
+            </span>
+          </div>
+        )}
+
+        {/* Related Events */}
+        {notification.relationships && notification.relationships.length > 0 && (
+          <div style={{ marginBottom: 'var(--spacing-16)' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+              Related Events
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+              {notification.relationships.map((rel) => (
+                <span key={`${rel.type}-${rel.eventId}`} className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                  {REL_LABELS[rel.type] || rel.type}:{' '}
+                  <span
+                    className="type-link"
+                    style={{ cursor: 'pointer', fontSize: 'var(--text-12)' }}
+                    onClick={() => console.log('Navigate to event', rel.eventId)}
+                  >
+                    {rel.eventId} {getEventName(rel.eventId)}
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Linked Work Orders */}
         {notification.linkedWOs && notification.linkedWOs.length > 0 && (
@@ -260,6 +306,54 @@ function EventDetails({ notification, onBack, onClose }) {
   )
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getIncidentName(incidentId) {
+  const inc = INCIDENTS.find(i => i.id === incidentId)
+  return inc ? inc.name : incidentId
+}
+
+function getEventName(eventId) {
+  const evt = TIMELINE.find(e => e.id === eventId)
+  return evt ? evt.name : ''
+}
+
+const REL_LABELS = { caused_by: 'Caused by', cascaded_to: 'Cascaded to', related_to: 'Related to' }
+
+// ── Provenance line (subtle annotation under each metadata section) ──────────
+
+function ProvenanceLine({ provenance }) {
+  if (!provenance) return null
+
+  let label
+  if (provenance.source === 'human') {
+    label = `Confirmed by ${provenance.updatedBy}, ${provenance.updatedAt}`
+  } else if (provenance.source === 'model') {
+    const conf = provenance.confidence ? `, ${provenance.confidence}% confidence` : ''
+    label = provenance.status === 'confirmed'
+      ? `ML suggested, confirmed by ${provenance.updatedBy}`
+      : `ML suggested${conf}`
+  } else {
+    label = provenance.status === 'confirmed'
+      ? `System detected, ${provenance.updatedAt}`
+      : `System detected`
+  }
+
+  return (
+    <span
+      className="type-meta"
+      style={{
+        display: 'block',
+        marginTop: 'var(--spacing-4)',
+        color: 'var(--color-text-helper)',
+        fontStyle: 'italic',
+      }}
+    >
+      {label}
+    </span>
+  )
+}
+
 // ── Event detail content (reads structured metadata from notification) ────────
 
 function getEventDetails(notification) {
@@ -272,13 +366,13 @@ function getEventDetails(notification) {
   }
 
   if (notification.cause) {
-    details.push({ label: 'Cause', value: notification.cause })
+    details.push({ label: 'Cause', value: notification.cause.text, provenance: notification.cause })
   }
   if (notification.consequence) {
-    details.push({ label: 'Consequence', value: notification.consequence })
+    details.push({ label: 'Consequence', value: notification.consequence.text, provenance: notification.consequence })
   }
   if (notification.recommendation) {
-    details.push({ label: 'Recommendation', value: notification.recommendation })
+    details.push({ label: 'Recommendation', value: notification.recommendation.text, provenance: notification.recommendation })
   }
 
   return details
