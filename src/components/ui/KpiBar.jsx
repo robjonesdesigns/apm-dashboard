@@ -246,8 +246,6 @@ function KpiCard({ config, onClick, isSelected }) {
             data={KPI_24H}
             dataKey={config.key}
             threshold={THRESHOLDS[config.key]?.warning}
-            width={200}
-            height={56}
           />
 
           {/* Time range */}
@@ -278,9 +276,11 @@ function KpiCard({ config, onClick, isSelected }) {
 
 // ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
 
-function Sparkline({ data, dataKey, threshold, width = 280, height = 56 }) {
+function Sparkline({ data, dataKey, threshold }) {
   if (!data || data.length === 0) return null
 
+  const vbWidth = 280
+  const vbHeight = 56
   const values = data.map(d => d[dataKey])
   const allValues = threshold ? [...values, threshold] : values
   const min = Math.min(...allValues) - 2
@@ -288,11 +288,11 @@ function Sparkline({ data, dataKey, threshold, width = 280, height = 56 }) {
   const range = max - min || 1
   const px = 4
   const py = 6
-  const rightPad = 36 // space for value labels on the right
-  const chartWidth = width - px - rightPad
+  const rightPad = 36
+  const chartWidth = vbWidth - px - rightPad
   const stepX = chartWidth / (values.length - 1)
 
-  const toY = (v) => py + (1 - (v - min) / range) * (height - py * 2)
+  const toY = (v) => py + (1 - (v - min) / range) * (vbHeight - py * 2)
 
   const points = values.map((v, i) => {
     const x = px + i * stepX
@@ -307,7 +307,11 @@ function Sparkline({ data, dataKey, threshold, width = 280, height = 56 }) {
   const thresholdY = threshold ? toY(threshold) : null
 
   return (
-    <svg width={width} height={height} style={{ display: 'block' }}>
+    <svg
+      viewBox={`0 0 ${vbWidth} ${vbHeight}`}
+      preserveAspectRatio="none"
+      style={{ display: 'block', width: '100%', height: 56 }}
+    >
       {/* Threshold line */}
       {threshold && (
         <>
