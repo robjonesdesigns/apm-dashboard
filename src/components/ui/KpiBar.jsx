@@ -193,7 +193,6 @@ function KpiCard({ config, onClick, isSelected }) {
         style={{
           textAlign: 'left',
           width: '100%',
-          borderBottom: isSelected ? '1px solid var(--color-accent)' : undefined,
         }}
       >
         {/* Label + info */}
@@ -224,20 +223,16 @@ function KpiCard({ config, onClick, isSelected }) {
         </div>
       </button>
 
-      {/* Inline drawer -- overlays content below */}
+      {/* Dropdown popover */}
       {isSelected && (
         <div
           className="card"
           style={{
             position: 'absolute',
-            top: '100%',
+            top: 'calc(100% + 4px)',
             left: 0,
             right: 0,
             zIndex: 10,
-            borderTop: 'none',
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-            marginTop: '-1px',
             padding: 'var(--spacing-12) var(--spacing-16)',
             display: 'flex',
             flexDirection: 'column',
