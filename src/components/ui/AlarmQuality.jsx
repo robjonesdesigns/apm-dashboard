@@ -56,7 +56,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
   const center = svgSize / 2
   const midR = (size / 2 - 2) - ringWidth / 2
   const circumference = 2 * Math.PI * midR
-  const gapLength = 6 // px gap between segments
+  const gapLength = 3 // px gap between segments -- subtle separation
 
   // Build stroke-dasharray segments
   const segmentData = []
@@ -179,7 +179,10 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
       </div>
 
       {/* Legend -- direct child of card flex for marginTop auto */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-16)', flexWrap: 'wrap', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-8)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+        <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Event Status</span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-16)', flexWrap: 'wrap' }}>
         {ALARM_SEGMENTS.map(seg => {
           const pct = Math.round((seg.value / total) * 100)
           return (

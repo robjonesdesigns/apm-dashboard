@@ -22,21 +22,23 @@ function Swatch({ color, shape = 'square' }) {
 // interactive: if true, clicking an item calls onItemClick(label)
 // activeItem: the currently selected label (highlighted, others dimmed)
 
-export default function Legend({ items, shape = 'square', interactive = false, onItemClick, activeItem }) {
+export default function Legend({ items, shape = 'square', interactive = false, onItemClick, activeItem, title }) {
   return (
-    <div
-      role={interactive ? 'group' : undefined}
-      aria-label={interactive ? 'Chart legend' : undefined}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 'var(--spacing-16)',
-        flexWrap: 'wrap',
-        marginTop: 'auto',
-        paddingTop: 'var(--spacing-16)',
-      }}
-    >
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-8)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+      {title && (
+        <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{title}</span>
+      )}
+      <div
+        role={interactive ? 'group' : undefined}
+        aria-label={interactive ? 'Chart legend' : undefined}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 'var(--spacing-16)',
+          flexWrap: 'wrap',
+        }}
+      >
       {items.map((item) => {
         const dimmed = activeItem && activeItem !== item.label
         const Tag = interactive ? 'button' : 'div'
@@ -73,6 +75,7 @@ export default function Legend({ items, shape = 'square', interactive = false, o
           </Tag>
         )
       })}
+      </div>
     </div>
   )
 }

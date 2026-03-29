@@ -182,7 +182,7 @@ export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }
       <WatchListTooltip item={hoveredItem} x={mousePos.x} y={mousePos.y} />
 
       {/* Legend */}
-      <Legend items={LEGEND_ITEMS} shape="square" />
+      <Legend items={LEGEND_ITEMS} shape="square" title="Asset Criticality" />
     </div>
   )
 }
