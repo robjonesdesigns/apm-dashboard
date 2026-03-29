@@ -1,7 +1,7 @@
 # APM Dashboard Handoff -- Session 14 End
 
 ## START HERE
-Session 14 was a massive data enrichment session. All 10 assets have sub-assets in code (65 total). Event model completely restructured with provenance, relationships, incidents, and bidirectional linkages. Event data still needs a careful audit -- we were finding issues with naming, redundancy, and event typing right up to the end of the session. Start next session by reviewing the 9 events and their data for consistency.
+Massive session across data architecture and UI polish. Data model is fully connected -- every aggregate derives from source data. Needs Action cards have unified filter pattern with ADR-023. Donut chart has custom rounded arc paths. Next: event data audit (check prose for consistency), then Asset Inspection screen.
 
 ## Deployed
 - **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
@@ -9,111 +9,100 @@ Session 14 was a massive data enrichment session. All 10 assets have sub-assets 
 
 ## What was completed this session
 
-### Sub-asset data (COMPLETE)
-All 10 assets in ASSETS array now have `subAssets` arrays with full sensor data, thresholds, statuses, narratives, and lessons. 65 sub-assets total, sourced from STORY-002. T-401 status fixed from `planned-outage` to `running`.
+### Data model -- fully connected
+- All 10 assets have subAssets (65 total), narrative, lesson, eventHistory
+- Event lifecycle: newEvents, inProgressEvents, closedEvents, falsePositives, repetitiveEvents
+- activeEvents and totalEvents computed (not stored)
+- workOrders and investigations counts computed from WORK_ORDERS and INVESTIGATIONS arrays
+- RISK_MATRIX, EVENT_SUMMARY, BAD_ACTORS all computed from ASSETS
+- NOTIFICATIONS derived from TIMELINE
+- CS- prefix renamed to IN- across all data. CASES export renamed to INVESTIGATIONS.
 
-### Event model restructure (COMPLETE but NEEDS AUDIT)
+### Event model -- 9 events, 5 types
+- Trimmed from 12 to 9. Removed: WO/case system actions, Shutdown Complete (folded into trip), Maintenance Window (moved to WO-4484 note)
+- 5 event types: alert, alarm, trip, anomaly, inspection
+- EVT-005 renamed to High Vibration Trip, sub-asset removed (trip is asset-level)
+- EVT-011 renamed to Bearing Damage Detected (detection, not confirmation)
+- Provenance on cause/consequence/recommendation (source, confidence, updatedBy, status)
+- Relationships (caused_by, cascaded_to, related_to)
+- INCIDENTS export (INC-001: K-101 cascade, 7 events)
+- Bidirectional linkages: WOs have eventId + linkedInvestigations, Investigations have linkedEvents + incidentId
 
-#### 9 events in TIMELINE (trimmed from original 12)
-Removed 3 non-events:
-- WO/case system actions (removed session 13)
-- EVT-008 Shutdown Complete (status, not event) -- folded into EVT-005 consequence
-- EVT-010 Maintenance Window Opened (scheduling, not event) -- moved to WO-4484 note
+### What Happened? (ImpactStrip) -- incident-driven
+- Rewired from kpiImpact filter to INCIDENTS structure
+- Trigger = incident.triggerEventId, Consequence = highest-severity caused_by event, Confirmation = inspection-type event
+- Supports multiple incidents (each gets own row of three cards)
+- Cards show event name as title, asset below
 
-| ID | Time | Asset | Event Name | Severity | Event Type |
-|---|---|---|---|---|---|
-| EVT-001 | 11:00 PM (prev) | K-302 | Discharge Temperature Oscillation | Medium | anomaly |
-| EVT-002 | 1:30 AM | K-101 | Oil Pressure Drop | High | alert |
-| EVT-003 | 1:45 AM | K-101 | Oil Pressure Alarm | Critical | alarm |
-| EVT-004 | 2:00 AM | K-101 | Vibration Exceedance | Critical | alarm |
-| EVT-005 | 2:03 AM | K-101 | High Vibration Trip | Critical | trip |
-| EVT-006 | 2:04 AM | V-501 | Pressure Transient | Medium | anomaly |
-| EVT-007 | 2:05 AM | C-201 | Fan Vibration Anomaly | Medium | anomaly |
-| EVT-009 | 4:30 AM | P-203 | Discharge Pressure Low | High | alert |
-| EVT-011 | 6:45 AM | K-101 | Bearing Damage Detected | Critical | inspection |
+### Needs Action -- unified filter pattern (ADR-023)
+- All three cards (Risk Matrix, Alarm Quality, Watch List) filter the Asset Table on click
+- Filters stack as AND (click Risk Matrix + Alarm Quality narrows results through both)
+- Consistent teal hover border + teal bg on selected
+- Filter chips in card headers AND Asset Table toolbar (independently clearable)
+- Risk Matrix chips split into two (criticality + status)
+- "Clear all" link in Asset Table toolbar when 2+ filters active
+- Cursor-following tooltips on all three cards with "Click to filter Asset Table" hint
+- Risk Matrix tooltip: event count, CriticalityIndicator badge, hint
+- All legends use shared Legend component with title prop
 
-#### 5 event types
-- `alert` -- system detected threshold crossing
-- `alarm` -- escalated alert, higher severity threshold
-- `trip` -- protection system automatically acted
-- `anomaly` -- pattern detected outside normal behavior
-- `inspection` -- human observation during physical inspection
+### Donut chart
+- Custom describeRoundedArc function with quadratic bezier corners (2px radius)
+- 2.5 degree gap between segments
+- Hover: expand 3px + teal outline ring
+- Selected: expand 3px + teal outline ring (full opacity)
 
-#### Provenance on metadata fields
-cause/consequence/recommendation are now objects with:
-```
-{ text, source, confidence, updatedBy, updatedAt, status }
-```
-- source: 'system' | 'model' | 'human'
-- status: 'auto-generated' | 'under-review' | 'confirmed'
-- ProvenanceLine component renders subtle italic annotation in drill-in
+### In Progress section (WOs + Investigations)
+- Three-line balanced layout: task/description | urgency/status, asset | assignee, context | timestamp
+- WO rows show triggering event name + incident name (context text, not links)
+- Investigation rows show scope counts (X events, Y WOs)
+- Row is the clickable target (teal task name), context is informational
 
-#### Relationships
-Each event has `relationships` array:
-```
-[{ type: 'caused_by' | 'cascaded_to' | 'related_to', eventId }]
-```
-
-#### Incidents
-New `INCIDENTS` export. INC-001 groups the K-101 cascade:
-EVT-002, 003, 004, 005, 006, 007, 011 with cross-references to WOs and investigations.
-
-#### Bidirectional linkages
-- WORK_ORDERS: added `eventId` and `linkedInvestigations`
-- CASES: added `linkedEvents` and `incidentId`
-- Every entity can reach every other entity
-
-### NotificationsPanel updates
-- `getEventDetails()` reads `.text` from provenance objects
-- ProvenanceLine component shows source under each metadata section
-- Incident membership badge (teal link)
-- Related Events section with relationship labels
-- Linked WOs and Investigations as vertical teal link lists
-- Notification cards restructured: badge + time, event name, asset (teal), description
-- Detail panel summary matches card hierarchy
-- Section spacing increased to 24px for readability
-
-## NEEDS AUDIT NEXT SESSION
-
-### Event data consistency
-We were finding issues right up to the end:
-- EVT-005 had wrong sub-asset (Drive End Bearing instead of null) -- FIXED
-- EVT-005 name was "Compressor Trip" (redundant with asset) -- FIXED to "High Vibration Trip"
-- Some event description text may still reference old event names or removed events (EVT-008, EVT-010)
-- Need to check all cause/consequence/recommendation prose for references to removed events
-- Need to verify each event's sub-asset assignment makes sense
-- Need to verify each event name reads well on the notification card (no redundancy with asset name)
-- eventType field is not yet rendered in the UI -- could show as a subtle tag on cards
-
-### Naming updates (end of session)
-All pushed and deployed:
+### Naming updates
 - Section headers: System Health, What Happened?, In Progress, Needs Action, Assets
 - Sidebar/TopBar: Root Cause -> Fault Tree
-- Notification panel header: Notifications -> Event Feed
-- Quick Access links: Asset Details -> Asset Inspection, Event Trend -> Trends
+- Event Feed (was Notifications)
+- Quick Access links: Asset Inspection, Trends, Fault Tree
+- Risk Matrix cell opacity bumped (--color-*-bg-strong tokens at 0.24)
 
-### Needs Action cards: consistent filter-to-table interaction
-All three cards (Risk Matrix, Alarm Quality, Bad Actors) should filter the Asset Table on click with the same affordance:
-- Hover: teal border around the card + transparent teal overlay on the data viz area
-- Click: filter Asset Table + smooth scroll to it + filter chip in toolbar
-- Risk Matrix: filter by criticality/event combination
-- Alarm Quality: filter by event validation status (confirmed, false positive, new)
-- Bad Actors: filter to specific asset
-Currently only Risk Matrix filters. Alarm Quality and Bad Actors need wiring.
+### New ADR
+- ADR-023: Unified Needs Action filter pattern
 
-### WO-4484 (T-401)
-Now has `status: 'pending-decision'` and a `note` field with the maintenance scheduling context that was on EVT-010. TodaysActivity may need to handle this new status and note field.
+## Still to do
 
-### Broader UI touchpoints for incident/provenance
-Currently only visible in notification drill-in. Discussion identified two more places it should surface:
-- WhatChanged timeline: group K-101 events under incident
-- TodaysActivity: show incident tag on linked investigations
+### Event data audit
+- Check all 9 events' cause/consequence/recommendation prose for consistency
+- Verify each event name reads well on notification card (no redundancy with asset)
+- eventType field not yet rendered in UI (could show as subtle tag)
 
-## After audit: Asset Inspection screen
+### Plant Overview polish
+- Risk Matrix cell opacity might need more tuning
+- WhatChanged component exists but is orphaned (not rendered on Plant Overview -- lives on future Events screen)
 
-## Game/training concept
-Saved to memory (`project_apm_game_concept.md`). Turn the dashboard into an interactive training game where events arrive as raw signals and the user enriches them in real-time. Separate opportunity from the portfolio demo.
+### Next major build
+- Asset Inspection screen -- sub-asset data is ready, event data is ready
+
+### Doctrine updates needed
+- CLAUDE.md ADR index needs ADR-023
+- CLAUDE.md shared components needs Legend title prop documented
+- CLAUDE.md screen names: Root Cause -> Fault Tree
+
+### Parking lot
+- /design-system route on portfolio
+- CSP hash script-src on portfolio
+- Game/training concept (see memory: project_apm_game_concept.md)
 
 ## Key files modified this session
-- `src/data/assets.js` -- sub-assets, event model, provenance, relationships, incidents, bidirectional WO/case linkages
-- `src/components/NotificationsPanel.jsx` -- ProvenanceLine, incident badge, relationships, card restructure
+- `src/data/assets.js` -- sub-assets, eventHistory, event model, provenance, relationships, incidents, computed aggregates, IN- rename
+- `src/components/ui/ImpactStrip.jsx` -- incident-driven three-act narrative
+- `src/components/ui/AlarmQuality.jsx` -- click-to-filter, rounded arc donut, shared Legend
+- `src/components/ui/RiskMatrix.jsx` -- tooltip, stronger cell bg, shared Legend
+- `src/components/ui/BadActors.jsx` -- click-to-filter, teal hover/selected, shared Legend
+- `src/components/ui/AssetTable.jsx` -- alarm/actor filters, clear all, INVESTIGATIONS rename
+- `src/components/ui/TodaysActivity.jsx` -- three-line rows, event/incident context, INVESTIGATIONS rename
+- `src/components/ui/Legend.jsx` -- title prop
+- `src/components/PlantOverview.jsx` -- independent filter state, section renames
+- `src/components/NotificationsPanel.jsx` -- Event Feed, card restructure, provenance, relationships
+- `src/components/TopBar.jsx` -- Fault Tree rename
+- `src/components/Sidebar.jsx` -- Fault Tree rename
+- `src/styles/global.css` -- *-bg-strong tokens
+- `vector/decisions/ADR-023-needs-action-filter-pattern.md`
