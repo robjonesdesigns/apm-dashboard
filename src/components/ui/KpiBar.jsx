@@ -241,8 +241,14 @@ function KpiCard({ config, onClick, isSelected }) {
             boxShadow: 'var(--shadow-overlay)',
           }}
         >
-          {/* Sparkline */}
-          <Sparkline data={OEE_TREND} dataKey={config.key} width={200} height={40} />
+          {/* Sparkline with threshold */}
+          <Sparkline
+            data={OEE_TREND}
+            dataKey={config.key}
+            threshold={THRESHOLDS[config.key]?.warning}
+            width={200}
+            height={56}
+          />
 
           {/* Month range */}
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -272,29 +278,62 @@ function KpiCard({ config, onClick, isSelected }) {
 
 // ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
 
-function Sparkline({ data, dataKey, width = 280, height = 48 }) {
+function Sparkline({ data, dataKey, threshold, width = 280, height = 56 }) {
   if (!data || data.length === 0) return null
 
   const values = data.map(d => d[dataKey])
-  const min = Math.min(...values) - 2
-  const max = Math.max(...values) + 2
+  const allValues = threshold ? [...values, threshold] : values
+  const min = Math.min(...allValues) - 2
+  const max = Math.max(...allValues) + 2
   const range = max - min || 1
-  const px = 4 // horizontal padding
-  const py = 4 // vertical padding
-  const stepX = (width - px * 2) / (values.length - 1)
+  const px = 4
+  const py = 6
+  const rightPad = 36 // space for value labels on the right
+  const chartWidth = width - px - rightPad
+  const stepX = chartWidth / (values.length - 1)
+
+  const toY = (v) => py + (1 - (v - min) / range) * (height - py * 2)
 
   const points = values.map((v, i) => {
     const x = px + i * stepX
-    const y = py + (1 - (v - min) / range) * (height - py * 2)
+    const y = toY(v)
     return `${x},${y}`
   }).join(' ')
 
-  // Last point highlighted
   const lastX = px + (values.length - 1) * stepX
-  const lastY = py + (1 - (values[values.length - 1] - min) / range) * (height - py * 2)
+  const lastY = toY(values[values.length - 1])
+  const lastValue = values[values.length - 1]
+
+  const thresholdY = threshold ? toY(threshold) : null
 
   return (
     <svg width={width} height={height} style={{ display: 'block' }}>
+      {/* Threshold line */}
+      {threshold && (
+        <>
+          <line
+            x1={px}
+            y1={thresholdY}
+            x2={px + chartWidth}
+            y2={thresholdY}
+            stroke="var(--color-text-helper)"
+            strokeWidth={1}
+            strokeDasharray="3 3"
+            opacity={0.5}
+          />
+          <text
+            x={px + chartWidth + 4}
+            y={thresholdY + 3}
+            className="type-meta"
+            fill="var(--color-text-helper)"
+            fontSize={10}
+          >
+            {threshold}%
+          </text>
+        </>
+      )}
+
+      {/* Trend line */}
       <polyline
         points={points}
         fill="none"
@@ -303,7 +342,18 @@ function Sparkline({ data, dataKey, width = 280, height = 48 }) {
         strokeLinejoin="round"
         strokeLinecap="round"
       />
+
+      {/* Current value dot + label */}
       <circle cx={lastX} cy={lastY} r={3} fill="var(--color-accent)" />
+      <text
+        x={lastX + 6}
+        y={lastY + 3}
+        fill="var(--color-accent)"
+        fontSize={10}
+        fontWeight={600}
+      >
+        {lastValue}%
+      </text>
     </svg>
   )
 }
