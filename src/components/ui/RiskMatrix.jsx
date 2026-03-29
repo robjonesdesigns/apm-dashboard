@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { RISK_MATRIX } from '../../data/assets'
 import FilterChip from './FilterChip'
 import CriticalityIndicator from './CriticalityIndicator'
+import Legend from './Legend'
 
 const CRITICALITY_CONFIG = [
   { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg-strong)' },
@@ -199,18 +200,7 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
       </div>
 
       {/* Legend */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-8)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
-        <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Asset Criticality</span>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-16)', flexWrap: 'wrap' }}>
-          {legendItems.map(item => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-              <div style={{ width: 12, height: 12, borderRadius: 2, background: item.color, flexShrink: 0 }} />
-              <span className="type-label" style={{ letterSpacing: '0.2px' }}>{item.label}</span>
-              <span className="type-label" style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{item.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Legend items={legendItems} shape="square" title="Asset Criticality" />
     </div>
   )
 }

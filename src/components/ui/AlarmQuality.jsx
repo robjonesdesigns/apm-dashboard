@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { EVENT_SUMMARY } from '../../data/assets'
 import FilterChip from './FilterChip'
+import Legend from './Legend'
 
 // ── Donut palette (Carbon tokens, desaturated for dark-and-quiet) ────────────
 
@@ -178,22 +179,16 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
         <DonutTooltip segment={hoveredSegment} total={total} x={mousePos.x} y={mousePos.y} />
       </div>
 
-      {/* Legend -- direct child of card flex for marginTop auto */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-8)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
-        <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Event Status</span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-16)', flexWrap: 'wrap' }}>
-        {ALARM_SEGMENTS.map(seg => {
-          const pct = Math.round((seg.value / total) * 100)
-          return (
-            <div key={seg.key} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-              <div style={{ width: 12, height: 12, borderRadius: 2, background: seg.color, flexShrink: 0 }} />
-              <span className="type-label" style={{ letterSpacing: '0.2px' }}>{seg.label}</span>
-              <span className="type-label" style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{seg.value} ({pct}%)</span>
-            </div>
-          )
-        })}
-      </div>
+      {/* Legend */}
+      <Legend
+        title="Event Status"
+        shape="square"
+        items={ALARM_SEGMENTS.map(seg => ({
+          label: seg.label,
+          color: seg.color,
+          value: `${seg.value} (${Math.round((seg.value / total) * 100)}%)`,
+        }))}
+      />
     </>
   )
 }
