@@ -107,4 +107,4 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 ## Handoff
 
-See `HANDOFF.md` for session 13 wrap-up. 22 ADRs, 15 desk research docs.
+See `HANDOFF.md` for session 13 wrap-up. Deployed to https://apm-dashboard-eosin.vercel.app. 22 ADRs, 15 desk research docs.
