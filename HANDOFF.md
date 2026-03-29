@@ -1,7 +1,7 @@
 # APM Dashboard Handoff -- Session 15 End
 
 ## START HERE
-Accessibility sweep complete (WCAG 2.1 AA). ADR update pass done (8 stale ADRs corrected, ADR-024 added). 24 ADRs, 16 desk research docs. Next: Asset Inspection screen.
+Full WCAG 2.1 AA sweep plus remaining a11y gaps fixed (ARIA table, keyboard tooltips, focus trap, high contrast mode). KPI card layout fix, RUL column with tooltip, all navigable rows tabbable. ADR update pass done (8 stale ADRs corrected, ADR-024 covers all a11y decisions). README written. 24 ADRs, 16 desk research docs. Next: Asset Inspection screen.
 
 ## Deployed
 - **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
@@ -91,3 +91,21 @@ Push session 15 changes to Vercel.
 - `vector/research/DESK-RESEARCH-016-accessibility-audit.md` (new)
 - 8 ADRs updated (005, 009, 011, 012, 013, 014, 015, 019, 020)
 - `CLAUDE.md` -- section names, ADR/desk research counts
+
+### Remaining a11y gaps (session 15, second pass)
+
+- ARIA table roles on AssetTable (role="table", role="row", role="columnheader", role="cell")
+- Keyboard tooltip positioning: RiskMatrix, AlarmQuality, BadActors use getBoundingClientRect() on focus
+- Focus trap: `src/hooks/useFocusTrap.js` applied to NotificationsPanel (mobile) and Sidebar (mobile)
+- Background `<main>` gets `inert` when mobile panels open
+- Windows High Contrast Mode: `@media (forced-colors: active)` in global.css
+
+### KPI card + table fixes (session 15)
+
+- KPI cards: health indicator always stacked below value (no flex-wrap inconsistency)
+- KPI dropdown: closes on outside click and Escape key
+- RUL column: header shows "RUL" with native tooltip for "Remaining Useful Life", column 100px
+- All navigable rows tabbable: Asset Table, WO rows, Investigation rows (tabIndex, onKeyDown, onFocus/onBlur)
+- ADR-024 updated with navigable rows, ARIA table, focus trap, keyboard tooltips, high contrast
+- ADR-019 updated for RUL column name
+- `README.md` written
