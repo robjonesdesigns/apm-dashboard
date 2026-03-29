@@ -390,9 +390,8 @@ function Sparkline({ data, dataKey, threshold, eventIndex }) {
             left: `${eventPct}%`,
             bottom: 0,
             transform: 'translateX(-50%)',
-            color: 'var(--color-error)',
-            fontSize: 9,
-            opacity: 0.7,
+            color: 'var(--color-text-secondary)',
+            fontSize: 10,
           }}
         >
           2:03 AM
