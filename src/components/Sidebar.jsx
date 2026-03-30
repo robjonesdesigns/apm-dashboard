@@ -33,32 +33,6 @@ const IconEvents = () => (
   </svg>
 )
 
-// Asset Inspection — Lucide "gauge" (industrial dial/health check)
-const IconAssetInspection = () => (
-  <svg {...feather} aria-hidden="true">
-    <path d="m12 14 4-4" />
-    <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-  </svg>
-)
-
-// Fault Tree — Feather "git-branch" (branching investigation)
-const IconRootCause = () => (
-  <svg {...feather} aria-hidden="true">
-    <line x1="6" y1="3" x2="6" y2="15" />
-    <circle cx="18" cy="6" r="3" />
-    <circle cx="6" cy="18" r="3" />
-    <path d="M18 9a9 9 0 0 1-9 9" />
-  </svg>
-)
-
-// Trends — Feather "trending-up"
-const IconTrends = () => (
-  <svg {...feather} aria-hidden="true">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-    <polyline points="17 6 23 6 23 12" />
-  </svg>
-)
-
 // Work Orders — Feather "tool" (wrench)
 const IconWorkOrders = () => (
   <svg {...feather} aria-hidden="true">
@@ -112,12 +86,12 @@ function ChevronIcon({ expanded }) {
 
 // ── Nav item list ──────────────────────────────────────────────────────────────
 
+// ADR-028: Sidebar shows only plant-level screens.
+// Asset-scoped views (Inspection, Fault Tree, Trends) live inside Asset Inspection,
+// accessed via Asset Table row click. No dead-end "select an asset" screens.
 const NAV_ITEMS = [
   { id: 'overview',        label: 'Plant Overview',   Icon: IconPlantOverview   },
   { id: 'events',          label: 'Events',           Icon: IconEvents          },
-  { id: 'inspection',      label: 'Asset Inspection', Icon: IconAssetInspection },
-  { id: 'rootcause',       label: 'Fault Tree',        Icon: IconRootCause       },
-  { id: 'trends',          label: 'Trends',           Icon: IconTrends          },
   { id: 'workorders',      label: 'Work Orders',      Icon: IconWorkOrders      },
   { id: 'investigations',  label: 'Investigations',   Icon: IconInvestigations  },
 ]

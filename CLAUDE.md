@@ -49,7 +49,9 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 ## Screens
 
-Plant Overview | Events | Asset Inspection | Fault Tree | Trends | Work Orders | Investigations
+**Sidebar (plant-level):** Plant Overview | Events | Work Orders | Investigations
+**Asset-scoped (inside Asset Inspection):** KPI Strip | Active Events | Sub-Asset Tree | Event Timeline | Work Orders & Investigations | Degradation Trends | Fault Tree | Performance Attributes
+Asset Inspection is reached via Asset Table row click, not sidebar. See ADR-028.
 
 ## Plant Overview Sections (ADR-020)
 
@@ -95,7 +97,7 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 ## ADR Index
 
-001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment | 027 Spacing system + semantic tokens
+001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment | 027 Spacing system + semantic tokens | 028 Navigation architecture (plant sidebar, asset drill-down)
 
 ## Desk Research Index
 
