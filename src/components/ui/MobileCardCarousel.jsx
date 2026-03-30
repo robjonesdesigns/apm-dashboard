@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-export default function MobileCardCarousel({ children, gap = 'var(--spacing-16)' }) {
+export default function MobileCardCarousel({ children }) {
   const scrollRef = useRef(null)
   const [activeIdx, setActiveIdx] = useState(0)
   const count = Array.isArray(children) ? children.length : 1
@@ -9,8 +9,7 @@ export default function MobileCardCarousel({ children, gap = 'var(--spacing-16)'
     const el = scrollRef.current
     if (!el) return
     function handleScroll() {
-      const slideWidth = el.firstElementChild?.offsetWidth || el.offsetWidth
-      const idx = Math.round(el.scrollLeft / slideWidth)
+      const idx = Math.round(el.scrollLeft / el.offsetWidth)
       setActiveIdx(idx)
     }
     el.addEventListener('scroll', handleScroll, { passive: true })
@@ -18,24 +17,21 @@ export default function MobileCardCarousel({ children, gap = 'var(--spacing-16)'
   }, [])
 
   function goTo(idx) {
-    const el = scrollRef.current
-    if (!el) return
-    const slideWidth = el.firstElementChild?.offsetWidth || el.offsetWidth
-    el.scrollTo({ left: idx * slideWidth, behavior: 'smooth' })
+    scrollRef.current?.scrollTo({ left: idx * scrollRef.current.offsetWidth, behavior: 'smooth' })
   }
 
   return (
     <div>
-      {/* Scrollable cards */}
+      {/* Scrollable cards -- each slide is exactly 100% width, no gap */}
       <div
         ref={scrollRef}
         className="hide-scrollbar"
         style={{
           display: 'flex',
           overflowX: 'auto',
+          overflowY: 'hidden',
           scrollSnapType: 'x mandatory',
           WebkitOverflowScrolling: 'touch',
-          gap,
         }}
       >
         {(Array.isArray(children) ? children : [children]).map((child, i) => (
@@ -43,9 +39,9 @@ export default function MobileCardCarousel({ children, gap = 'var(--spacing-16)'
             key={i}
             className="carousel-slide"
             style={{
-              flex: `0 0 100%`,
+              width: '100%',
+              flexShrink: 0,
               scrollSnapAlign: 'start',
-              minWidth: 0,
             }}
           >
             {child}
