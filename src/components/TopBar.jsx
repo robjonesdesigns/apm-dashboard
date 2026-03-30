@@ -124,7 +124,7 @@ function IconButton({ onClick, ariaLabel, ariaExpanded, active, children }) {
 
 // Feather grid icon (comfortable/default view)
 const GridIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
     <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
   </svg>
@@ -132,11 +132,63 @@ const GridIcon = () => (
 
 // Feather list icon (dense/compact view)
 const ListIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
     <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
   </svg>
 )
+
+// Segmented control for density toggle
+function DensityToggle({ dense, onToggle }) {
+  const segStyle = (isActive) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 28,
+    height: 24,
+    border: 'none',
+    borderRadius: 'var(--radius-4)',
+    background: isActive ? 'var(--color-accent)' : 'transparent',
+    color: isActive ? 'var(--color-layer-01)' : 'var(--color-text-helper)',
+    cursor: 'pointer',
+    transition: 'all var(--motion-fast) var(--ease-productive)',
+  })
+
+  return (
+    <div
+      role="radiogroup"
+      aria-label="View density"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        padding: 2,
+        borderRadius: 'var(--radius-4)',
+        border: '1px solid var(--color-border-subtle)',
+        background: 'var(--color-layer-02)',
+      }}
+    >
+      <button
+        role="radio"
+        aria-checked={!dense}
+        aria-label="Comfortable view"
+        onClick={() => dense && onToggle()}
+        style={segStyle(!dense)}
+      >
+        <GridIcon />
+      </button>
+      <button
+        role="radio"
+        aria-checked={dense}
+        aria-label="Compact view"
+        onClick={() => !dense && onToggle()}
+        style={segStyle(dense)}
+      >
+        <ListIcon />
+      </button>
+    </div>
+  )
+}
 
 export default function TopBar({
   view,
@@ -318,16 +370,10 @@ export default function TopBar({
       {/* ── Right: icon buttons ────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
 
-        {/* Dense mode toggle — hidden on mobile */}
-        {!isMobile && (
-          <IconButton
-            onClick={onToggleDense}
-            ariaLabel={dense ? 'Switch to comfortable view' : 'Switch to compact view'}
-            active={dense}
-          >
-            {dense ? <GridIcon /> : <ListIcon />}
-          </IconButton>
-        )}
+        {/* Density toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0 var(--spacing-4)' }}>
+          <DensityToggle dense={dense} onToggle={onToggleDense} />
+        </div>
 
         {/* Help — hidden on mobile */}
         {!isMobile && (
