@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/assets'
+import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/assets'
 import WoPriority from './WoPriority'
+import CriticalityIndicator from './CriticalityIndicator'
+
+// Lookup asset criticality by assetId
+const critByAsset = {}
+ASSETS.forEach(a => { critByAsset[a.id] = a.criticality })
 
 function getEventName(eventId) {
   if (!eventId) return null
@@ -179,11 +184,14 @@ function WorkOrdersCard() {
               </div>
             </div>
 
-            {/* Line 2: asset | assignee */}
+            {/* Line 2: asset + criticality | assignee */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                {wo.asset}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                  {wo.asset}
+                </span>
+                {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
+              </div>
               <span className="type-label" style={{ flexShrink: 0, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                 {wo.assignee || 'Unassigned'}
               </span>
@@ -259,11 +267,14 @@ function InvestigationsCard() {
               </div>
             </div>
 
-            {/* Line 2: asset | assignee */}
+            {/* Line 2: asset + criticality | assignee */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                {c.asset}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                  {c.asset}
+                </span>
+                {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
+              </div>
               <span className="type-label" style={{ flexShrink: 0, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                 {c.assignee || 'Unassigned'}
               </span>
@@ -293,9 +304,9 @@ function InvestigationsCard() {
   )
 }
 
-// ── TodaysActivity ──────────────────────────────────────────────────────────
+// ── InProgress ──────────────────────────────────────────────────────────────
 
-export default function TodaysActivity() {
+export default function InProgress() {
   return (
     <div className="grid-12">
       <WorkOrdersCard />

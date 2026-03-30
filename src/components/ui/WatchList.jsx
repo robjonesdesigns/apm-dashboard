@@ -145,9 +145,9 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
   )
 }
 
-// ── BadActors (Watch List) ──────────────────────────────────────────────────
+// ── WatchList ───────────────────────────────────────────────────────────────
 
-export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }) {
+export default function WatchList({ onAssetClick, selectedAsset, onClearFilter }) {
   const isMobile = useIsMobile()
   const [hoveredIdx, setHoveredIdx] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })

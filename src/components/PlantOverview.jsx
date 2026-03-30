@@ -13,10 +13,10 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import KpiBar from './ui/KpiBar'
 import ImpactStrip from './ui/ImpactStrip'
-import TodaysActivity from './ui/TodaysActivity'
+import InProgress from './ui/InProgress'
 import RiskMatrix from './ui/RiskMatrix'
 import AlarmQuality from './ui/AlarmQuality'
-import BadActors from './ui/BadActors'
+import WatchList from './ui/WatchList'
 import AssetTable from './ui/AssetTable'
 import useIsMobile from '../hooks/useIsMobile'
 
@@ -170,7 +170,7 @@ export default function PlantOverview({ onNavigate }) {
       {/* 3. In Progress — "Is anyone handling it?" */}
       <section>
         <p className="section-header">In Progress</p>
-        <TodaysActivity />
+        <InProgress />
       </section>
 
       {/* 4. Needs Action — "What do I need to figure out?" */}
@@ -188,7 +188,7 @@ export default function PlantOverview({ onNavigate }) {
               onSegmentClick={handleAlarmClick}
               onClearFilter={clearAlarmFilter}
             />
-            <BadActors
+            <WatchList
               selectedAsset={actorFilter}
               onAssetClick={handleBadActorClick}
               onClearFilter={clearActorFilter}
@@ -206,7 +206,7 @@ export default function PlantOverview({ onNavigate }) {
               onSegmentClick={handleAlarmClick}
               onClearFilter={clearAlarmFilter}
             />
-            <BadActors
+            <WatchList
               selectedAsset={actorFilter}
               onAssetClick={handleBadActorClick}
               onClearFilter={clearActorFilter}
