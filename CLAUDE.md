@@ -50,8 +50,14 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 ## Screens
 
 **Sidebar (plant-level):** Plant Overview | Events | Work Orders | Investigations
-**Asset-scoped (inside Asset Inspection):** KPI Strip | Active Events | Sub-Asset Tree | Event Timeline | Work Orders & Investigations | Degradation Trends | Fault Tree | Performance Attributes
-Asset Inspection is reached via Asset Table row click, not sidebar. See ADR-028.
+**Asset-scoped (inside Asset Inspection):** Reached via Asset Table row click, not sidebar. See ADR-028.
+
+### Asset Inspection Layout (grouped by question)
+- **Group A (full width):** Header + KPI Strip (OEE/RUL/Downtime with sparklines)
+- **Group B (two-col desktop):** Active Events | Sub-Asset Tree
+- **Group C (two-col desktop):** Work Orders | Investigations
+- **Group D (collapsible):** Event Timeline (collapsed by default)
+- **Group E (K-101 only):** Degradation Trends + Performance Attributes (two-col) | Fault Tree (full width)
 
 ## Plant Overview Sections (ADR-020)
 

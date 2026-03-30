@@ -19,8 +19,10 @@ const VIEWS = {
 }
 
 export default function App() {
-  const [view, setView]                     = useState('overview')
-  const [selectedAsset, setSelectedAsset]   = useState(null)
+  const [view, setView]                     = useState(() => sessionStorage.getItem('apm-view') || 'overview')
+  const [selectedAsset, setSelectedAsset]   = useState(() => {
+    try { return JSON.parse(sessionStorage.getItem('apm-asset')) } catch { return null }
+  })
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
   const [sidebarOpen, setSidebarOpen]       = useState(false)
@@ -30,6 +32,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('apm-dense', dense)
   }, [dense])
+
+  // Persist view + asset for HMR stability
+  useEffect(() => {
+    sessionStorage.setItem('apm-view', view)
+  }, [view])
+  useEffect(() => {
+    sessionStorage.setItem('apm-asset', JSON.stringify(selectedAsset))
+  }, [selectedAsset])
 
   const navigate = (target, options = {}) => {
     if (target === 'inspection' && options.asset) {

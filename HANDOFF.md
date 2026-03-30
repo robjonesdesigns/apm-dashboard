@@ -1,80 +1,94 @@
-# APM Dashboard Handoff -- Session 18 End
+# APM Dashboard Handoff -- Session 19 End
 
 ## START HERE
-Asset Inspection build started. Header section complete. Major platform-wide spacing and component consistency pass.
+Asset Inspection fully scaffolded (all 9 sections rendering). Layout grouped by question. Architecture audit resolved. Navigation architecture documented (ADR-028). **Rob needs to review the page holistically and decide how data is surfaced before iterating further.**
 
 ## Deployed
 - **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
 - **Portfolio case study**: https://designedbyrob.com/projects/honeywell-apm
 
-## What was completed this session (18)
+## What was completed this session (19)
 
-### Asset Inspection -- Header (Section 1 of 9)
-- `AssetInspection.jsx` rebuilt from stub. Single scrollable page structure in place.
-- **Header:** Back link ("Plant Overview" with chevron-left), asset name as `section-header`, StatusIndicator + divider + CriticalityIndicator, specs row (type | service | processUnit with vertical dividers). No card wrapper -- page-level header like Plant Overview sections.
-- Narrative removed from header -- it was portfolio storytelling prose, not operational data. The data sections below will tell the story.
-- Navigation wired: Asset Table rows now clickable, navigate to `inspection` route with asset object. Back button returns to `health` (Plant Overview).
-- `ASSET_SPECS` export removed from baytown.js (was K-101 only hardcoded duplicate of asset fields).
+### Asset Inspection -- All 9 Sections Built
+Full single-page Asset Inspection with grouped layout:
 
-### StatusIndicator.jsx (new shared component)
-- Asset status dot + label, matching the pattern of Badge/CriticalityIndicator/WoPriority.
-- `compact` prop for dot-only (used in mobile Asset Table rows).
-- Exports `statusLabel()` for aria-labels and filter drawer use.
-- Replaced duplicated inline helpers in AssetInspection.jsx and AssetTable.jsx.
-- Five Icon Systems table and Shared Components section in CLAUDE.md updated.
+**Group A: Identity + Urgency** (full width)
+1. Header -- name, status + criticality, specs row
+2. KPI Strip -- 3 cards (OEE, RUL, Downtime) with 7-point sparklines, hover tooltips, health indicators. Stacks value above sparkline at <1056px.
 
-### Spacing System (ADR-027)
-- Two semantic tokens: `--gap-stack` (8px normal, 4px dense) and `--gap-intra` (12px normal, 8px dense).
-- Defined in `:root`, overridden in `.dense` selector.
-- Applied across 14 component files (~50 instances replaced from raw `--spacing-8`/`--spacing-12`).
-- Dense mode now compresses content-level spacing, not just card padding and section gaps.
-- Rules: 8px default for vertical stacking, 4px only for tight inline (icon+label). 1px x 12px divider between adjacent inline indicators.
+**Group B: What's happening?** (two-col desktop)
+3. Active Events -- single card, rows with severity badge, sub-asset, time, status. Filtered TIMELINE (new + in-progress only).
+4. Sub-Asset Tree -- expandable rows per ISO 14224 hierarchy. Status dot + name + sensor count. Expand to see sensor values, thresholds, alarm states.
 
-### Divider rule applied platform-wide
-- 7 violations fixed: NotificationsPanel (2), AssetTable mobile (1), InProgress WO+Investigation (4).
-- All instances of asset name + CriticalityIndicator now have dividers.
+**Group C: What's being done?** (two-col desktop)
+6. Work Orders & Investigations -- single card per type, rows inside. WOs show urgency icon + task + assignee + status. Investigations show ID + status + description.
 
-### Dense toggle enlarged
-- Buttons: 28x24 -> 36x32. Padding: 2px -> 3px.
-- TopBar header height: 48px -> 56px for breathing room.
+**Group D: History** (full width, collapsible)
+5. Event Timeline -- collapsed by default. Chevron to expand. Full chronological history (newest first) with severity badge, status coloring, event type labels.
 
-### Vertical stacking audit
-- 19 violations fixed across 8 files where 4px was used for vertical stacking (should be 8px).
-- NotificationsPanel, Sidebar, InProgress, AssetTable, KpiBar, EventSummary, AlarmQuality.
+**Group E: Deep Analysis** (K-101 only)
+7. Degradation Trends -- 30-day normalized SVG multi-line chart (vibration, bearing temp, oil pressure, surge margin) with legend.
+8. Performance Attributes -- table with value/expected/deviation, color-coded by severity.
+9. Fault Tree -- recursive tree with border-left severity coloring, root cause highlighted.
 
-## Next session: KPI Strip + Sub-Asset Tree
+Sections 7-9 only render for K-101 (conditional on data). Healthy assets show a short, calm page.
 
-### KPI Strip (Section 2) -- "How urgent is this?"
-Asset-level KPIs in a card row below the header. Data available on every asset:
-- OEE, RUL, MTBF, MTTR, PM Compliance, Downtime
-- K-101 also has MAINTENANCE_KPIS with sparkline data
-- Follow KpiBar pattern but asset-scoped, not plant-scoped
+### Data Layer: Trend Arrays
+All 10 assets now have:
+- `oeeTrend` -- 7-point OEE history (matches asset narrative arc)
+- `rulTrend` -- 7-point RUL burn-down in days
+- `downtimeTrend` -- 7-point cumulative downtime hours
 
-### Sub-Asset Tree (Section 3) -- "Where exactly is the problem?"
-- Expandable inline tree per ISO 14224 hierarchy
-- 7 sub-assets for K-101, 2-8 for other assets
-- Each with sensors, thresholds, alarm states
-- New file: `src/components/ui/SubAssetTree.jsx`
+### Navigation Architecture (ADR-028)
+Sidebar reduced from 7 to 4 items (plant-level only):
+- Plant Overview, Events, Work Orders, Investigations
+- Asset Inspection, Fault Tree, Trends removed from sidebar
+- Asset-scoped views live inside Asset Inspection, accessed via Asset Table row click
+- Dead icon components removed from Sidebar.jsx
 
-### Remaining sections (Phase 2-3)
-4. Active Events -- filtered TIMELINE
-5. Event Timeline -- full history
-6. Work Orders & Investigations -- filtered WO/INV
-7. Degradation Trends -- K-101 only (conditional)
-8. Fault Tree -- K-101 only (conditional)
-9. Performance Attributes -- K-101 only (conditional)
+### View Keys Migrated
+Legacy `health`/`details` keys replaced with `overview`/`inspection` across App.jsx, TopBar.jsx, Sidebar.jsx, AssetInspection.jsx. All legacy aliases removed.
+
+### HMR Stability
+View and selected asset persisted in sessionStorage. Hot reloads stay on current page.
+
+### Architecture Audit -- All Violations Resolved
+- Zero hardcoded hex/rgba in components
+- Zero inline fontSize number values
+- Zero legacy view keys
+- Architecture health: Good (was Poor)
+- Audit doc rewritten: `vector/audits/invest-architecture.md`
+
+### KPI Strip Sparkline Improvements
+- Hover tooltip (cursor-following, inverted style) showing week label + value
+- Vertical marker line + hover dot on sparkline
+- Suppressed on mobile
+- `unit` prop for formatting (%, days, h)
+
+### Cross-Project Audit
+- **Keytrn**: .env.example added, architecture audit written (Good), .gitattributes for language detection
+- **Portfolio**: 8 unused dev deps removed (React/Storybook era), ESLint config rewritten, architecture audit rewritten (Excellent), .gitattributes for Astro detection
+- **All 3 repos**: GitHub descriptions updated, language detection configured
+
+## Next session: Design review
+
+### Rob's open questions
+- How should data be surfaced within each section? Current layout groups by question but information density and hierarchy need work.
+- The page is functional but hard to parse quickly. Need to apply the same design thinking that went into Plant Overview.
+- Think about: what does the engineer see first in each card? What's the visual hierarchy within a row? What earns screen real estate?
 
 ### Key constraint
-Go section by section with Rob. Don't build ahead.
+Review holistically before iterating. Don't optimize individual sections in isolation -- the page needs to work as a flow.
 
 ## ADRs
-27 total. New this session:
-- **ADR-027**: Spacing system + semantic tokens (--gap-stack, --gap-intra, divider rule, dense overrides)
+28 total. New this session:
+- **ADR-028**: Navigation architecture (plant sidebar, asset drill-down)
 
 ## Previous sessions
-See git log for sessions 1-17. Key milestones:
+See git log for sessions 1-18. Key milestones:
 - Session 13: Plant Overview complete, APM case study live
 - Session 14: Data enrichment, event model restructure
 - Session 15: WCAG 2.1 AA accessibility sweep
 - Session 16: Mobile responsive pass, dense mode
 - Session 17: Data layer overhaul, Asset Inspection research + planning
+- Session 18: Asset Inspection header, spacing system (ADR-027)
