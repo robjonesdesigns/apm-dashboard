@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import PlantOverview from './components/PlantOverview'
@@ -28,7 +28,12 @@ export default function App() {
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
   const [sidebarOpen, setSidebarOpen]       = useState(false)
+  const [dense, setDense]                   = useState(() => localStorage.getItem('apm-dense') === 'true')
   const isMobile = useIsMobile()
+
+  useEffect(() => {
+    localStorage.setItem('apm-dense', dense)
+  }, [dense])
 
   const navigate = (target, options = {}) => {
     if ((target === 'details' || target === 'inspection') && options.asset) {
@@ -43,7 +48,7 @@ export default function App() {
   const View = VIEWS[view] ?? PlantOverview
 
   return (
-    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div className={dense ? 'dense' : ''} style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <TopBar
         view={view}
@@ -53,6 +58,8 @@ export default function App() {
         notificationsOpen={notificationsOpen}
         onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
         isMobile={isMobile}
+        dense={dense}
+        onToggleDense={() => setDense(prev => !prev)}
       />
 
       <div

@@ -62,6 +62,9 @@ function rowBaseStyle(isHovered) {
   }
 }
 
+// ── Shared column widths for cross-card alignment ───────────────────────────
+const RIGHT_COL = { minWidth: 100, width: 100, textAlign: 'right', flexShrink: 0 }
+
 // ── Investigation status icons (right-pointing triangles = progress) ─────────
 
 function InvestigatingIcon() {
@@ -179,7 +182,7 @@ function WorkOrdersCard() {
                 <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
                 <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
               </div>
-              <div style={{ flexShrink: 0 }}>
+              <div style={RIGHT_COL}>
                 <WoPriority urgency={wo.urgency} />
               </div>
             </div>
@@ -192,7 +195,7 @@ function WorkOrdersCard() {
                 </span>
                 {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
               </div>
-              <span className="type-label" style={{ flexShrink: 0, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+              <span className="type-label" style={{ ...RIGHT_COL, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                 {wo.assignee || 'Unassigned'}
               </span>
             </div>
@@ -209,7 +212,7 @@ function WorkOrdersCard() {
                   'Routine maintenance'
                 )}
               </span>
-              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)' }}>
+              <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
                 {wo.created}
               </span>
             </div>
@@ -262,7 +265,7 @@ function InvestigationsCard() {
                 <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
                 <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
               </div>
-              <div style={{ flexShrink: 0 }}>
+              <div style={RIGHT_COL}>
                 <InvestigationStatus status={c.status} />
               </div>
             </div>
@@ -275,7 +278,7 @@ function InvestigationsCard() {
                 </span>
                 {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
               </div>
-              <span className="type-label" style={{ flexShrink: 0, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+              <span className="type-label" style={{ ...RIGHT_COL, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                 {c.assignee || 'Unassigned'}
               </span>
             </div>
@@ -288,7 +291,7 @@ function InvestigationsCard() {
                   `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
                 ].join(' · ')}
               </span>
-              <span className="type-meta" style={{ flexShrink: 0, color: 'var(--color-text-helper)' }}>
+              <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
                 {c.opened}
               </span>
             </div>

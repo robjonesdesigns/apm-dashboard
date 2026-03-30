@@ -554,6 +554,33 @@ html, body, #root {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── Dense mode ─────────────────────────────────────────────────────── */
+/* Toggled via TopBar. Reduces padding, gaps, and spacing for power users */
+/* who want maximum data density on large monitors.                       */
+
+.dense .card {
+  padding: var(--spacing-12);
+}
+.dense .section-gap {
+  gap: var(--spacing-24);
+}
+.dense .kpi-grid {
+  gap: var(--spacing-12);
+}
+.dense .grid-thirds {
+  gap: var(--spacing-12);
+}
+.dense .grid-12 {
+  gap: var(--spacing-12);
+}
+.dense .page-padding {
+  padding-left: var(--spacing-16);
+  padding-right: var(--spacing-16);
+}
+.dense .section-header {
+  margin-bottom: var(--spacing-4);
+}
+
 /* ─── Focus ──────────────────────────────────────────────────────────── */
 /* WCAG SC 2.4.7: visible keyboard focus indicator for all interactive    */
 /* elements. Teal on dark = 8.6:1 contrast (well above 3:1 minimum).     */

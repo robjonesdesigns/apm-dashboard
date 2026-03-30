@@ -122,6 +122,22 @@ function IconButton({ onClick, ariaLabel, ariaExpanded, active, children }) {
 
 // ── TopBar ─────────────────────────────────────────────────────────────────────
 
+// Feather grid icon (comfortable/default view)
+const GridIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+    <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+  </svg>
+)
+
+// Feather list icon (dense/compact view)
+const ListIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+)
+
 export default function TopBar({
   view,
   selectedAsset,
@@ -130,6 +146,8 @@ export default function TopBar({
   notificationsOpen,
   onToggleSidebar,
   isMobile,
+  dense,
+  onToggleDense,
 }) {
   const hasNotifications = NOTIFICATIONS.length > 0
   const viewLabel = VIEW_LABELS[view] ?? view
@@ -299,6 +317,17 @@ export default function TopBar({
 
       {/* ── Right: icon buttons ────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+
+        {/* Dense mode toggle — hidden on mobile */}
+        {!isMobile && (
+          <IconButton
+            onClick={onToggleDense}
+            ariaLabel={dense ? 'Switch to comfortable view' : 'Switch to compact view'}
+            active={dense}
+          >
+            {dense ? <GridIcon /> : <ListIcon />}
+          </IconButton>
+        )}
 
         {/* Help — hidden on mobile */}
         {!isMobile && (
