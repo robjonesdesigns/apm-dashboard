@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { EVENT_SUMMARY } from '../../data/assets'
+import useIsMobile from '../../hooks/useIsMobile'
 import { colors, chartStyle } from '../../styles/tokens'
 import Legend from './Legend'
 
@@ -49,6 +50,7 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function EventSummary() {
+  const isMobile = useIsMobile()
   const [activeTab, setActiveTab] = useState('events')
   const total = EVENT_SUMMARY.total
 
@@ -91,7 +93,7 @@ export default function EventSummary() {
           <BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <XAxis type="number" hide />
             <YAxis type="category" hide />
-            <Tooltip content={<CustomTooltip />} cursor={false} />
+            {!isMobile && <Tooltip content={<CustomTooltip />} cursor={false} />}
             <Bar dataKey="confirmed" name="Confirmed" stackId="a" fill={colors.chart1} radius={[4, 0, 0, 4]} animationDuration={300} />
             <Bar dataKey="falsePositives" name="False Positives" stackId="a" fill={colors.chart4} animationDuration={300} />
             <Bar dataKey="newEvents" name="New Events" stackId="a" fill={colors.chart2} radius={[0, 4, 4, 0]} animationDuration={300} />

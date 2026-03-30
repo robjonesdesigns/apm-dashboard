@@ -8,6 +8,7 @@ import { useState, useRef, useCallback } from 'react'
 import { BAD_ACTORS } from '../../data/assets'
 import { colors } from '../../styles/tokens'
 import Legend from './Legend'
+import useIsMobile from '../../hooks/useIsMobile'
 import CriticalityIndicator from './CriticalityIndicator'
 import FilterChip from './FilterChip'
 
@@ -147,6 +148,7 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
 // ── BadActors (Watch List) ──────────────────────────────────────────────────
 
 export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }) {
+  const isMobile = useIsMobile()
   const [hoveredIdx, setHoveredIdx] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const focusedElRef = useRef(null)
@@ -196,8 +198,8 @@ export default function BadActors({ onAssetClick, selectedAsset, onClearFilter }
         ))}
       </div>
 
-      {/* Tooltip */}
-      <WatchListTooltip item={hoveredItem} x={getTooltipPos().x} y={getTooltipPos().y} />
+      {/* Tooltip (desktop only) */}
+      {!isMobile && <WatchListTooltip item={hoveredItem} x={getTooltipPos().x} y={getTooltipPos().y} />}
 
       {/* Legend */}
       <Legend items={LEGEND_ITEMS} shape="square" title="Asset Criticality" />

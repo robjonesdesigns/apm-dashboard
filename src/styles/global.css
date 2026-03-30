@@ -532,6 +532,14 @@ html, body, #root {
   .hide-mobile { display: flex !important; }
 }
 
+/* ─── Carousel ───────────────────────────────────────────────────────── */
+.carousel-slide { display: flex; }
+.carousel-slide > * { flex: 1; }
+
+/* ─── Hide scrollbar (carousel) ──────────────────────────────────────── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
 /* ─── Animations ──────────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }

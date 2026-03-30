@@ -14,6 +14,8 @@ export default function FilterChip({ label, onClear }) {
         background: 'var(--color-accent-bg)',
         color: 'var(--color-accent)',
         fontSize: 'var(--text-12)',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
         cursor: 'pointer',
         transition: 'background var(--motion-fast) var(--ease-productive)',
       }}

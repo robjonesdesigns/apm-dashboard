@@ -3,6 +3,7 @@ import { RISK_MATRIX } from '../../data/assets'
 import FilterChip from './FilterChip'
 import CriticalityIndicator from './CriticalityIndicator'
 import Legend from './Legend'
+import useIsMobile from '../../hooks/useIsMobile'
 
 const CRITICALITY_CONFIG = [
   { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg-strong)' },
@@ -102,6 +103,7 @@ function MatrixTooltip({ hoveredCell, dataByCriticality, x, y }) {
 }
 
 export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter }) {
+  const isMobile = useIsMobile()
   const [hoveredCell, setHoveredCell] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const focusedElRef = useRef(null)
@@ -139,11 +141,11 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
       style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
     >
-      {/* Tooltip */}
-      <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={getTooltipPos().x} y={getTooltipPos().y} />
+      {/* Tooltip (desktop only) */}
+      {!isMobile && <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={getTooltipPos().x} y={getTooltipPos().y} />}
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
         <span className="type-card-title">Event Triage</span>
         {selectedCell && (
           <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>

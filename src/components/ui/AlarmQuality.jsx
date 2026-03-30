@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { EVENT_SUMMARY } from '../../data/assets'
 import FilterChip from './FilterChip'
 import Legend from './Legend'
+import useIsMobile from '../../hooks/useIsMobile'
 
 // ── Donut palette (Carbon tokens, desaturated for dark-and-quiet) ────────────
 
@@ -208,6 +209,7 @@ const SEGMENT_LABELS = {
 }
 
 function AlarmQualityView({ selectedSegment, onSegmentClick }) {
+  const isMobile = useIsMobile()
   const total = EVENT_SUMMARY.total
   const [hoveredKey, setHoveredKey] = useState(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
@@ -239,7 +241,7 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
           onFocusSegment={(key, el) => { focusedElRef.current = el; setHoveredKey(key) }}
           onBlurSegment={() => { focusedElRef.current = null; setHoveredKey(null) }}
         />
-        <DonutTooltip segment={hoveredSegment} total={total} x={getTooltipPos().x} y={getTooltipPos().y} />
+        {!isMobile && <DonutTooltip segment={hoveredSegment} total={total} x={getTooltipPos().x} y={getTooltipPos().y} />}
       </div>
 
       {/* Legend */}
