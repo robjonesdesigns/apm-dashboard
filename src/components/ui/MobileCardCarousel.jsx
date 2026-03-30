@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-export default function MobileCardCarousel({ children, gap = 0 }) {
+export default function MobileCardCarousel({ children, gap = 'var(--spacing-16)' }) {
   const scrollRef = useRef(null)
   const [activeIdx, setActiveIdx] = useState(0)
   const count = Array.isArray(children) ? children.length : 1
@@ -9,7 +9,8 @@ export default function MobileCardCarousel({ children, gap = 0 }) {
     const el = scrollRef.current
     if (!el) return
     function handleScroll() {
-      const idx = Math.round(el.scrollLeft / el.offsetWidth)
+      const slideWidth = el.firstElementChild?.offsetWidth || el.offsetWidth
+      const idx = Math.round(el.scrollLeft / slideWidth)
       setActiveIdx(idx)
     }
     el.addEventListener('scroll', handleScroll, { passive: true })
@@ -17,11 +18,14 @@ export default function MobileCardCarousel({ children, gap = 0 }) {
   }, [])
 
   function goTo(idx) {
-    scrollRef.current?.scrollTo({ left: idx * scrollRef.current.offsetWidth, behavior: 'smooth' })
+    const el = scrollRef.current
+    if (!el) return
+    const slideWidth = el.firstElementChild?.offsetWidth || el.offsetWidth
+    el.scrollTo({ left: idx * slideWidth, behavior: 'smooth' })
   }
 
   return (
-    <div style={{ overflow: 'hidden' }}>
+    <div>
       {/* Scrollable cards */}
       <div
         ref={scrollRef}
@@ -31,7 +35,7 @@ export default function MobileCardCarousel({ children, gap = 0 }) {
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
           WebkitOverflowScrolling: 'touch',
-          ...(gap ? { gap } : {}),
+          gap,
         }}
       >
         {(Array.isArray(children) ? children : [children]).map((child, i) => (
@@ -39,10 +43,9 @@ export default function MobileCardCarousel({ children, gap = 0 }) {
             key={i}
             className="carousel-slide"
             style={{
-              flex: '0 0 100%',
+              flex: `0 0 100%`,
               scrollSnapAlign: 'start',
               minWidth: 0,
-              overflow: 'hidden',
             }}
           >
             {child}
