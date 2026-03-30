@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/baytown'
 import WoPriority from './WoPriority'
 import CriticalityIndicator from './CriticalityIndicator'
+import useIsMobile from '../../hooks/useIsMobile'
 
 // Lookup asset criticality by assetId
 const critByAsset = {}
@@ -145,6 +146,7 @@ function CaseSummaryLine({ summary }) {
 
 function WorkOrdersCard() {
   const [hoveredId, setHoveredId] = useState(null)
+  const isMobile = useIsMobile()
   const summary = buildWoSummary(WORK_ORDERS)
 
   // Show top 5, sorted by urgency (emergency first)
@@ -172,50 +174,71 @@ function WorkOrdersCard() {
             key={wo.id}
             aria-label={`${wo.id}: ${wo.task}, ${wo.asset}, ${wo.urgency}`}
             style={rowBaseStyle(hoveredId === wo.id)}
-            onMouseEnter={() => setHoveredId(wo.id)}
-            onMouseLeave={() => setHoveredId(null)}
+            onMouseEnter={isMobile ? undefined : () => setHoveredId(wo.id)}
+            onMouseLeave={isMobile ? undefined : () => setHoveredId(null)}
           >
-            {/* Line 1: WO ID + task | urgency */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
-              </div>
-              <div style={RIGHT_COL}>
-                <WoPriority urgency={wo.urgency} />
-              </div>
-            </div>
+            {isMobile ? (
+              <>
+                {/* Mobile Line 1: WO ID + task (truncated) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>{wo.id}</span>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
+                  <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.task}</span>
+                </div>
+                {/* Mobile Line 2: asset + criticality + urgency */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                    <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{wo.asset}</span>
+                    {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
+                  </div>
+                  <WoPriority urgency={wo.urgency} />
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Line 1: WO ID + task | urgency */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
+                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
+                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                    <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
+                  </div>
+                  <div style={RIGHT_COL}>
+                    <WoPriority urgency={wo.urgency} />
+                  </div>
+                </div>
 
-            {/* Line 2: asset + criticality | assignee */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
-                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                  {wo.asset}
-                </span>
-                {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
-              </div>
-              <span className="type-label" style={{ ...RIGHT_COL, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
-                {wo.assignee || 'Unassigned'}
-              </span>
-            </div>
+                {/* Line 2: asset + criticality | assignee */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                    <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                      {wo.asset}
+                    </span>
+                    {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
+                  </div>
+                  <span className="type-label" style={{ ...RIGHT_COL, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                    {wo.assignee || 'Unassigned'}
+                  </span>
+                </div>
 
-            {/* Line 3: event + incident | timestamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-                {wo.eventId && getEventName(wo.eventId) ? (
-                  <>
-                    {getEventName(wo.eventId)}
-                    {getIncidentForEvent(wo.eventId) && ` · ${getIncidentForEvent(wo.eventId)}`}
-                  </>
-                ) : (
-                  'Routine maintenance'
-                )}
-              </span>
-              <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
-                {wo.created}
-              </span>
-            </div>
+                {/* Line 3: event + incident | timestamp */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                    {wo.eventId && getEventName(wo.eventId) ? (
+                      <>
+                        {getEventName(wo.eventId)}
+                        {getIncidentForEvent(wo.eventId) && ` · ${getIncidentForEvent(wo.eventId)}`}
+                      </>
+                    ) : (
+                      'Routine maintenance'
+                    )}
+                  </span>
+                  <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
+                    {wo.created}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
@@ -232,6 +255,7 @@ function WorkOrdersCard() {
 
 function InvestigationsCard() {
   const [hoveredId, setHoveredId] = useState(null)
+  const isMobile = useIsMobile()
   const summary = buildCaseSummary(INVESTIGATIONS)
 
   const visible = INVESTIGATIONS.slice(0, 5)
@@ -255,46 +279,67 @@ function InvestigationsCard() {
             key={c.id}
             aria-label={`${c.id}: ${c.description}, ${c.asset}, ${c.status}`}
             style={rowBaseStyle(hoveredId === c.id)}
-            onMouseEnter={() => setHoveredId(c.id)}
-            onMouseLeave={() => setHoveredId(null)}
+            onMouseEnter={isMobile ? undefined : () => setHoveredId(c.id)}
+            onMouseLeave={isMobile ? undefined : () => setHoveredId(null)}
           >
-            {/* Line 1: Investigation ID + description | status */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
-              </div>
-              <div style={RIGHT_COL}>
-                <InvestigationStatus status={c.status} />
-              </div>
-            </div>
+            {isMobile ? (
+              <>
+                {/* Mobile Line 1: Case ID + description (truncated) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>{c.id}</span>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
+                  <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.description}</span>
+                </div>
+                {/* Mobile Line 2: asset + criticality + status */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                    <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{c.asset}</span>
+                    {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
+                  </div>
+                  <InvestigationStatus status={c.status} />
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Line 1: Investigation ID + description | status */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
+                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
+                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
+                    <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
+                  </div>
+                  <div style={RIGHT_COL}>
+                    <InvestigationStatus status={c.status} />
+                  </div>
+                </div>
 
-            {/* Line 2: asset + criticality | assignee */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
-                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                  {c.asset}
-                </span>
-                {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
-              </div>
-              <span className="type-label" style={{ ...RIGHT_COL, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
-                {c.assignee || 'Unassigned'}
-              </span>
-            </div>
+                {/* Line 2: asset + criticality | assignee */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                    <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+                      {c.asset}
+                    </span>
+                    {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
+                  </div>
+                  <span className="type-label" style={{ ...RIGHT_COL, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                    {c.assignee || 'Unassigned'}
+                  </span>
+                </div>
 
-            {/* Line 3: scope (events + WOs) | timestamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-                {[
-                  `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
-                  `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
-                ].join(' · ')}
-              </span>
-              <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
-                {c.opened}
-              </span>
-            </div>
+                {/* Line 3: scope (events + WOs) | timestamp */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                    {[
+                      `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
+                      `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
+                    ].join(' · ')}
+                  </span>
+                  <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
+                    {c.opened}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
