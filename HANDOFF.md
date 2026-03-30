@@ -26,6 +26,10 @@ Re-enable asset row navigation: swap `onAssetClick={null}` back to `onAssetClick
 - Replace "coming soon" APM case study assets with Asset Inspection screen videos/images
 - `/design-system` route (differentiator for hiring managers)
 
+### Backlog
+
+**Full event timeline reconciliation** -- Currently RISK_MATRIX counts (newEvents/inProgressEvents) are hardcoded per asset and don't derive from TIMELINE. TIMELINE only covers the last 24 hours (9 events), but asset counts represent all active events across a longer window. To reconcile: expand TIMELINE with the full set of events that back the asset-level counts, then derive RISK_MATRIX and EVENT_SUMMARY from TIMELINE instead of hardcoded numbers. This gives investigations a complete drill-down timeline and makes the Risk Matrix cells clickable through to actual event records, not just a filtered asset list.
+
 ## What was completed this session
 
 ### Mobile responsive pass (ADR-025)
