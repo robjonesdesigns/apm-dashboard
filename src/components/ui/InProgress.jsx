@@ -185,14 +185,13 @@ function WorkOrdersCard() {
                   <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
                   <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.task}</span>
                 </div>
-                {/* Mobile Line 2: asset + criticality + urgency */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
-                    <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{wo.asset}</span>
-                    {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
-                  </div>
-                  <WoPriority urgency={wo.urgency} />
+                {/* Mobile Line 2: asset + criticality */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{wo.asset}</span>
+                  {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
                 </div>
+                {/* Mobile Line 3: urgency */}
+                <WoPriority urgency={wo.urgency} />
               </>
             ) : (
               <>
@@ -210,7 +209,7 @@ function WorkOrdersCard() {
 
                 {/* Line 2: asset + criticality | assignee */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
                     <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                       {wo.asset}
                     </span>
@@ -290,14 +289,13 @@ function InvestigationsCard() {
                   <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
                   <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.description}</span>
                 </div>
-                {/* Mobile Line 2: asset + criticality + status */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
-                    <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{c.asset}</span>
-                    {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
-                  </div>
-                  <InvestigationStatus status={c.status} />
+                {/* Mobile Line 2: asset + criticality */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
+                  <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{c.asset}</span>
+                  {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
                 </div>
+                {/* Mobile Line 3: status */}
+                <InvestigationStatus status={c.status} />
               </>
             ) : (
               <>
@@ -315,7 +313,7 @@ function InvestigationsCard() {
 
                 {/* Line 2: asset + criticality | assignee */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
                     <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                       {c.asset}
                     </span>
