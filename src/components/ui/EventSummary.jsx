@@ -82,7 +82,7 @@ export default function EventSummary() {
       </div>
 
       {/* Large callout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
         <span className="type-label">Active Events</span>
         <span className="type-kpi-hero">{total}</span>
       </div>

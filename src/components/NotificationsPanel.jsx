@@ -88,7 +88,7 @@ function NotificationItem({ notification, isNew, onSelect }) {
         }} />
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-8)', minWidth: 0, flex: 1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)', minWidth: 0, flex: 1 }}>
         {/* Row 1: severity badge + timestamp */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
           <Badge level={notification.type} />
@@ -112,7 +112,10 @@ function NotificationItem({ notification, isNew, onSelect }) {
             {notification.asset}
           </span>
           {critByAsset[notification.assetId] && (
-            <CriticalityIndicator level={critByAsset[notification.assetId]} />
+            <>
+              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <CriticalityIndicator level={critByAsset[notification.assetId]} />
+            </>
           )}
         </div>
 
@@ -192,19 +195,22 @@ function EventDetails({ notification, onBack, onClose }) {
 
       {/* Notification summary (repeated from list for identification) */}
       <div style={{ padding: 'var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-8)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--gap-stack)' }}>
           <Badge level={notification.type} />
           <span className="type-meta">{notification.time}</span>
         </div>
-        <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--spacing-4)' }}>
+        <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--gap-stack)' }}>
           {notification.name}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', margin: '0 0 var(--spacing-8) 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', margin: '0 0 var(--gap-stack) 0' }}>
           <span className="type-label" style={{ color: 'var(--color-accent)' }}>
             {notification.asset}
           </span>
           {critByAsset[notification.assetId] && (
-            <CriticalityIndicator level={critByAsset[notification.assetId]} />
+            <>
+              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <CriticalityIndicator level={critByAsset[notification.assetId]} />
+            </>
           )}
         </div>
         <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
@@ -218,7 +224,7 @@ function EventDetails({ notification, onBack, onClose }) {
 
         {details.map((section) => (
           <div key={section.label} style={{ marginBottom: 'var(--spacing-24)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               {section.label}
             </p>
             <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
@@ -249,10 +255,10 @@ function EventDetails({ notification, onBack, onClose }) {
         {/* Related Events */}
         {notification.relationships && notification.relationships.length > 0 && (
           <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               Related Events
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
               {notification.relationships.map((rel) => (
                 <span key={`${rel.type}-${rel.eventId}`} className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
                   {REL_LABELS[rel.type] || rel.type}:{' '}
@@ -268,10 +274,10 @@ function EventDetails({ notification, onBack, onClose }) {
         {/* Linked Work Orders */}
         {notification.linkedWOs && notification.linkedWOs.length > 0 && (
           <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               Linked Work Orders
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
               {notification.linkedWOs.map((wo) => (
                 <span key={wo} className="type-link">
                   {wo}
@@ -284,10 +290,10 @@ function EventDetails({ notification, onBack, onClose }) {
         {/* Linked Investigations */}
         {notification.linkedInvestigations && notification.linkedInvestigations.length > 0 && (
           <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--spacing-4) 0', textTransform: 'uppercase' }}>
+            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               Linked Investigations
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
               {notification.linkedInvestigations.map((inv) => (
                 <span key={inv} className="type-link">
                   {inv}
@@ -301,9 +307,9 @@ function EventDetails({ notification, onBack, onClose }) {
         <div style={{ height: '1px', background: 'var(--color-border-subtle)', margin: 'var(--spacing-16) 0' }} />
 
         {/* Quick Access links */}
-        <p className="type-card-title" style={{ margin: '0 0 var(--spacing-8) 0' }}>Quick Access</p>
+        <p className="type-card-title" style={{ margin: '0 0 var(--gap-stack) 0' }}>Quick Access</p>
         {['Asset Inspection', 'Trends', 'Fault Tree'].map((link) => (
-          <p key={link} style={{ margin: '0 0 var(--spacing-8) 0' }}>
+          <p key={link} style={{ margin: '0 0 var(--gap-stack) 0' }}>
             <span className="type-link">{link}</span>
           </p>
         ))}
@@ -350,7 +356,7 @@ function ProvenanceLine({ provenance }) {
       className="type-meta"
       style={{
         display: 'block',
-        marginTop: 'var(--spacing-4)',
+        marginTop: 'var(--gap-stack)',
         color: 'var(--color-text-helper)',
         fontStyle: 'italic',
       }}

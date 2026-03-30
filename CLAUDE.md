@@ -5,7 +5,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 **Path:** `~/Documents/Dev/apm-dashboard/`
 **Dev:** `npx vite` (port 5173)
 **Stack:** React 19 + Recharts (Watch List removed) + Tailwind v4 + Vite
-**Data:** `src/data/assets.js` -- Baytown Refinery, K-101 centrifugal compressor story (21 events)
+**Data:** `src/data/baytown.js` -- Baytown Refinery, 10 assets, 36 events in TIMELINE
 **Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
@@ -17,6 +17,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 - No inline font-size overrides. All typography from 9 type classes (ADR-018).
 - No inline rgba/hex. Shadows tokenized (--shadow-tooltip, --shadow-overlay).
 - 12-column grid. Card radius 10px, padding 24px. Titles: `type-card-title`.
+- **Spacing system (ADR-027):** Use `var(--gap-stack)` for vertical stacking between text lines (8px normal, 4px dense). Use `var(--gap-intra)` for intra-card grouping (12px normal, 8px dense). Never use raw `--spacing-4` for vertical stacking. Always place a 1px x 12px divider (`--color-border-strong`) between adjacent inline indicators.
 - Status: coral-red + amber (ADR-010). Icon + color + text (never color alone, WCAG SC 1.4.1).
 - Event severity badges: shared Badge.jsx (tally + fill hierarchy, ADR-016). Critical=solid red, High=red outline, Medium=amber outline, Low=blue outline.
 - Asset criticality: shared CriticalityIndicator.jsx (A/B/C/D letter grade, `inverted` prop for light tooltip bg).
@@ -41,10 +42,10 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 ## Shell
 
-- **TopBar.jsx**: 48px fixed. Title: "Asset Performance Management".
+- **TopBar.jsx**: 56px fixed. Title: "Asset Performance Management".
 - **Sidebar.jsx**: 48px rail, hover-to-expand 256px overlay (no toggle button, no content push). Shadow: --shadow-overlay.
 - **NotificationsPanel.jsx**: 320px push panel (Event Feed), two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar. Escape key closes. Focus managed on open/close (ADR-024). CriticalityIndicator badge on notification cards and event details.
-- **Dense mode**: Segmented control in TopBar (grid/list icons). Toggles `.dense` class on root. localStorage persisted. Reduces card padding, section gaps, grid gaps (ADR-026).
+- **Dense mode**: Segmented control in TopBar (grid/list icons, 36x32 buttons). Toggles `.dense` class on root. localStorage persisted. Reduces card padding, section gaps, grid gaps, stack gaps (8->4px), intra-card gaps (12->8px) (ADR-026, ADR-027).
 
 ## Screens
 
@@ -90,11 +91,11 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 | Investigation status | Right triangles | Neutral gray | InProgress |
 | WO urgency | Circles + clock | Neutral gray | WoPriority.jsx |
 | Asset criticality | Letter grade pill | Status colors | CriticalityIndicator.jsx |
-| Asset status | Small dots + text | Status colors | AssetTable inline |
+| Asset status | Small dots + text | Status colors | StatusIndicator.jsx |
 
 ## ADR Index
 
-001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment
+001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment | 027 Spacing system + semantic tokens
 
 ## Desk Research Index
 
@@ -109,14 +110,15 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 - `Badge.jsx` -- event severity (tally + fill hierarchy). `compact` prop for tally-only (no text). Events, notifications, and Asset Table.
 - `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). `inverted` prop for tooltip contexts. Used in Asset Table, Event Feed, InProgress rows.
+- `StatusIndicator.jsx` -- asset status (dot + label). `compact` prop for dot-only. Used in Asset Table, Asset Inspection. Exports `statusLabel()` for aria/filter use.
+- `WoPriority.jsx` -- WO urgency indicator (circle icons + text).
 - `Legend.jsx` -- chart legend (swatch + label + value).
 - `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table). `whiteSpace: nowrap`, `flexShrink: 0`.
 - `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table desktop + Notifications).
-- `WoPriority.jsx` -- WO urgency indicator (circle icons + text).
 
 ## Handoff
 
-See `HANDOFF.md` for session 16 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 26 ADRs, 16 desk research docs, 2 stories.
+See `HANDOFF.md` for session 18 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 27 ADRs, 16 desk research docs, 2 stories.
 
 ## Hooks
 

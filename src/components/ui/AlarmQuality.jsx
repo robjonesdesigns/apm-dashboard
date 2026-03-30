@@ -77,7 +77,7 @@ function DonutTooltip({ segment, total, x, y }) {
         animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--spacing-4)',
+        gap: 'var(--gap-stack)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>

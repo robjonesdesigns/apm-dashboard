@@ -137,10 +137,22 @@
   --ease-expressive: cubic-bezier(0.4, 0.14, 0.3, 1);
 
   /* ── Layout ───────────────────────────────────────────────────────── */
-  --header-height: 48px;
+  --header-height: 56px;
   --sidebar-width: 256px;
   --sidebar-rail: 48px;
   --nav-item-height: 48px;
+}
+
+/* ─── Semantic Spacing Tokens ─────────────────────────────────────────── */
+/* These respond to dense mode. Use instead of raw --spacing-N for         */
+/* vertical stacking and intra-card grouping.                              */
+/*                                                                         */
+/* --gap-stack:  between stacked text lines / metadata rows (8 → 4 dense) */
+/* --gap-intra:  between logical groups inside a card (12 → 8 dense)      */
+
+:root {
+  --gap-stack: var(--spacing-8);
+  --gap-intra: var(--spacing-12);
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────── */
@@ -579,6 +591,10 @@ html, body, #root {
 }
 .dense .section-header {
   margin-bottom: var(--spacing-4);
+}
+.dense {
+  --gap-stack: var(--spacing-4);
+  --gap-intra: var(--spacing-8);
 }
 
 /* ─── Focus ──────────────────────────────────────────────────────────── */

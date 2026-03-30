@@ -47,7 +47,7 @@ function WatchListTooltip({ item, x, y }) {
         animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--spacing-4)',
+        gap: 'var(--gap-stack)',
       }}
     >
       <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>

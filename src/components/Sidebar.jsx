@@ -272,7 +272,7 @@ export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
             <span className="type-card-title" style={{ display: 'block' }}>
               Asset Performance Management
             </span>
-            <span className="type-meta" style={{ marginTop: 'var(--spacing-4)', display: 'block' }}>
+            <span className="type-meta" style={{ marginTop: 'var(--gap-stack)', display: 'block' }}>
               {PLANT.name}
             </span>
           </div>

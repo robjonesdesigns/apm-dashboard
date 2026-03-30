@@ -200,7 +200,7 @@ function KpiCard({ config, onClick, isSelected }) {
         }}
       >
         {/* Label + info */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
           <span className="type-card-title">{config.label}</span>
           <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS[config.key]} /></span>
         </div>
@@ -214,7 +214,7 @@ function KpiCard({ config, onClick, isSelected }) {
         <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
 
         {/* Delta */}
-        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
+        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}>
           <span className="type-meta" style={{ color: deltaColor }}>
             {deltaSign}{delta.toFixed(1)}% vs yesterday
           </span>
@@ -240,7 +240,7 @@ function KpiCard({ config, onClick, isSelected }) {
             padding: 'var(--spacing-12) var(--spacing-16)',
             display: 'flex',
             flexDirection: 'column',
-            gap: 'var(--spacing-8)',
+            gap: 'var(--gap-stack)',
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
             boxShadow: 'var(--shadow-overlay)',
           }}
@@ -423,7 +423,7 @@ export default function KpiBar({ onKpiClick }) {
 
       {/* Trains */}
       <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
           <span className="type-card-title">Trains</span>
           <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.trains} /></span>
         </div>
@@ -433,13 +433,13 @@ export default function KpiBar({ onKpiClick }) {
         {/* Placeholder rows to match KPI card height */}
         <div className="hide-mobile" style={{ visibility: 'hidden' }} aria-hidden="true">
           <div style={{ alignItems: 'center', gap: 'var(--spacing-4)' }}><span className="type-meta">&nbsp;</span></div>
-          <div style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}><span className="type-meta">&nbsp;</span></div>
+          <div style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}><span className="type-meta">&nbsp;</span></div>
         </div>
       </div>
 
       {/* Active Assets */}
       <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
           <span className="type-card-title">Active Assets</span>
           <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.activeAssets} /></span>
         </div>
@@ -451,7 +451,7 @@ export default function KpiBar({ onKpiClick }) {
         <div className="hide-mobile" style={{ visibility: 'hidden' }} aria-hidden="true">
           <span className="type-meta">&nbsp;</span>
         </div>
-        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
+        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}>
           <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
             -4 vs yesterday
           </span>

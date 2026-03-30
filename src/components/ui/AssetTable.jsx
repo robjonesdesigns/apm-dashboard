@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE } from '../../data/baytown'
 import CriticalityIndicator from './CriticalityIndicator'
+import StatusIndicator, { statusLabel } from './StatusIndicator'
 import Badge from './Badge'
 import FilterChip from './FilterChip'
 import FilterButton from './FilterButton'
@@ -15,21 +16,6 @@ TIMELINE.forEach(evt => {
     worstSeverityByAsset[evt.assetId] = evt.type
   }
 })
-
-// Status dot variant from asset status
-function statusDotVariant(status) {
-  if (status === 'tripped')        return 'status-dot dot-tripped'
-  if (status === 'degraded')       return 'status-dot dot-degraded'
-  if (status === 'planned-outage') return 'status-dot dot-planned-outage'
-  return 'status-dot dot-running'
-}
-
-function statusLabel(status) {
-  if (status === 'tripped')        return 'Tripped'
-  if (status === 'degraded')       return 'Degraded'
-  if (status === 'planned-outage') return 'Planned'
-  return 'Running'
-}
 
 // ── Derived per-asset counts (single source of truth) ───────────────────────
 
@@ -98,9 +84,8 @@ function AssetRow({ asset, onAssetClick }) {
       }}
     >
       {/* Status */}
-      <div role="cell" style={{ ...COL_STYLES.status, display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-        <span className={statusDotVariant(asset.status)} />
-        <span className="type-body">{statusLabel(asset.status)}</span>
+      <div role="cell" style={{ ...COL_STYLES.status, display: 'flex', alignItems: 'center' }}>
+        <StatusIndicator status={asset.status} />
       </div>
 
       {/* Asset name + type */}
@@ -176,7 +161,7 @@ function MobileAssetRow({ asset, onAssetClick }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--spacing-4)',
+        gap: 'var(--gap-stack)',
         padding: 'var(--spacing-12)',
         cursor: clickable ? 'pointer' : 'default',
         transition: 'all var(--motion-fast) var(--ease-productive)',
@@ -187,7 +172,7 @@ function MobileAssetRow({ asset, onAssetClick }) {
     >
       {/* Row 1: status dot + asset name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-        <span className={statusDotVariant(asset.status)} style={{ flexShrink: 0 }} />
+        <StatusIndicator status={asset.status} compact />
         <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
           {asset.name}
         </span>
@@ -202,10 +187,13 @@ function MobileAssetRow({ asset, onAssetClick }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-12)', paddingLeft: 'var(--spacing-16)' }}>
         <CriticalityIndicator level={asset.criticality} />
         {asset.activeEvents > 0 && (
-          <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-            {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
-            <span className="type-meta">{asset.activeEvents} {asset.activeEvents === 1 ? 'Event' : 'Events'}</span>
-          </span>
+          <>
+            <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+            <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+              {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
+              <span className="type-meta">{asset.activeEvents} {asset.activeEvents === 1 ? 'Event' : 'Events'}</span>
+            </span>
+          </>
         )}
       </div>
     </div>
@@ -374,7 +362,7 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
           <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-16)' }}>
             {/* Sort section */}
             <div style={{ marginBottom: 'var(--spacing-16)' }}>
-              <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--spacing-8)' }}>Sort by</span>
+              <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--gap-stack)' }}>Sort by</span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
                 {MOBILE_SORT_OPTIONS.map(s => {
                   const isActive = sortKey === s.key
@@ -410,8 +398,8 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             {/* Filter sections */}
             {categories.map((cat, i) => (
               <div key={cat.key} style={{ marginBottom: i < categories.length - 1 ? 'var(--spacing-16)' : 0 }}>
-                <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--spacing-8)' }}>{cat.label}</span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+                <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--gap-stack)' }}>{cat.label}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
                   {cat.options.map(opt => {
                     const checked = filters[cat.key]?.includes(opt)
                     return (
@@ -893,7 +881,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
             </div>
             {/* Active chips below search */}
             {(activeChipCount > 0 || riskFilter || alarmFilter || actorFilter) && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', marginTop: 'var(--spacing-8)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', marginTop: 'var(--gap-stack)' }}>
                 {riskFilter && (
                   <>
                     <FilterChip label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} onClear={onClearRiskFilter} />
@@ -1049,8 +1037,8 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingTop: 'var(--spacing-12)',
-            marginTop: 'var(--spacing-4)',
+            paddingTop: 'var(--gap-intra)',
+            marginTop: 'var(--gap-stack)',
           }}>
             <span className="type-meta">
               {startIdx + 1}--{Math.min(startIdx + rowsPerPage, totalRows)} of {totalRows} assets

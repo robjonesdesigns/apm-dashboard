@@ -24,7 +24,7 @@ function Swatch({ color, shape = 'square' }) {
 
 export default function Legend({ items, shape = 'square', interactive = false, onItemClick, activeItem, title }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-8)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--gap-stack)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
       {title && (
         <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{title}</span>
       )}

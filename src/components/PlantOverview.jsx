@@ -226,7 +226,7 @@ export default function PlantOverview({ onNavigate }) {
           onClearAlarmFilter={clearAlarmFilter}
           onClearActorFilter={clearActorFilter}
           onClearAllFilters={clearAllFilters}
-          onAssetClick={null}
+          onAssetClick={(asset) => onNavigate('inspection', { asset })}
         />
       </section>
 

@@ -47,7 +47,7 @@ function rowBaseStyle(isHovered) {
   return {
     display: 'flex',
     flexDirection: 'column',
-    gap: 'var(--spacing-4)',
+    gap: 'var(--gap-stack)',
     padding: 'var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-8)',
     margin: '0 calc(-1 * var(--spacing-4))',
     borderBottom: '1px solid var(--color-border-subtle)',
@@ -159,7 +159,7 @@ function WorkOrdersCard() {
     <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
         <span className="type-card-title">Work Orders</span>
         <span className="type-label">{WORK_ORDERS.length} Total</span>
       </div>
@@ -188,7 +188,7 @@ function WorkOrdersCard() {
                 {/* Mobile Line 2: asset + criticality */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
                   <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{wo.asset}</span>
-                  {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
+                  {critByAsset[wo.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[wo.assetId]} /></>)}
                 </div>
                 {/* Mobile Line 3: urgency */}
                 <WoPriority urgency={wo.urgency} />
@@ -213,7 +213,7 @@ function WorkOrdersCard() {
                     <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                       {wo.asset}
                     </span>
-                    {critByAsset[wo.assetId] && <CriticalityIndicator level={critByAsset[wo.assetId]} />}
+                    {critByAsset[wo.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[wo.assetId]} /></>)}
                   </div>
                   <span className="type-label" style={{ ...RIGHT_COL, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                     {wo.assignee || 'Unassigned'}
@@ -263,7 +263,7 @@ function InvestigationsCard() {
     <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-8)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
         <span className="type-card-title">Investigations</span>
         <span className="type-label">{INVESTIGATIONS.length} Total</span>
       </div>
@@ -292,7 +292,7 @@ function InvestigationsCard() {
                 {/* Mobile Line 2: asset + criticality */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
                   <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{c.asset}</span>
-                  {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
+                  {critByAsset[c.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[c.assetId]} /></>)}
                 </div>
                 {/* Mobile Line 3: status */}
                 <InvestigationStatus status={c.status} />
@@ -317,7 +317,7 @@ function InvestigationsCard() {
                     <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
                       {c.asset}
                     </span>
-                    {critByAsset[c.assetId] && <CriticalityIndicator level={critByAsset[c.assetId]} />}
+                    {critByAsset[c.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[c.assetId]} /></>)}
                   </div>
                   <span className="type-label" style={{ ...RIGHT_COL, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                     {c.assignee || 'Unassigned'}

@@ -52,7 +52,7 @@ function buildNarrative(incident) {
 
 function EventCard({ label, event }) {
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-8)' }}>
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
       <span className="type-card-title" style={{ color: 'var(--color-card-title)' }}>
         {label}
       </span>
@@ -93,7 +93,7 @@ export default function ImpactStrip() {
         <div key={incident.id} style={{ marginBottom: narratives.length > 1 ? 'var(--spacing-16)' : 0 }}>
           {/* Incident label -- only show when multiple incidents */}
           {narratives.length > 1 && (
-            <p className="type-label" style={{ marginBottom: 'var(--spacing-8)', color: 'var(--color-text-secondary)' }}>
+            <p className="type-label" style={{ marginBottom: 'var(--gap-stack)', color: 'var(--color-text-secondary)' }}>
               {incident.name}
             </p>
           )}
@@ -110,7 +110,7 @@ export default function ImpactStrip() {
         </div>
       ))}
 
-      <div style={{ marginTop: 'var(--spacing-8)', textAlign: 'right' }}>
+      <div style={{ marginTop: 'var(--gap-stack)', textAlign: 'right' }}>
         <span className="type-link">Go to Events &rarr;</span>
       </div>
     </section>

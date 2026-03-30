@@ -2382,18 +2382,6 @@ export const K101_FAULT_TREE = {
   ],
 }
 
-// ── Asset Specs (K-101 header panel) ─────────────────────────────────────────
-
-export const ASSET_SPECS = [
-  { label: 'Service',       value: 'H2 Recycle Gas' },
-  { label: 'Process Unit',  value: 'Hydrocracker' },
-  { label: 'Criticality',   value: 'A (Safety)' },
-  { label: 'Status',        value: 'Tripped' },
-  { label: 'Type',          value: 'Centrifugal Compressor' },
-  { label: 'Class',         value: 'API 617' },
-  { label: 'Manufacturer',  value: 'Elliott Group' },
-  { label: 'Installed',     value: '2018' },
-]
 
 // ── Reliability Metrics (K-101 bar chart) ─────────────────────────────────────
 
