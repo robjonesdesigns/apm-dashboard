@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/baytown'
 import WoPriority from './WoPriority'
 import CriticalityIndicator from './CriticalityIndicator'
+import MobileCardCarousel from './MobileCardCarousel'
 import useIsMobile from '../../hooks/useIsMobile'
 
 // Lookup asset criticality by assetId
@@ -353,6 +354,17 @@ function InvestigationsCard() {
 // ── InProgress ──────────────────────────────────────────────────────────────
 
 export default function InProgress() {
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <MobileCardCarousel>
+        <WorkOrdersCard />
+        <InvestigationsCard />
+      </MobileCardCarousel>
+    )
+  }
+
   return (
     <div className="grid-12">
       <WorkOrdersCard />
