@@ -10,7 +10,7 @@
 // "What Changed" full timeline lives on a separate Event Log page
 // accessed via "See full timeline →" on the Impact Strip (ADR-013).
 
-import { useState, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import KpiBar from './ui/KpiBar'
 import ImpactStrip from './ui/ImpactStrip'
 import InProgress from './ui/InProgress'
