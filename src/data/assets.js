@@ -84,10 +84,6 @@ export const ASSETS = [
     status: 'tripped',
     urgency: 'urgent',
     oee: 64.2,
-    newEvents: 2,
-    inProgressEvents: 6,
-    closedEvents: 4,
-    falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '5h',
     rul: '5 days',
@@ -165,13 +161,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // Events beyond the 24-hour TIMELINE. K-101 has 5 events in TIMELINE (EVT-002,003,004,005,011).
-    // 3 additional historical events account for activeEvents: 8 (5 timeline + 3 historical).
-    eventHistory: [
-      { id: 'EVT-K101-H1', name: 'Vibration Alert', date: '3 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration trending upward. 5.1 mm/s, approaching 7.1 alarm threshold. Alert generated but no intervention taken.' },
-      { id: 'EVT-K101-H2', name: 'Vibration Alert', date: '2 days ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 5.8 mm/s. Second consecutive alert with no response. Vibration trend accelerating.' },
-      { id: 'EVT-K101-H3', name: 'Vibration Alert', date: '1 day ago', eventType: 'alert', subAssetId: 'K-101-DE', status: 'in-progress', description: 'Drive end bearing vibration at 6.3 mm/s. Third alert in 3 days. No work order created. This is the gap the root cause investigation (IN-0891) is focused on.' },
-    ],
+    // All K-101 events tracked in TIMELINE. 13 total: 2 new, 6 in-progress, 4 closed, 1 false-positive.
   },
   {
     id: 'P-203',
@@ -183,10 +173,6 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'urgent',
     oee: 78.4,
-    newEvents: 1,
-    inProgressEvents: 3,
-    closedEvents: 2,
-    falsePositives: 0,
     repetitiveEvents: 2,
     downtime: '0h',
     rul: '45 days',
@@ -254,13 +240,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // P-203 has 1 event in TIMELINE (EVT-009). 3 historical seal failures account for the remaining counts.
-    // activeEvents: 4 = 1 timeline + 3 historical. repetitiveEvents: 2 = system flagged recurring pattern.
-    eventHistory: [
-      { id: 'EVT-P203-H1', name: 'Seal Failure', date: '4 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'First mechanical seal failure. Leakage detected at 3.8 L/hr. Seal replaced. No alignment check performed. Pump returned to service after 6 hours.' },
-      { id: 'EVT-P203-H2', name: 'Seal Failure', date: '2 months ago', eventType: 'alert', subAssetId: 'P-203-SEAL', status: 'closed', description: 'Second mechanical seal failure. Same failure mode -- leakage at 4.0 L/hr. Seal replaced again. Alignment not checked. Investigation IN-0894 opened to find root cause.' },
-      { id: 'EVT-P203-H3', name: 'Alignment Drift Detected', date: '3 weeks ago', eventType: 'anomaly', subAssetId: 'P-203-CPL', status: 'in-progress', description: 'Coupling alignment measured at 0.09 mm and trending toward 0.15 mm alarm. Correlated with recurring seal failures by IN-0894. Alignment correction planned but not yet scheduled.' },
-    ],
+    // All P-203 events tracked in TIMELINE. 6 total: 1 new, 3 in-progress, 2 closed.
   },
   {
     id: 'C-201',
@@ -272,10 +252,6 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 82.1,
-    newEvents: 2,
-    inProgressEvents: 1,
-    closedEvents: 0,
-    falsePositives: 0,
     repetitiveEvents: 1,
     downtime: '0h',
     rul: '110 days',
@@ -332,12 +308,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // C-201 has 1 event in TIMELINE (EVT-007). 2 historical events for belt degradation trend.
-    // activeEvents: 3 = 1 timeline + 2 historical.
-    eventHistory: [
-      { id: 'EVT-C201-H1', name: 'Belt Tension Low', date: '3 weeks ago', eventType: 'alert', subAssetId: 'C-201-FAN', status: 'in-progress', description: 'Fan belt tension measured at 88% during routine check. Below optimal but above 75% alarm. Replacement scheduled but not prioritized.' },
-      { id: 'EVT-C201-H2', name: 'Belt Tension Declining', date: '1 week ago', eventType: 'anomaly', subAssetId: 'C-201-FAN', status: 'new', description: 'Belt tension declined to 85%. Rate of decline suggests replacement needed within 2 weeks. WO-4498 opened for belt tension check.' },
-    ],
+    // All C-201 events tracked in TIMELINE. 3 total: 2 new, 1 in-progress.
   },
   {
     id: 'T-401',
@@ -349,10 +320,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 88.1,
-    newEvents: 0,
-    inProgressEvents: 1,
-    closedEvents: 1,
-    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '180 days',
@@ -430,10 +397,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // T-401 has 0 events in TIMELINE (EVT-010 removed). The 1 in-progress event is the maintenance scheduling decision.
-    eventHistory: [
-      { id: 'EVT-T401-H1', name: 'Combustion Inspection Due', date: 'Today', eventType: 'alert', subAssetId: 'T-401-CMB', status: 'in-progress', description: '12,000-hour combustion inspection interval reached. Scheduled for 6:00 AM but inspection deferred pending morning huddle decision due to K-101 crisis. Contractors and parts staged.' },
-    ],
+    // All T-401 events tracked in TIMELINE. 2 total: 0 new, 1 in-progress, 1 closed.
   },
   {
     id: 'E-105',
@@ -445,10 +409,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 93.7,
-    newEvents: 1,
-    inProgressEvents: 0,
-    closedEvents: 0,
-    falsePositives: 1,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '240 days',
@@ -512,10 +472,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // E-105 has 0 events in TIMELINE. The 1 new event is the fouling rate anomaly detected by the model.
-    eventHistory: [
-      { id: 'EVT-E105-H1', name: 'Accelerated Fouling Detected', date: '1 week ago', eventType: 'anomaly', subAssetId: 'E-105-TUB-P', status: 'new', description: 'Fouling model predicted current fouling rate at month 8. Actual fouling reached this level at month 4 after crude slate change. Feed outlet temperature 6C below expected. Investigation IN-0896 opened to determine if accelerated fouling is from feed change or tube leak.' },
-    ],
+    // All E-105 events tracked in TIMELINE. 2 total: 1 new, 1 false-positive.
   },
   {
     id: 'R-301',
@@ -527,10 +484,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 95.2,
-    newEvents: 0,
-    inProgressEvents: 0,
-    closedEvents: 2,
-    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '365 days',
@@ -619,10 +572,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 94.8,
-    newEvents: 1,
-    inProgressEvents: 0,
-    closedEvents: 0,
-    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '300 days',
@@ -707,10 +656,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 96.1,
-    newEvents: 0,
-    inProgressEvents: 0,
-    closedEvents: 1,
-    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '280 days',
@@ -787,10 +732,6 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 79.3,
-    newEvents: 1,
-    inProgressEvents: 2,
-    closedEvents: 0,
-    falsePositives: 1,
     repetitiveEvents: 3,
     downtime: '0h',
     rul: '95 days',
@@ -867,12 +808,7 @@ export const ASSETS = [
         ],
       },
     ],
-    // K-302 has 1 event in TIMELINE (EVT-001). 2 historical events are the repeated temperature oscillation triggers.
-    // The system flagged the oscillation 3 times (repetitiveEvents: 3) as discharge temp exceeded rate-of-change threshold each cycle.
-    eventHistory: [
-      { id: 'EVT-K302-H1', name: 'Discharge Temp Rate-of-Change', date: '2 days ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Discharge temperature swing exceeded rate-of-change threshold. First occurrence of the oscillation pattern. Opened IN-0893 to investigate.' },
-      { id: 'EVT-K302-H2', name: 'Discharge Temp Rate-of-Change', date: '1 day ago', eventType: 'anomaly', subAssetId: 'K-302-IMP1', status: 'in-progress', description: 'Second occurrence of temperature oscillation exceeding rate-of-change threshold. Same pattern as previous day. Fouling hypothesis emerging.' },
-    ],
+    // All K-302 events tracked in TIMELINE. 4 total: 1 new, 2 in-progress, 1 false-positive.
   },
   {
     id: 'T-102',
@@ -884,10 +820,6 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 91.4,
-    newEvents: 1,
-    inProgressEvents: 0,
-    closedEvents: 1,
-    falsePositives: 0,
     repetitiveEvents: 0,
     downtime: '0h',
     rul: '200 days',
@@ -966,26 +898,821 @@ export const ASSETS = [
         ],
       },
     ],
-    // T-102 has 0 events in TIMELINE. The 1 new event is the exhaust spread widening trend.
-    eventHistory: [
-      { id: 'EVT-T102-H1', name: 'Exhaust Temperature Spread Widening', date: '1 week ago', eventType: 'anomaly', subAssetId: 'T-102-CMB', status: 'new', description: 'Exhaust temperature spread increased from 12C to 22C over three weeks. Two of eight fuel nozzles (3 and 7) running 15C cool vs average. Alarm threshold is 30C. At current rate, spread hits alarm in about two weeks. Investigation IN-0895 monitoring trend.' },
-    ],
+    // All T-102 events tracked in TIMELINE. 2 total: 1 new, 1 closed.
   },
 ]
 
-// ── Computed fields on assets ────────────────────────────────────────────────
-// activeEvents and totalEvents are derived, not stored.
-ASSETS.forEach(a => {
-  a.activeEvents = a.newEvents + a.inProgressEvents
-  a.totalEvents = a.newEvents + a.inProgressEvents + a.closedEvents + a.falsePositives
-})
+// ── Event counts on assets are derived from TIMELINE after it is defined ─────
+// See "Computed: event, WO, and investigation counts" section below.
 
-// ── Timeline of Events (last 24 hours) ───────────────────────────────────────
-// 9 real equipment events. Chronological (earliest first).
+// ── Timeline of Events (all tracked events) ─────────────────────────────────
+// Complete event record backing all per-asset counts. Chronological (earliest first).
+// status: 'new' | 'in-progress' | 'closed' | 'false-positive' (triage workflow)
 // WO creation and case opening are system actions, tracked in WORK_ORDERS/CASES.
 // Each event has full metadata with provenance (source, confidence, status) and relationships.
+// Historical events (beyond 24 hours) use compact format with date field instead of time.
 
 export const TIMELINE = [
+  // ── Historical events (oldest first) ────────────────────────────────────────
+
+  // P-203: Seal Failure #1 (4 months ago) -- closed
+  {
+    id: 'EVT-P203-H1',
+    name: 'Mechanical Seal Failure',
+    date: '4 months ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Pump P-203',
+    assetId: 'P-203',
+    subAsset: 'Mechanical Seal (Discharge)',
+    subAssetId: 'P-203-SEAL',
+    event: 'Seal leakage detected at 3.8 L/hr. Seal replaced. No alignment check performed.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Mechanical seal face wear from normal operation. No root cause investigation performed at the time.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'Pump taken offline for 6 hours for seal replacement. Spare pump covered duty. No production impact.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Seal replaced. Pump returned to service. No further action at the time.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // R-301: Catalyst Bed Hot Spot (3 months ago) -- closed
+  {
+    id: 'EVT-R301-H1',
+    name: 'Catalyst Bed Hot Spot',
+    date: '3 months ago',
+    type: 'high',
+    eventType: 'alarm',
+    asset: 'Reactor R-301',
+    assetId: 'R-301',
+    subAsset: 'Catalyst Bed',
+    subAssetId: 'R-301-CAT',
+    event: 'Zone 7 temperature exceeded delta-T alarm at 42C (threshold 40C)',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Localized flow maldistribution in catalyst bed zone 7. Quench gas injection momentarily insufficient during feed rate ramp-up. Temperature normalized within 2 hours after quench valve repositioning.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'Brief temperature excursion in one of twelve zones. No catalyst damage. Quench system responded as designed once operator adjusted valve position. Bed delta-T returned to 28C within 2 hours.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Review quench valve auto-response during feed rate changes. Consider tighter setpoint band for zone 7 given its position relative to inlet distribution.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // P-102: Vibration Spike During Startup (3 months ago) -- closed
+  {
+    id: 'EVT-P102-H1',
+    name: 'Vibration Spike During Startup',
+    date: '3 months ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Pump P-102',
+    assetId: 'P-102',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'P-102-DE',
+    event: 'Vibration spike to 3.8 mm/s during cold startup, settled to 1.1 mm/s within 10 minutes',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Thermal transient during cold startup caused temporary rotor bow. Vibration settled as pump reached thermal equilibrium. Normal startup behavior for this pump model.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'No impact. Vibration returned to baseline within 10 minutes. All bearing temperatures nominal.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'No action required. Documented as baseline startup behavior for future reference.', source: 'human', confidence: null, updatedBy: 'James Park', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // T-102: Vibration Spike During Load Change (2 months ago) -- closed
+  {
+    id: 'EVT-T102-H2',
+    name: 'Vibration Spike During Load Change',
+    date: '2 months ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Turbine T-102',
+    assetId: 'T-102',
+    subAsset: 'Expander Wheel',
+    subAssetId: 'T-102-EXP',
+    event: 'Expander vibration briefly reached 5.2 mm/s during rapid FCC throughput change',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Rapid load change during FCC throughput adjustment caused transient rotor imbalance. Vibration returned to 3.1 mm/s within 5 minutes as flow stabilized.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'No damage. Transient event during normal operations. Bearings and seals unaffected.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Documented for baseline. Consider slower load ramp rate if FCC throughput changes become more frequent.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // R-301: Thermocouple Drift Alert (2 months ago) -- closed
+  {
+    id: 'EVT-R301-H2',
+    name: 'Thermocouple Drift Alert',
+    date: '2 months ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Reactor R-301',
+    assetId: 'R-301',
+    subAsset: 'Thermocouples (12)',
+    subAssetId: 'R-301-TC',
+    event: 'Three thermocouples drifting beyond 1.0C calibration tolerance (alarm at 1.5C)',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Normal thermocouple drift from extended high-temperature service. Three of twelve thermocouples (zones 3, 8, 11) showing 1.0-1.2C drift. Within recalibration interval.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'Bed temperature readings slightly off in three zones. Compensated by redundant sensors. No process impact. Recalibration brought all within 0.4C.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Recalibrate affected thermocouples. Update calibration schedule to account for drift rate at current operating temperatures.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // P-203: Seal Failure #2 (2 months ago) -- closed
+  {
+    id: 'EVT-P203-H2',
+    name: 'Mechanical Seal Failure',
+    date: '2 months ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Pump P-203',
+    assetId: 'P-203',
+    subAsset: 'Mechanical Seal (Discharge)',
+    subAssetId: 'P-203-SEAL',
+    event: 'Same failure mode as EVT-P203-H1. Seal leakage at 4.0 L/hr. Second failure in 2 months.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-P203-H1' },
+    ],
+    cause: { text: 'Identical seal face wear pattern as first failure. Recurring failure engine flagged this as a repetitive event. Seal replaced again without alignment check. Investigation IN-0894 opened to find root cause of recurring pattern.', source: 'model', confidence: 78, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'Second pump outage for seal replacement in 2 months. 6 hours downtime each time. Parts cost doubling. Same symptom, same fix, same result predicted.', source: 'model', confidence: 78, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Do not simply replace the seal again. Investigate alignment, shaft runout, and coupling condition before next seal installation.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0894'],
+  },
+
+  // K-101: Vibration Baseline Check (6 weeks ago) -- closed
+  {
+    id: 'EVT-K101-H4',
+    name: 'Quarterly Vibration Baseline',
+    date: '6 weeks ago',
+    type: 'low',
+    eventType: 'inspection',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'K-101-DE',
+    event: 'Quarterly vibration baseline: 2.8 mm/s DE, 1.2 mm/s NDE. Within limits.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'Routine quarterly vibration baseline measurement per PM schedule. Drive end bearing at 2.8 mm/s, non-drive end at 1.2 mm/s. Both within ISO 10816 Zone A/B boundary for this machine class. Oil film thickness not measured during routine baselines (requires shutdown). Bearing temperature at 72C, well within the 95C alarm. The 2.8 mm/s reading represented a 33% increase from the previous quarter (2.1 mm/s), but the absolute value was so far below alarm that the trend was not flagged. The quarterly measurement interval is too coarse to catch a degradation that would accelerate rapidly over the next six weeks.',
+      source: 'human', confidence: null, updatedBy: 'James Park', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'No action taken. At 2.8 mm/s (39% of the 7.1 mm/s alarm threshold), the reading appeared healthy. In hindsight, this was the first measurable evidence that the oil filter was beginning to bypass and contaminated lubricant was starting to affect bearing surfaces. The 33% quarter-over-quarter increase should have prompted a trend review, but the PM checklist only requires comparison against alarm thresholds, not trend analysis. A simple time-series plot of the last four quarterly readings would have shown the inflection point. This is the kind of signal that a condition monitoring system should catch automatically -- the absolute value is fine, but the rate of change is not.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Investigation IN-0891 is reviewing whether quarterly baselines should include automated trend comparison, not just threshold checks. The recommendation: configure the condition monitoring system to flag any bearing vibration increase greater than 25% quarter-over-quarter, regardless of absolute value. This would have caught the K-101 degradation at least two weeks earlier.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // K-101: Seal Gas DP Alert (5 weeks ago) -- false-positive
+  {
+    id: 'EVT-K101-H8',
+    name: 'Seal Gas DP Alert',
+    date: '5 weeks ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Mechanical Seal',
+    subAssetId: 'K-101-SEAL',
+    event: 'Seal gas differential pressure briefly read 1.8 bar (alarm 2.0 bar)',
+    status: 'false-positive',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Pressure transmitter drift. Actual DP was 3.2 bar. Transmitter recalibrated and reading returned to normal immediately.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'No real seal gas pressure issue. False reading from drifting transmitter.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Transmitter recalibrated. Add to next PM cycle for early replacement if drift recurs.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // K-101: Anti-Surge Valve Alert (4 weeks ago) -- closed
+  {
+    id: 'EVT-K101-H7',
+    name: 'Anti-Surge Valve Cycling High',
+    date: '4 weeks ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Anti-Surge Valve',
+    subAssetId: 'K-101-ASV',
+    event: 'Anti-surge valve cycling 18 times in 24 hours (alarm 20). Resolved by PID tuning.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Process upset in downstream hydrocracker caused pressure fluctuations. Anti-surge controller responding correctly but aggressively. PID gain reduced slightly to dampen response without compromising surge protection.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'Valve cycling within acceptable limits. No surge event. Cycle count returned to normal after PID adjustment.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Monitor cycle count for one week to confirm PID tuning is stable. Consider surge margin trending if cycling recurs.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // T-401: Inlet Air Filter DP Alert (1 month ago) -- closed
+  {
+    id: 'EVT-T401-H2',
+    name: 'Inlet Air Filter DP Elevated',
+    date: '1 month ago',
+    type: 'low',
+    eventType: 'alert',
+    asset: 'Turbine T-401',
+    assetId: 'T-401',
+    subAsset: 'Inlet Air System',
+    subAssetId: 'T-401-AIR',
+    event: 'Inlet air filter DP at 1.0 kPa (alarm 1.2 kPa). Filter replaced on schedule.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Normal filter loading from dust accumulation. DP approaching alarm threshold triggered replacement per PM schedule.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'No performance impact. Filter replaced before DP reached alarm. Inlet conditions returned to normal.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Filter replaced. DP returned to 0.6 kPa. Normal PM cycle.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // K-101: Oil Sample Routine (3 weeks ago) -- closed
+  {
+    id: 'EVT-K101-H5',
+    name: 'Oil Sample Marginal Results',
+    date: '3 weeks ago',
+    type: 'medium',
+    eventType: 'inspection',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Lube Oil System',
+    subAssetId: 'K-101-LOS',
+    event: 'Quarterly oil sample: particle count 18/16/13 ISO 4406. Marginal but within limits.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'Quarterly oil analysis per PM schedule. Particle count 18/16/13 per ISO 4406 (>4 micron / >6 micron / >14 micron). The OEM acceptable limit is 19/17/14. These results are at the 90th percentile of the acceptable range -- technically passing but barely. Filter differential pressure at the time: 0.5 bar (alarm 0.8 bar). The filter appeared to be functioning, but the elevated particle count suggests the bypass valve was beginning to crack open intermittently under pressure spikes. When a filter starts bypassing, particle count rises gradually because most flow still goes through the filter -- only brief surges go around it. The steady-state DP reading misses these transient bypass events entirely.',
+      source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'Oil sample closed as acceptable because it fell within OEM specification. The results were filed and the next sample was scheduled for the standard quarterly interval -- three months away. In hindsight, this was the clearest early warning signal in the entire failure chain. The particle count had risen from 15/13/11 the previous quarter to 18/16/13 -- a 20% increase across all size categories. Combined with the vibration baseline increase (2.8 mm/s, up 33% from previous quarter), a correlation analysis would have revealed concurrent degradation in two independent parameters pointing to the same root cause: oil contamination driving bearing wear. Neither parameter crossed its individual alarm threshold, but together they told an unmistakable story.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Investigation IN-0897 is reviewing alarm threshold adequacy. One finding: the OEM particle count specification (19/17/14 ISO 4406) was set for general centrifugal compressor service, not specifically for journal bearing applications where oil cleanliness is critical to bearing life. For journal bearings operating at the clearances and speeds in K-101, industry best practice suggests a tighter limit of 16/14/11. The marginal 18/16/13 result would have exceeded this tighter threshold and triggered a filter inspection that would have found the intermittent bypass. Recommendation: adopt bearing-specific oil cleanliness standards for all Criticality A rotating equipment.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // C-201: Belt Tension Low (3 weeks ago) -- in-progress
+  {
+    id: 'EVT-C201-H1',
+    name: 'Belt Tension Low',
+    date: '3 weeks ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Cooler C-201',
+    assetId: 'C-201',
+    subAsset: 'Fan Assembly',
+    subAssetId: 'C-201-FAN',
+    event: 'Fan belt tension measured at 88% during routine check. Below optimal but above 75% alarm.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-C201-H2' },
+    ],
+    cause: {
+      text: 'V-belt tension measured at 88% of nominal during routine PM check. Industrial V-belts lose tension at 0.5-1.5% per week under continuous duty from elastomer fatigue and cord stretch. C-201 runs 24/7 at approximately 12.4 amps motor load (83% of 15A rated capacity), which is moderate duty. The belt has been in service for 8 months -- within the typical 12-month replacement interval for this cooler, but tension decline is tracking toward the upper end of the expected wear rate. At the measured 88%, the belt still transmits full torque without gross slippage, but the safety margin against transient loads (sudden wind gusts on the air fin, pressure transients in the process piping) is reduced. The 75% alarm threshold represents the point where belt slip becomes likely under normal operating conditions.',
+      source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'Belt replacement added to the maintenance backlog as a scheduled item (WO-4498). Not prioritized because: belt is still functional, the cooler has no standby unit, and the replacement requires a 2-hour fan shutdown which means temporarily losing interstage cooling for K-101. With K-101 running normally, a brief cooling interruption is manageable but requires coordination with operations. The maintenance team had three higher-priority items in the queue. In retrospect, this deferred maintenance decision created the vulnerability that the K-101 trip transient exploited three weeks later. When the trip sent a pressure pulse through interstage piping, the belt at 82% tension (having declined further from 88%) was unable to maintain its sheave position under the momentary shock load. A belt at 95%+ tension would have ridden through the transient without displacement.',
+      source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Schedule belt replacement within the next PM window. Coordinate a 2-hour fan shutdown with operations during a period of low cooling demand (overnight or when ambient temperature is below 20C). While the belt is off, inspect sheave alignment and groove wear -- both contribute to accelerated belt degradation if out of spec. Standard replacement is a single V-belt, but consider upgrading to a banded belt if sheave condition permits. Banded belts have 30-40% longer service life and better transient load resistance.',
+      source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4498'],
+    linkedInvestigations: [],
+  },
+
+  // P-203: Alignment Drift Detected (3 weeks ago) -- in-progress
+  {
+    id: 'EVT-P203-H3',
+    name: 'Alignment Drift Detected',
+    date: '3 weeks ago',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Pump P-203',
+    assetId: 'P-203',
+    subAsset: 'Coupling',
+    subAssetId: 'P-203-CPL',
+    event: 'Coupling alignment at 0.09 mm, trending toward 0.15 mm alarm. Correlated with seal failures.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-P203-H1' },
+      { type: 'related_to', eventId: 'EVT-P203-H2' },
+    ],
+    cause: {
+      text: 'Coupling alignment measured at 0.09 mm offset during investigation IN-0894. The 0.15 mm alarm threshold is per ISO 10816 for this pump class. Alignment has been drifting since the second seal replacement two months ago, when the pump was reassembled without a post-installation alignment check. The recurring failure engine correlated three data streams: two identical seal failures (EVT-P203-H1, H2) at 6-8 week intervals, coupling offset trending upward at approximately 0.01 mm per month, and seal face temperature rising in sync with alignment drift. The correlation confidence is 82% -- high enough to warrant action but below the auto-escalation threshold. The shaft is running slightly eccentric due to the misalignment, which creates an uneven load distribution across the mechanical seal face. The loaded side wears 3-4x faster than the unloaded side, explaining why each replacement seal fails in the same pattern after the same interval.',
+      source: 'model', confidence: 82, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'under-review',
+    },
+    consequence: {
+      text: 'At the current drift rate (0.01 mm/month), alignment will reach the 0.15 mm alarm threshold in approximately 6 months. But the seal will fail again in 4-6 weeks regardless, because the existing misalignment at 0.09 mm is already sufficient to cause uneven seal face wear. The fourth seal replacement without alignment correction will cost another $8,000 in parts and 6 hours of downtime, and will fail again on the same timeline. More critically, if alignment drifts past 0.12 mm, the eccentric shaft loading will begin affecting the drive end bearing. At that point, the failure mode shifts from seal wear (expensive but contained) to bearing damage (more expensive, longer outage, risk of shaft scoring). This is the same category of progressive degradation that destroyed K-101 -- the difference is that P-203 failure mode is slower and the consequences are less severe because a spare pump is available.',
+      source: 'model', confidence: 82, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'under-review',
+    },
+    recommendation: {
+      text: 'Do not replace the seal without correcting alignment first. The alignment correction procedure: decouple motor from pump, install dial indicators on coupling hub faces, measure angular and offset misalignment at four positions (top, bottom, left, right), shim motor feet to bring offset below 0.05 mm and angular below 0.03 mm/100mm. Then measure shaft runout at the seal chamber to confirm the shaft is running true. If runout exceeds 0.025 mm, the shaft itself may be bent from the accumulated eccentric loading -- in that case, the pump needs to go to the shop. Estimated alignment correction time: 4 hours with the pump offline. This is the fix that should have been done after the second seal failure.',
+      source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0894'],
+  },
+
+  // E-105: Tube Leak Alert (3 weeks ago) -- false-positive
+  {
+    id: 'EVT-E105-H2',
+    name: 'Tube Leak Alert',
+    date: '3 weeks ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Heat Exchanger E-105',
+    assetId: 'E-105',
+    subAsset: 'Tube Bundle (Shell Side)',
+    subAssetId: 'E-105-TUB-S',
+    event: 'Hydrocarbon trace detected in shell-side sample. Lab retest confirmed sample contamination, not a tube leak.',
+    status: 'false-positive',
+    incidentId: null,
+    relationships: [],
+    cause: { text: 'Initial sample showed hydrocarbon traces on the shell side, suggesting a tube-to-shell leak. Rush lab retest with fresh sample found no hydrocarbons. Original sample was contaminated during collection (sampler was previously used on process side without adequate flushing).', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    consequence: { text: 'No tube leak. False alarm from contaminated sample. Sampling procedure reviewed.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    recommendation: { text: 'Update sampling SOP to require dedicated samplers per service or triple-flush between uses.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: [],
+  },
+
+  // K-101: Filter DP Elevated (2 weeks ago) -- closed
+  {
+    id: 'EVT-K101-H6',
+    name: 'Filter DP Elevated',
+    date: '2 weeks ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Lube Oil System',
+    subAssetId: 'K-101-LOS',
+    event: 'Filter differential pressure at 0.6 bar, trending up. Alarm at 0.8 bar. No action taken.',
+    status: 'closed',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'Filter differential pressure at 0.6 bar, up from 0.5 bar one week prior. The OEM alarm threshold is 0.8 bar, based on the pressure at which the filter bypass valve is designed to open fully. But the bypass valve does not operate as a binary switch -- it begins cracking open at approximately 60-70% of its rated setpoint. At 0.6 bar DP, the valve was already allowing intermittent surges of unfiltered oil past the element during pressure transients in the lube oil circuit. The steady-state DP reading of 0.6 bar looked safe, but the transient peaks were reaching 0.7-0.75 bar, enough to push the bypass valve open for fractions of a second each cycle. This is why the oil sample showed elevated particles despite the filter DP being below alarm.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    consequence: {
+      text: 'No action taken because the reading was below the 0.8 bar alarm threshold. The operator checked the DP, saw 0.6 bar, and logged it as normal. This is the third missed signal in the K-101 failure chain: vibration trending up (6 weeks ago, closed as normal), oil sample marginal (3 weeks ago, closed as acceptable), and now filter DP elevated (2 weeks ago, closed as below alarm). Each signal was evaluated in isolation against its own threshold. None crossed. But together, they describe a single failure narrative that was already two weeks old: filter bypassing, oil contaminated, bearing surfaces degrading. The alarm system was designed to catch individual parameter exceedances, not multi-parameter degradation patterns. This is the systemic gap.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Investigation IN-0897 primary finding: the 0.8 bar filter DP alarm threshold is based on the bypass valve nameplate rating and does not account for transient bypass behavior below the rated setpoint. Recommendation: lower the filter DP alarm to 0.5 bar for all critical compressors with journal bearings. Additionally, implement cross-parameter correlation rules: if filter DP exceeds 0.5 bar AND the most recent oil sample shows particle count above the 75th percentile of historical readings, auto-generate an investigation request regardless of whether either parameter has crossed its individual alarm threshold. This rule would have caught the K-101 failure chain at least two weeks before the trip.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0897'],
+  },
+
+  // P-203: Seal Chamber Pressure Elevated (2 weeks ago) -- in-progress
+  {
+    id: 'EVT-P203-H4',
+    name: 'Seal Chamber Pressure Elevated',
+    date: '2 weeks ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Pump P-203',
+    assetId: 'P-203',
+    subAsset: 'Mechanical Seal (Discharge)',
+    subAssetId: 'P-203-SEAL',
+    event: 'Seal chamber pressure trending up to 7.8 bar (alarm 7.5 bar). Correlates with seal degradation.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-P203-H3' },
+    ],
+    cause: {
+      text: 'Seal chamber pressure at 7.8 bar, above the 7.5 bar alarm threshold and climbing. The mechanical seal on P-203 is a single cartridge design with pressurized buffer fluid in the seal chamber. As the seal faces wear from eccentric shaft loading (alignment drift at 0.09 mm, EVT-P203-H3), the gap between the rotating and stationary seal faces widens asymmetrically. Buffer fluid leaks through the widening gap into the process side, and the seal chamber pressure rises as the buffer fluid system works harder to maintain the pressure differential. The seal leakage rate has increased from 2.0 L/hr (alarm threshold) two weeks ago to 4.2 L/hr today. Seal face temperature is at 78C, approaching the 85C alarm where thermal damage to the carbon face accelerates the failure.',
+      source: 'model', confidence: 82, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'under-review',
+    },
+    consequence: {
+      text: 'The seal is in active failure. Chamber pressure above alarm confirms the seal faces can no longer maintain adequate separation. At the current degradation rate, the seal will reach the shutdown threshold (chamber pressure 9.0 bar or leakage rate 8.0 L/hr) in approximately 2-3 weeks. This matches the timeline of the previous two failures: 6-8 weeks from new seal to failure, with the last 2-3 weeks showing accelerating chamber pressure and leakage. The third failure will cost the same as the first two ($8,000 parts, 6 hours downtime) unless the alignment root cause is addressed simultaneously. Without alignment correction, ordering a fourth seal is ordering a fourth failure.',
+      source: 'model', confidence: 82, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'under-review',
+    },
+    recommendation: {
+      text: 'Monitor seal chamber pressure and leakage rate daily. The seal can continue operating safely until chamber pressure reaches 9.0 bar or leakage exceeds 8.0 L/hr -- roughly 2-3 weeks. Use this window to schedule a combined seal replacement and alignment correction (WO-4483 scope should be expanded to include alignment per IN-0894 findings). Do not wait for the seal to fail catastrophically, which risks process fluid release and a longer outage. Have the spare pump warmed up and ready to take over duty before starting the work.',
+      source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4483'],
+    linkedInvestigations: ['IN-0894'],
+  },
+
+  // K-302: Anti-Surge Valve Hunting Alert (10 days ago) -- false-positive
+  {
+    id: 'EVT-K302-H3',
+    name: 'Anti-Surge Valve Hunting',
+    date: '10 days ago',
+    type: 'medium',
+    eventType: 'alert',
+    asset: 'Compressor K-302',
+    assetId: 'K-302',
+    subAsset: 'Anti-Surge Valve',
+    subAssetId: 'K-302-ASV',
+    event: 'Control room reported anti-surge valve hunting. Stroke test ordered (WO-4494). Valve later confirmed healthy.',
+    status: 'false-positive',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-001' },
+    ],
+    cause: { text: 'Control room misdiagnosed discharge temperature oscillation as anti-surge valve hunting. WO-4494 opened to stroke-test the valve. Valve is responding correctly to the oscillation, not causing it. Root cause is impeller fouling (EVT-001). This event reclassified as false positive after IN-0893 investigation.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '6:30 AM', status: 'confirmed' },
+    consequence: { text: 'No valve issue. Unnecessary WO opened. Diagnostic time wasted on wrong component.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '6:30 AM', status: 'confirmed' },
+    recommendation: { text: 'Cancel valve stroke test WO-4494 or repurpose as verification only. Focus on impeller fouling as root cause.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '6:30 AM', status: 'confirmed' },
+    kpiImpact: null,
+    linkedWOs: ['WO-4494'],
+    linkedInvestigations: ['IN-0893'],
+  },
+
+  // E-105: Accelerated Fouling Detected (1 week ago) -- new
+  {
+    id: 'EVT-E105-H1',
+    name: 'Accelerated Fouling Detected',
+    date: '1 week ago',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Heat Exchanger E-105',
+    assetId: 'E-105',
+    subAsset: 'Tube Bundle (Process Side)',
+    subAssetId: 'E-105-TUB-P',
+    event: 'Fouling rate 2x faster than model predicted. Feed outlet temp 6C below expected.',
+    status: 'new',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'The fouling prediction engine flagged a 2x acceleration in tube-side fouling rate compared to the calibrated model. The model was built on 18 months of data from the previous crude slate (light sweet crude, approximately 0.5% asphaltenic content). Two months ago, the refinery shifted to a heavier crude (approximately 2-3% asphaltenic content). Heavier aromatic molecules in the feed have lower solubility at the elevated temperatures inside E-105 (feed inlet at 378C). As the feed heats up passing through the tubes, asphaltene precursors precipitate out of solution and deposit on tube surfaces. This is a SARA-kinetics-driven process: the precipitation rate increases exponentially with temperature and asphaltene concentration. Current fouling factor: 0.00045 m2K/W, up from 0.0001 at the last cleaning. The model predicted reaching 0.00045 at month 8; it happened at month 4. Investigation IN-0896 is checking whether a tube leak is contributing to the accelerated rate, or if the crude slate change alone explains it.',
+      source: 'model', confidence: 71, updatedBy: 'Fouling Prediction Engine', updatedAt: null, status: 'under-review',
+    },
+    consequence: {
+      text: 'Feed outlet temperature at 142C versus 148C design -- a 6C shortfall that the downstream fired heater is compensating for by burning additional fuel gas. The extra fuel cost is approximately $2,000-3,000 per day. More importantly, the fouling factor is at 75% of the 0.0006 alarm threshold. At the current acceleration rate (0.0000375 m2K/W per week), the alarm threshold will be reached in approximately 4 weeks. Below alarm, the exchanger cannot maintain minimum heat duty and must be taken offline for cleaning. A cleaning outage requires 5-7 days: depressure, cool down, open channel head, hydroblast tubes, inspect for tube wall thinning, close and pressure test. Process-side pressure drop is also climbing (0.6 bar versus 0.8 alarm), which confirms the fouling is physical deposition, not just thermal resistance. Shell-side conditions remain normal (outlet temp 88C, DP 0.3 bar), which argues against a tube leak.',
+      source: 'model', confidence: 71, updatedBy: 'Fouling Prediction Engine', updatedAt: null, status: 'under-review',
+    },
+    recommendation: {
+      text: 'Await lab results from IN-0896. The diagnostic test: shell-side sample analysis for hydrocarbon traces (chloride marker). If chlorides are detected on the shell side, a tube-to-shell leak is confirmed and the outage becomes urgent (leak worsens under thermal cycling). If no chlorides, the fouling is purely from the crude slate change and the outage can be planned on a 4-week timeline. Either way, the fouling model needs recalibration for the heavier crude. Update the SARA composition inputs and rerun the precipitation kinetics to get an accurate fouling rate forecast. Schedule the cleaning outage for the next available window -- ideally coordinated with a planned FCC or hydrocracker outage to minimize standalone downtime. Review whether anti-foulant injection (chemical treatment) could slow the deposition rate enough to extend the run length on heavier crude.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4487'],
+    linkedInvestigations: ['IN-0896'],
+  },
+
+  // T-102: Exhaust Temperature Spread Widening (1 week ago) -- new
+  {
+    id: 'EVT-T102-H1',
+    name: 'Exhaust Temperature Spread Widening',
+    date: '1 week ago',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Turbine T-102',
+    assetId: 'T-102',
+    subAsset: 'Combustion Section',
+    subAssetId: 'T-102-CMB',
+    event: 'Exhaust temp spread widened from 12C to 22C over three weeks. Alarm at 30C. Nozzles 3 and 7 suspect.',
+    status: 'new',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'Exhaust temperature spread has widened from 12C to 22C over three weeks (0.48C per day increase). The pattern recognition engine identified fuel nozzles 3 and 7 as the probable cause with 76% confidence. Both nozzles show flow rates at 82% of nominal versus 100-103% for the other six. In FCC power recovery turbines, coke deposits form when heavy hydrocarbon carryover from the FCC regenerator condenses on cooler nozzle surfaces during load changes or startup transients. Nozzles 3 and 7 are on the same combustor quadrant, which suggests a localized flow pattern in the fuel manifold may be directing heavier fractions preferentially to these positions. The coked nozzles run lean (less fuel, cooler exhaust), while the six clean nozzles compensate rich through the fuel control system (more fuel, hotter exhaust). The 22C spread represents the temperature difference between the hottest clean nozzle exhaust and the coolest coked nozzle exhaust.',
+      source: 'model', confidence: 76, updatedBy: 'Pattern Recognition Engine', updatedAt: null, status: 'under-review',
+    },
+    consequence: {
+      text: 'At the current widening rate (0.48C/day), the 30C alarm threshold will be reached in approximately 17 days. The 30C spread alarm triggers an automatic derate to 70% load to protect the hot gas path components -- the clean nozzles are running hotter than design to compensate for the coked ones, and sustained hot spots accelerate thermal barrier coating degradation on the first-stage nozzle guide vanes. If the spread reaches 35C, the turbine trips automatically. A forced outage on T-102 loses 12.6 MW of power recovery from FCC flue gas and requires the plant to purchase replacement power from the grid. The parallel to K-101 is deliberate: K-101 had signals for three days and nobody acted. T-102 has had signals for three weeks. The degradation is slower and the consequences less dramatic, but the question is the same -- will the team intervene proactively, or wait for the alarm?',
+      source: 'model', confidence: 76, updatedBy: 'Pattern Recognition Engine', updatedAt: null, status: 'under-review',
+    },
+    recommendation: {
+      text: 'Two options. Proactive: schedule a nozzle cleaning outage within the next 10 days, before the spread reaches 27C (conservative margin below the 30C alarm). This requires a 36-48 hour shutdown, removal and cleaning of all 8 nozzles (clean the healthy ones too as preventive maintenance), and a borescope inspection of the combustion liner and transition pieces (WO-4488) to rule out liner degradation as a contributing factor. Reactive: continue monitoring and let the alarm derate the turbine at 30C, then plan the outage from the derated state. The proactive option costs the same outage time but avoids the derate, avoids potential coating damage from sustained hot spots, and gives the maintenance team control over the schedule. Given the K-101 crisis, the team must decide whether maintenance resources can support a T-102 outage simultaneously with K-101 emergency repairs.',
+      source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4488', 'WO-4495'],
+    linkedInvestigations: ['IN-0895'],
+  },
+
+  // C-201: Belt Tension Declining (1 week ago) -- new
+  {
+    id: 'EVT-C201-H2',
+    name: 'Belt Tension Declining',
+    date: '1 week ago',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Cooler C-201',
+    assetId: 'C-201',
+    subAsset: 'Fan Assembly',
+    subAssetId: 'C-201-FAN',
+    event: 'Belt tension declined to 85%. Rate suggests replacement needed within 2 weeks.',
+    status: 'new',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-C201-H1' },
+    ],
+    cause: {
+      text: 'Belt tension declined from 88% to 85% over two weeks -- a 1.5% per week rate, at the upper end of normal wear but consistent with a belt in its 9th month of continuous service. The auto-detection system flagged the decline rate because the trend projects arrival at the 75% alarm threshold within 7 weeks. However, the more immediate concern is transient load vulnerability. At 85% tension, the belt can still transmit steady-state torque (motor running at 12.4A, 83% load), but the slip margin under transient loads (piping vibration, startup surges, upstream pressure events) is reduced to approximately 10% versus the 25% margin at nominal tension. An external shock that adds even 15% momentary load to the fan drive could cause the belt to skip on the sheave.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'WO-4498 remains in the backlog, deprioritized against more urgent work. The belt will continue operating without slip under normal conditions for several more weeks. But the transient vulnerability window is now open. C-201 is directly connected to K-101 through interstage piping -- any compressor event that sends a pressure pulse through that piping will stress the fan drive. The probability of such an event is low on any given day, but K-101 was already showing vibration alerts (EVT-K101-H1, H2) at the time this belt measurement was taken. If someone had connected the two facts -- K-101 bearing degradation progressing and C-201 belt tension declining -- they might have prioritized the belt replacement before the compressor situation escalated. Instead, the K-101 trip one week later sent exactly the kind of transient that the marginal belt could not handle.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Escalate WO-4498 priority from scheduled to urgent. The declining rate (1.5%/week) is faster than the previous 6 months of service history, which suggests the belt may be approaching end-of-life elasticity rather than normal wear. Order replacement belt immediately and schedule the 2-hour fan shutdown within the next 5 days. If the belt reaches 80% before replacement, restrict operations that could cause interstage pressure transients (compressor startups, process upsets on connected units).',
+      source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4498'],
+    linkedInvestigations: [],
+  },
+
+  // P-203: Bearing Temperature Trend (1 week ago) -- in-progress
+  {
+    id: 'EVT-P203-H5',
+    name: 'Bearing Temperature Trending Up',
+    date: '1 week ago',
+    type: 'low',
+    eventType: 'anomaly',
+    asset: 'Pump P-203',
+    assetId: 'P-203',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'P-203-DE',
+    event: 'DE bearing temperature 58C, up from 52C baseline. Within limits but trending.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-P203-H3' },
+    ],
+    cause: {
+      text: 'Drive end bearing temperature at 58C, up from a 52C baseline established over the previous 12 months. The 6C increase over 3-4 weeks correlates with the coupling alignment drift timeline (EVT-P203-H3). The trend analysis engine flagged this with 65% confidence because the temperature-alignment correlation is suggestive but not conclusive -- bearing temperature can rise from other causes (ambient temperature changes, oil viscosity, load variations). However, the P-203 ambient conditions and process load have been stable, which strengthens the alignment hypothesis. Mechanically, misalignment changes the load vector on the bearing journal. The loaded zone shifts from its design position, concentrating the oil film pressure on a smaller arc of the bearing surface. This increases local friction and heat generation even though the overall load has not changed.',
+      source: 'model', confidence: 65, updatedBy: 'Trend Analysis Engine', updatedAt: null, status: 'under-review',
+    },
+    consequence: {
+      text: 'No immediate risk to the bearing -- 58C is only 68% of the 85C alarm threshold and bearing oil film is still well-established at this temperature. But this is the leading indicator that the alignment problem (currently manifesting as seal wear) is beginning to affect the bearing. The P-203 failure progression from alignment drift follows a predictable sequence: seal wear first (already happening, third failure approaching), then bearing temperature rise (this event), then bearing vibration increase (not yet), then bearing damage (months away if alignment stays at 0.09 mm, weeks away if alignment reaches 0.15 mm). This is exactly the K-101 pattern in slow motion -- a multi-parameter degradation where each parameter looks acceptable in isolation but the combined trend tells a clear story.',
+      source: 'model', confidence: 65, updatedBy: 'Trend Analysis Engine', updatedAt: null, status: 'under-review',
+    },
+    recommendation: {
+      text: 'Add bearing temperature to the daily monitoring checklist alongside seal chamber pressure and leakage rate. If bearing temperature exceeds 65C or increases more than 2C in any week, escalate the alignment correction from scheduled to urgent. The fact that bearing temperature is now correlated with alignment drift adds weight to the IN-0894 recommendation: do not replace the seal without correcting alignment first. The bearing temperature trend is the clearest evidence that the alignment problem is propagating beyond the seal to the bearing system. Address it now while the correction is a 4-hour alignment job, not a bearing replacement.',
+      source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0894'],
+  },
+
+  // K-302: Discharge Temp Rate-of-Change (2 days ago) -- in-progress
+  {
+    id: 'EVT-K302-H1',
+    name: 'Discharge Temp Rate-of-Change',
+    date: '2 days ago',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Compressor K-302',
+    assetId: 'K-302',
+    subAsset: 'First-Stage Impeller',
+    subAssetId: 'K-302-IMP1',
+    event: 'Discharge temperature swing exceeded rate-of-change threshold. First occurrence of oscillation pattern.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-001' },
+    ],
+    cause: {
+      text: 'Discharge temperature swung 8C in a 45-minute cycle, exceeding the 5C/hour rate-of-change threshold configured for K-302 first stage. The oscillation pattern is distinctive: temperature rises 4C over 30 minutes as fouled impeller blades restrict flow and increase compression work, then drops 4C over 15 minutes as a section of polymer buildup breaks off and flow briefly improves. The cycle repeats as new deposits form on the freshly cleaned blade surfaces. This sawtooth pattern is characteristic of polymer fouling on wet gas compressors processing FCC overhead gas. The initial diagnosis from the control room was anti-surge valve hunting -- a reasonable assumption since the valve position was oscillating in response. Investigation IN-0893 opened to determine the true root cause.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'First occurrence of the oscillation pattern that will repeat continuously over the following days. At this point, polytropic efficiency is approximately 73% (design 76%), indicating light-to-moderate fouling on the first-stage impeller blades. The compressor can continue operating safely -- the oscillation does not approach surge -- but efficiency is declining. Each cycle of deposit-and-shed leaves slightly more residual polymer on the blades, meaning the average fouling level is ratcheting upward even though the peaks and troughs appear stable. The control room misdiagnosis (valve hunting) led to WO-4494 being opened for a stroke test on the anti-surge valve, which diverted maintenance attention from the real problem.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    recommendation: {
+      text: 'The key diagnostic: compare suction and discharge conditions. If the anti-surge valve were hunting, both suction and discharge would oscillate as the control loop rings. If the oscillation is internal to the compressor (fouling, rotor imbalance), suction conditions remain stable while discharge oscillates. Pull 24 hours of suction pressure trend data and overlay with discharge temperature. If suction is flat, the valve is not the problem -- cancel the stroke test and focus on impeller condition. Check polytropic efficiency calculation against design curves to estimate fouling severity.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'auto-generated',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0893'],
+  },
+
+  // K-101: Vibration Alert #1 (3 days ago) -- in-progress
+  {
+    id: 'EVT-K101-H1',
+    name: 'Vibration Alert',
+    date: '3 days ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'K-101-DE',
+    event: 'Drive end bearing vibration at 5.1 mm/s, approaching 7.1 alarm threshold. No intervention taken.',
+    status: 'in-progress',
+    incidentId: 'INC-001',
+    relationships: [
+      { type: 'related_to', eventId: 'EVT-K101-H2' },
+    ],
+    cause: {
+      text: 'Drive end bearing vibration at 5.1 mm/s, up from 2.8 mm/s at the quarterly baseline six weeks ago. The acceleration is consistent with progressive journal bearing surface degradation from contaminated lubrication. ISO 10816 Zone B/C boundary for this machine class is 4.5 mm/s -- the bearing has crossed into Zone C (restricted long-term operation). Oil sample two weeks prior showed particle count at 18/16/13 ISO 4406, marginal but within spec. Nobody correlated the rising vibration with the marginal oil results. The alert was auto-generated by the condition monitoring system and appeared in the control room event feed, but no work order was created and no operator acknowledged it beyond clearing the notification.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'First vibration alert in what becomes a 3-day escalation window before the trip. At 5.1 mm/s, the compressor can still run safely but the trend demands investigation. The daily vibration increase from baseline (2.8 to 5.1 mm/s over 11 days) suggests bearing clearances are opening as journal surfaces erode. If someone had plotted the vibration trend against the oil sample timeline, the connection would have been obvious: contaminated oil is destroying the bearing. Instead, the alert sat in the event feed alongside dozens of routine notifications. This is the organizational failure that investigation IN-0891 is focused on -- not a sensor failure or a threshold problem, but an alert that was seen and ignored.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'At 5.1 mm/s and trending, the correct response was: pull the vibration trend for the last 30 days, compare against oil analysis results, and check lube oil filter differential pressure. All three data points were available in the system. Together they would have shown the failure narrative: filter bypassing, oil contaminated, bearing degrading. A planned shutdown at this point would have cost 8 hours. The unplanned trip 3 days later cost 5+ hours of downtime, emergency work orders, two investigations, and downstream cascade events on V-501 and C-201.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0891'],
+  },
+
+  // K-101: Vibration Alert #2 (2 days ago) -- in-progress
+  {
+    id: 'EVT-K101-H2',
+    name: 'Vibration Alert',
+    date: '2 days ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'K-101-DE',
+    event: 'Drive end bearing vibration at 5.8 mm/s. Second consecutive alert. No response.',
+    status: 'in-progress',
+    incidentId: 'INC-001',
+    relationships: [
+      { type: 'caused_by', eventId: 'EVT-K101-H1' },
+      { type: 'related_to', eventId: 'EVT-K101-H3' },
+    ],
+    cause: {
+      text: 'Vibration climbed from 5.1 mm/s to 5.8 mm/s in 24 hours -- a 14% daily increase. The acceleration rate is nonlinear, consistent with bearing surface damage entering the rapid progression phase. As babbitt material erodes from the loaded zone, bearing clearances widen asymmetrically. The shaft begins running eccentric, which increases the dynamic load on the already damaged surface, which accelerates the erosion. This is the feedback loop that turns a slow degradation into a fast failure. Oil film thickness on the drive end bearing is estimated at 22-24 microns at this point (alarm at 25 microns). The bearing temperature has risen to approximately 95C, right at the alarm threshold, but the temperature alarm did not fire because the bearing had not yet crossed the sustained duration requirement.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'Second consecutive vibration alert with no operator response. The compressor is now deep in ISO 10816 Zone C -- continued operation is acceptable only for limited periods. At the current acceleration rate (0.7 mm/s per day), vibration will reach the 7.1 mm/s trip threshold in approximately 48 hours. The window for a planned shutdown is closing. A controlled shutdown from this point requires 2-3 hours of preparation: standby compressor warm-up, process unit notification, controlled unloading. An automatic trip happens in seconds with no preparation, causing pressure transients downstream. This alert was the last realistic opportunity to choose the orderly option. After this point, the race is between the maintenance response time and the bearing failure rate.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Two consecutive daily vibration alerts on a Criticality A compressor bearing should have triggered an immediate engineering review. The minimum response: compare the vibration spectrum against the baseline to determine whether the increase is broadband (bearing damage) or narrowband (imbalance or misalignment). A broadband increase at this rate on a journal bearing points directly to surface degradation. The next step: check oil system health -- filter DP, oil sample, auxiliary pump status. If both vibration and oil system show degradation, the correct call is to begin a controlled shutdown within 12 hours while the standby compressor comes online. Every hour of delay past this point increases the risk of an uncontrolled trip.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0891'],
+  },
+
+  // K-302: Discharge Temp Rate-of-Change #2 (1 day ago) -- in-progress (kept as second occurrence)
+  // Note: This is the second occurrence of the oscillation pattern from K302-H1.
+  // It is kept as a separate event because the rate-of-change threshold was exceeded again independently.
+
+  // K-101: Vibration Alert #3 (1 day ago) -- in-progress
+  {
+    id: 'EVT-K101-H3',
+    name: 'Vibration Alert',
+    date: '1 day ago',
+    type: 'high',
+    eventType: 'alert',
+    asset: 'Compressor K-101',
+    assetId: 'K-101',
+    subAsset: 'Drive End Bearing',
+    subAssetId: 'K-101-DE',
+    event: 'Drive end bearing vibration at 6.3 mm/s. Third alert in 3 days. No work order created.',
+    status: 'in-progress',
+    incidentId: 'INC-001',
+    relationships: [
+      { type: 'caused_by', eventId: 'EVT-K101-H2' },
+      { type: 'cascaded_to', eventId: 'EVT-002' },
+    ],
+    cause: {
+      text: 'Third consecutive daily vibration alert. 6.3 mm/s, 89% of the 7.1 mm/s trip threshold. The daily progression -- 5.1, 5.8, 6.3 -- shows the classic nonlinear acceleration of journal bearing degradation. Oil pressure has started declining as well, dropping from 1.8 bar to 1.6 bar over the same period as widening bearing clearances allow more oil to leak through. The lube oil auxiliary pump has not yet auto-started (that triggers at 1.2 bar), but the main pump is working harder to maintain pressure. Bearing temperature is now sustained above 95C alarm. The vibration spectrum shows dominant 1X and 2X components with broadband elevation from 800 Hz to 2 kHz -- textbook babbitt surface damage signature. All of this was visible in the condition monitoring system. None of it was acted on.',
+      source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed',
+    },
+    consequence: {
+      text: 'Three escalating alerts over three days with zero intervention. The compressor will trip within 14 hours. At this vibration level, the bearing has approximately 12-18 hours of remaining useful life before the shaft orbit exceeds the trip protection threshold. The oil pressure decline confirms that this is not just vibration -- the entire lubrication system is compromised. When the trip happens, it will not be a clean shutdown: the anti-surge valve will slam open, pressure transients will propagate to V-501 downstream, and any equipment with marginal mechanical condition in the connected piping network (like C-201 fan belt at 82% tension) will be stressed by the hydraulic shock. The cascade that follows this trip was preventable at every step of this 3-day window.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'This was the final opportunity for a controlled response. The correct action: declare an imminent equipment failure, begin controlled unloading of K-101 over 30 minutes, bring the standby compressor online, then shut K-101 down for bearing inspection. Total cost: 4-6 hours of planned downtime with no downstream impact. Instead, 14 hours later, the automatic trip caused 5+ hours of emergency downtime, pressure transients on V-501, mechanical damage to C-201 fan belt, two emergency work orders, and four investigations. Investigation IN-0891 is asking the question that matters: why did three consecutive alerts on a Criticality A machine generate no response? Was it alarm fatigue? Staffing? Unclear escalation procedures? The answer determines whether this happens again.',
+      source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0891'],
+  },
+
+  // K-302: Efficiency Approaching Alarm (today) -- new
+  {
+    id: 'EVT-K302-H4',
+    name: 'Polytropic Efficiency Declining',
+    time: '7:00 AM',
+    type: 'medium',
+    eventType: 'anomaly',
+    asset: 'Compressor K-302',
+    assetId: 'K-302',
+    subAsset: 'First-Stage Impeller',
+    subAssetId: 'K-302-IMP1',
+    event: 'First-stage polytropic efficiency at 71% (alarm 68%). Fouling confirmed by oscillation pattern.',
+    status: 'new',
+    incidentId: null,
+    relationships: [
+      { type: 'caused_by', eventId: 'EVT-001' },
+    ],
+    cause: {
+      text: 'Polymer fouling on the first-stage impeller confirmed by the pattern recognition engine with 87% confidence. The correlation between discharge temperature oscillation (EVT-001, ongoing for 2 days) and declining polytropic efficiency establishes the diagnosis that the control room initially missed. Efficiency has dropped from 74% (baseline measured at last cleaning) to 71% over the past two weeks. The fouling rate is approximately 0.2% efficiency loss per day, which is consistent with FCC wet gas polymer deposition at the current feed composition. The anti-surge valve hunting misdiagnosis (EVT-K302-H3, reclassified as false positive) delayed the correct diagnosis by 10 days, during which the fouling progressed from light to moderate. Suction conditions remain stable at 4.8 bar, confirming the problem is internal to the compressor, not in the control system.',
+      source: 'model', confidence: 87, updatedBy: 'Pattern Recognition Engine', updatedAt: '7:00 AM', status: 'under-review',
+    },
+    consequence: {
+      text: 'At the current fouling rate (0.2%/day), efficiency will reach the 68% alarm threshold in 5-7 days. Below 68%, the compressor cannot maintain design discharge pressure, which means the FCC overhead gas recovery system loses capacity. The plant has two options: schedule a cleaning outage now (24-48 hours, planned) or wait for the alarm and face a forced outage (same duration but unplanned, with production scheduling disruptions). The K-101 crisis complicates the decision: with K-101 tripped and the standby compressor carrying hydrocracker duty, the plant cannot afford to lose K-302 simultaneously. K-302 serves the FCC unit, not the hydrocracker, so it is operationally independent of K-101 -- but maintenance resources are stretched thin by the K-101 emergency work orders. This is a resource allocation problem as much as a technical one.',
+      source: 'model', confidence: 87, updatedBy: 'Pattern Recognition Engine', updatedAt: '7:00 AM', status: 'under-review',
+    },
+    recommendation: {
+      text: 'Cancel the anti-surge valve stroke test (WO-4494) -- the valve is healthy and the diagnostic time is wasted. Evaluate two cleaning options: (1) online wash using solvent injection through the existing wash nozzles while the compressor runs at reduced load -- faster (4-6 hours) but less thorough, typically recovers 60-70% of lost efficiency; (2) offline cleaning during a planned shutdown -- takes 24-48 hours but fully restores efficiency and allows borescope inspection of blade condition. Given the K-101 crisis drawing maintenance resources, recommend the online wash as an interim measure to buy 3-4 additional weeks before the offline cleaning is needed. Schedule the offline cleaning for the next planned FCC turnaround window.',
+      source: 'model', confidence: 87, updatedBy: 'Pattern Recognition Engine', updatedAt: '7:00 AM', status: 'auto-generated',
+    },
+    kpiImpact: null,
+    linkedWOs: [],
+    linkedInvestigations: ['IN-0893'],
+  },
+
+  // T-401: Combustion Inspection Due (today) -- in-progress
+  {
+    id: 'EVT-T401-H1',
+    name: 'Combustion Inspection Due',
+    time: '6:00 AM',
+    type: 'low',
+    eventType: 'alert',
+    asset: 'Turbine T-401',
+    assetId: 'T-401',
+    subAsset: 'Combustion Section',
+    subAssetId: 'T-401-CMB',
+    event: '12,000-hour combustion inspection interval reached. Deferred pending morning huddle due to K-101 crisis.',
+    status: 'in-progress',
+    incidentId: null,
+    relationships: [],
+    cause: {
+      text: 'T-401 reached the 12,000-hour combustion inspection interval per OEM maintenance schedule. This is a mandatory inspection that checks combustion liner condition, transition piece wear, fuel nozzle integrity, and hot gas path component coating thickness. The maintenance window was planned weeks in advance: contractors mobilized, combustion parts staged in the warehouse, scaffolding erected around the turbine enclosure. Previous inspections at 6,000 and 9,000 hours found minor thermal barrier coating wear on the first-stage nozzle guide vanes, within expected limits for natural gas firing. The turbine is currently healthy -- exhaust temperature spread at 18C (alarm 25C), all flame detectors active, vibration nominal at 4.2 mm/s (alarm 12 mm/s). There is no technical urgency to this inspection; it is preventive, not corrective.',
+      source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: '6:00 AM', status: 'confirmed',
+    },
+    consequence: {
+      text: 'The K-101 trip at 2:03 AM changed the calculus. T-401 generates 18.4 MW for the refinery. With K-101 down and the standby compressor ramping up, electrical demand on the plant grid is elevated. Taking T-401 offline for a 48-72 hour combustion inspection means losing 18.4 MW of on-site generation during a period when the plant is already operating in a degraded state. The inspection can safely be deferred one week -- the OEM allows a 500-hour grace period beyond the 12,000-hour interval. But deferring has costs: contractors are already on-site and being paid standby rates, scaffolding is erected and blocking a maintenance access corridor, and the maintenance team planned their week around this outage. Not every decision in a crisis is about the crisis itself. Sometimes the dashboard helps with scheduling trade-offs that are purely operational.',
+      source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: '6:00 AM', status: 'confirmed',
+    },
+    recommendation: {
+      text: 'Decision for the morning huddle. Arguments to proceed: contractors staged and being paid, scaffolding blocking access, no K-101 dependency (T-401 serves the electrical grid, not the hydrocracker directly), inspection takes 48-72 hours and K-101 repair will take longer. Arguments to defer: plant is stressed, losing 18.4 MW generation capacity during a crisis adds operational risk, and the maintenance team may be needed for K-101 emergency work orders (WO-4481, WO-4482). If the huddle decides to defer, release contractors, demobilize scaffolding, and reschedule within 500 hours. If the huddle decides to proceed, ensure the electrical grid can handle the 18.4 MW loss with K-101 already down.',
+      source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: '6:00 AM', status: 'confirmed',
+    },
+    kpiImpact: null,
+    linkedWOs: ['WO-4484'],
+    linkedInvestigations: [],
+  },
+
+  // ── Last 24 hours (the original 9 events, chronological) ───────────────────
+
   {
     id: 'EVT-001',
     name: 'Discharge Temperature Oscillation',
@@ -998,7 +1725,7 @@ export const TIMELINE = [
     subAsset: 'First-Stage Impeller',
     subAssetId: 'K-302-IMP1',
     event: 'Discharge temperature oscillating +/-8C every few minutes',
-    status: 'confirmed',
+    status: 'in-progress',
     incidentId: null,
     relationships: [],
     cause: {
@@ -1040,7 +1767,7 @@ export const TIMELINE = [
     subAsset: 'Lube Oil System',
     subAssetId: 'K-101-LOS',
     event: 'Oil pressure dropped to 1.2 bar, aux pump auto-started',
-    status: 'confirmed',
+    status: 'in-progress',
     incidentId: 'INC-001',
     relationships: [
       { type: 'cascaded_to', eventId: 'EVT-003' },
@@ -1084,7 +1811,7 @@ export const TIMELINE = [
     subAsset: 'Lube Oil System',
     subAssetId: 'K-101-LOS',
     event: 'Oil pressure alarm: 1.0 bar (threshold 1.5 bar)',
-    status: 'confirmed',
+    status: 'in-progress',
     incidentId: 'INC-001',
     relationships: [
       { type: 'caused_by', eventId: 'EVT-002' },
@@ -1129,7 +1856,7 @@ export const TIMELINE = [
     subAsset: 'Drive End Bearing',
     subAssetId: 'K-101-DE',
     event: 'Vibration spike: 7.8 mm/s (trip threshold 7.1 mm/s)',
-    status: 'confirmed',
+    status: 'in-progress',
     incidentId: 'INC-001',
     relationships: [
       { type: 'caused_by', eventId: 'EVT-003' },
@@ -1174,7 +1901,7 @@ export const TIMELINE = [
     subAsset: null,
     subAssetId: null,
     event: 'Automatic trip on high vibration at 7.8 mm/s (threshold 7.1 mm/s)',
-    status: 'confirmed',
+    status: 'new',
     incidentId: 'INC-001',
     relationships: [
       { type: 'caused_by', eventId: 'EVT-004' },
@@ -1220,7 +1947,7 @@ export const TIMELINE = [
     subAsset: 'Vessel Shell',
     subAssetId: 'V-501-SHL',
     event: 'Pressure spike to 161 bar (design 180 bar) during K-101 trip',
-    status: 'confirmed',
+    status: 'new',
     incidentId: 'INC-001',
     relationships: [
       { type: 'caused_by', eventId: 'EVT-005' },
@@ -1264,7 +1991,7 @@ export const TIMELINE = [
     subAsset: 'Fan Assembly',
     subAssetId: 'C-201-FAN',
     event: 'Fan vibration spiking to 4.8 mm/s during belt slip events',
-    status: 'confirmed',
+    status: 'new',
     incidentId: 'INC-001',
     relationships: [
       { type: 'caused_by', eventId: 'EVT-005' },
@@ -1308,7 +2035,7 @@ export const TIMELINE = [
     subAsset: 'Mechanical Seal (Discharge)',
     subAssetId: 'P-203-SEAL',
     event: 'Discharge pressure 8% below normal, seal leakage at 4.2 L/hr',
-    status: 'confirmed',
+    status: 'new',
     incidentId: null,
     relationships: [],
     cause: {
@@ -1350,7 +2077,7 @@ export const TIMELINE = [
     subAsset: 'Drive End Bearing',
     subAssetId: 'K-101-DE',
     event: 'Bearing damage detected during manual inspection, RUL revised to 5 days',
-    status: 'confirmed',
+    status: 'new',
     incidentId: 'INC-001',
     relationships: [
       { type: 'related_to', eventId: 'EVT-005' },
@@ -1518,18 +2245,27 @@ export const INVESTIGATIONS = [
   { id: 'IN-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
 ]
 
-// ── Computed: WO and investigation counts on assets ──────────────────────────
-// Derived from WORK_ORDERS and CASES after both are defined.
+// ── Computed: event, WO, and investigation counts on assets ─────────────────
+// All counts derived from TIMELINE, WORK_ORDERS, and INVESTIGATIONS.
 ASSETS.forEach(a => {
+  const events = TIMELINE.filter(e => e.assetId === a.id)
+  a.newEvents = events.filter(e => e.status === 'new').length
+  a.inProgressEvents = events.filter(e => e.status === 'in-progress').length
+  a.closedEvents = events.filter(e => e.status === 'closed').length
+  a.falsePositives = events.filter(e => e.status === 'false-positive').length
+  a.activeEvents = a.newEvents + a.inProgressEvents
+  a.totalEvents = events.length
   a.workOrders = WORK_ORDERS.filter(wo => wo.assetId === a.id).length
   a.investigations = INVESTIGATIONS.filter(c => c.assetId === a.id).length
 })
 
 // ── Notifications (most recent first) ────────────────────────────────────────
-// Derived from TIMELINE events. Same data, reverse chronological for the panel.
+// Derived from TIMELINE events with a `time` field (recent/today events only).
+// Historical events (date field only) are excluded from the notification panel.
 // Each notification carries its full metadata so EventDetails can render directly.
 
-export const NOTIFICATIONS = TIMELINE.slice().reverse().map((evt, i) => ({
+const recentEvents = TIMELINE.filter(evt => evt.time)
+export const NOTIFICATIONS = recentEvents.slice().reverse().map((evt, i) => ({
   id: i + 1,
   eventId: evt.id,
   type: evt.type,
@@ -1739,7 +2475,7 @@ export const BAD_ACTORS = ASSETS
   .slice(0, 5)
 
 // ── Risk Matrix ───────────────────────────────────────────────────────────────
-// Computed from ASSETS. Groups by criticality, sums event counts.
+// Derived from ASSETS (which derives from TIMELINE). Groups by criticality, sums event counts.
 
 export const RISK_MATRIX = ['A', 'B', 'C'].map(crit => {
   const group = ASSETS.filter(a => a.criticality === crit)
@@ -1751,7 +2487,7 @@ export const RISK_MATRIX = ['A', 'B', 'C'].map(crit => {
 })
 
 // ── Event Summary (Alarm Quality donut) ───────────────────────────────────────
-// Computed from ASSETS. Confirmed = inProgress + closed (validated as real).
+// Derived from ASSETS (which derives from TIMELINE). Confirmed = inProgress + closed (validated as real).
 
 export const EVENT_SUMMARY = {
   confirmed:      ASSETS.reduce((sum, a) => sum + a.inProgressEvents + a.closedEvents, 0),
