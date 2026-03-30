@@ -96,7 +96,7 @@ export default function PlantOverview({ onNavigate }) {
       <section>
         <p className="section-header">Needs Action</p>
         {isMobile ? (
-          <MobileCardCarousel>
+          <MobileCardCarousel gap="var(--spacing-16)">
             <RiskMatrix
               selectedCell={riskFilter}
               onCellClick={handleRiskCellClick}

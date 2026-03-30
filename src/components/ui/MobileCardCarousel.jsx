@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-export default function MobileCardCarousel({ children }) {
+export default function MobileCardCarousel({ children, gap = 0 }) {
   const scrollRef = useRef(null)
   const [activeIdx, setActiveIdx] = useState(0)
   const count = Array.isArray(children) ? children.length : 1
@@ -21,7 +21,7 @@ export default function MobileCardCarousel({ children }) {
   }
 
   return (
-    <div>
+    <div style={{ overflow: 'hidden' }}>
       {/* Scrollable cards */}
       <div
         ref={scrollRef}
@@ -31,7 +31,7 @@ export default function MobileCardCarousel({ children }) {
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
           WebkitOverflowScrolling: 'touch',
-          gap: 'var(--spacing-16)',
+          ...(gap ? { gap } : {}),
         }}
       >
         {(Array.isArray(children) ? children : [children]).map((child, i) => (
