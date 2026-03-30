@@ -1,0 +1,5 @@
+# Ensure GitHub detects JSX as primary language
+*.jsx linguist-language=JSX
+
+# Exclude data and research from language stats
+vector/** linguist-documentation
