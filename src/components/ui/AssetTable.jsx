@@ -1,9 +1,20 @@
 import { useState, useRef, useEffect } from 'react'
-import { ASSETS, WORK_ORDERS, INVESTIGATIONS } from '../../data/assets'
+import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE } from '../../data/assets'
 import CriticalityIndicator from './CriticalityIndicator'
+import Badge from './Badge'
 import FilterChip from './FilterChip'
 import FilterButton from './FilterButton'
 import useIsMobile from '../../hooks/useIsMobile'
+
+// Worst event severity per asset (from TIMELINE)
+const SEVERITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 }
+const worstSeverityByAsset = {}
+TIMELINE.forEach(evt => {
+  const current = worstSeverityByAsset[evt.assetId]
+  if (!current || SEVERITY_RANK[evt.type] < SEVERITY_RANK[current]) {
+    worstSeverityByAsset[evt.assetId] = evt.type
+  }
+})
 
 // Status dot variant from asset status
 function statusDotVariant(status) {
@@ -116,7 +127,8 @@ function AssetRow({ asset, onAssetClick }) {
       </div>
 
       {/* Events */}
-      <div role="cell" className="type-body" style={COL_STYLES.events}>
+      <div role="cell" className="type-body" style={{ ...COL_STYLES.events, gap: 'var(--spacing-4)' }}>
+        {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
         {asset.activeEvents}
       </div>
 
@@ -186,9 +198,15 @@ function MobileAssetRow({ asset, onAssetClick }) {
         {asset.type}
       </span>
 
-      {/* Row 3: criticality */}
-      <div style={{ paddingLeft: 'var(--spacing-16)' }}>
+      {/* Row 3: criticality + events */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-12)', paddingLeft: 'var(--spacing-16)' }}>
         <CriticalityIndicator level={asset.criticality} />
+        {asset.activeEvents > 0 && (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+            {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
+            <span className="type-meta">{asset.activeEvents} {asset.activeEvents === 1 ? 'Event' : 'Events'}</span>
+          </span>
+        )}
       </div>
     </div>
   )
@@ -222,7 +240,7 @@ const MOBILE_SORT_OPTIONS = [
   { key: 'criticality', label: 'Criticality' },
 ]
 
-function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categories }) {
+function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categories, onReset }) {
   const [open, setOpen] = useState(false)
   const drawerRef = useRef(null)
 
@@ -428,12 +446,28 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             ))}
           </div>
 
-          {/* Done button */}
-          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderTop: '1px solid var(--color-border-subtle)', flexShrink: 0 }}>
+          {/* Footer buttons */}
+          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderTop: '1px solid var(--color-border-subtle)', flexShrink: 0, display: 'flex', gap: 'var(--spacing-8)' }}>
+            <button
+              onClick={() => { onReset?.(); setOpen(false) }}
+              style={{
+                flex: 1,
+                padding: 'var(--spacing-12)',
+                borderRadius: 'var(--radius-4)',
+                border: '1px solid var(--color-border-subtle)',
+                background: 'transparent',
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--text-14)',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Clear All
+            </button>
             <button
               onClick={() => setOpen(false)}
               style={{
-                width: '100%',
+                flex: 1,
                 padding: 'var(--spacing-12)',
                 borderRadius: 'var(--radius-4)',
                 border: 'none',
@@ -847,6 +881,14 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
                 sortDir={sortDir}
                 onSort={handleSort}
                 categories={FILTER_CATEGORIES}
+                onReset={() => {
+                  onClearAllFilters?.()
+                  setFilters({ criticality: [], status: [], processUnit: [] })
+                  setSortKey(null)
+                  setSortDir('asc')
+                  setSearch('')
+                  setPage(0)
+                }}
               />
             </div>
             {/* Active chips below search */}

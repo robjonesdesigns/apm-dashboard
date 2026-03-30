@@ -32,14 +32,14 @@ function Tally({ count }) {
   )
 }
 
-export default function Badge({ level }) {
+export default function Badge({ level, compact }) {
   const config = LEVELS[level]
   if (!config) return null
 
   return (
-    <span className={config.className}>
+    <span className={config.className} aria-label={config.label}>
       <Tally count={config.bars} />
-      {config.label}
+      {!compact && config.label}
     </span>
   )
 }

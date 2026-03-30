@@ -5,10 +5,15 @@
 // ADR-009: mutually exclusive with expanded sidebar.
 
 import { useState, useEffect, useRef } from 'react'
-import { NOTIFICATIONS, INCIDENTS, TIMELINE } from '../data/assets.js'
+import { NOTIFICATIONS, INCIDENTS, TIMELINE, ASSETS } from '../data/assets.js'
 import useFocusTrap from '../hooks/useFocusTrap'
 import Badge from './ui/Badge'
+import CriticalityIndicator from './ui/CriticalityIndicator'
 import FilterButton from './ui/FilterButton'
+
+// Lookup asset criticality by assetId
+const critByAsset = {}
+ASSETS.forEach(a => { critByAsset[a.id] = a.criticality })
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -101,10 +106,15 @@ function NotificationItem({ notification, isNew, onSelect }) {
           {notification.name}
         </span>
 
-        {/* Row 3: asset name */}
-        <span className="type-label" style={{ color: 'var(--color-accent)' }}>
-          {notification.asset}
-        </span>
+        {/* Row 3: asset name + criticality */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+          <span className="type-label" style={{ color: 'var(--color-accent)' }}>
+            {notification.asset}
+          </span>
+          {critByAsset[notification.assetId] && (
+            <CriticalityIndicator level={critByAsset[notification.assetId]} />
+          )}
+        </div>
 
         {/* Row 4: description (preview, max 2 lines) */}
         <span
@@ -189,9 +199,14 @@ function EventDetails({ notification, onBack, onClose }) {
         <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--spacing-4)' }}>
           {notification.name}
         </p>
-        <p className="type-label" style={{ margin: '0 0 var(--spacing-8) 0', color: 'var(--color-accent)' }}>
-          {notification.asset}
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', margin: '0 0 var(--spacing-8) 0' }}>
+          <span className="type-label" style={{ color: 'var(--color-accent)' }}>
+            {notification.asset}
+          </span>
+          {critByAsset[notification.assetId] && (
+            <CriticalityIndicator level={critByAsset[notification.assetId]} />
+          )}
+        </div>
         <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
           {notification.message}
         </p>
