@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/assets'
+import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/baytown'
 import WoPriority from './WoPriority'
 import CriticalityIndicator from './CriticalityIndicator'
 

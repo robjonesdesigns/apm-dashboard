@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { RISK_MATRIX } from '../../data/assets'
+import { RISK_MATRIX } from '../../data/baytown'
 import FilterChip from './FilterChip'
 import CriticalityIndicator from './CriticalityIndicator'
 import Legend from './Legend'

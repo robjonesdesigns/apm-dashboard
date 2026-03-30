@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { EVENT_SUMMARY } from '../../data/assets'
+import { EVENT_SUMMARY } from '../../data/baytown'
 import FilterChip from './FilterChip'
 import Legend from './Legend'
 import useIsMobile from '../../hooks/useIsMobile'

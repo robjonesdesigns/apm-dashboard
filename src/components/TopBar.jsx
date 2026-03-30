@@ -2,7 +2,7 @@
 // 48px fixed top bar. Spans full width above the sidebar.
 // Props: view, selectedAsset, onNavigate, onToggleNotifications, notificationsOpen, onToggleSidebar
 
-import { PLANT, NOTIFICATIONS } from '../data/assets.js'
+import { PLANT, NOTIFICATIONS } from '../data/baytown.js'
 
 // Maps view ID → human-readable label
 const VIEW_LABELS = {

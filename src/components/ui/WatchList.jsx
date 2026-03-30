@@ -5,7 +5,7 @@
 // Cursor-following tooltip matches dashboard pattern.
 
 import { useState, useRef, useCallback } from 'react'
-import { BAD_ACTORS } from '../../data/assets'
+import { BAD_ACTORS } from '../../data/baytown'
 import { colors } from '../../styles/tokens'
 import Legend from './Legend'
 import useIsMobile from '../../hooks/useIsMobile'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { EVENT_SUMMARY } from '../../data/assets'
+import { EVENT_SUMMARY } from '../../data/baytown'
 import useIsMobile from '../../hooks/useIsMobile'
 import { colors, chartStyle } from '../../styles/tokens'
 import Legend from './Legend'

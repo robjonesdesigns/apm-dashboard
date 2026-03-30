@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { TIMELINE } from '../../data/assets'
+import { TIMELINE } from '../../data/baytown'
 
 // Map event type to status-dot variant
 function dotVariant(type) {

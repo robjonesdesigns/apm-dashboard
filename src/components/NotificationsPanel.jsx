@@ -5,7 +5,7 @@
 // ADR-009: mutually exclusive with expanded sidebar.
 
 import { useState, useEffect, useRef } from 'react'
-import { NOTIFICATIONS, INCIDENTS, TIMELINE, ASSETS } from '../data/assets.js'
+import { NOTIFICATIONS, INCIDENTS, TIMELINE, ASSETS } from '../data/baytown.js'
 import useFocusTrap from '../hooks/useFocusTrap'
 import Badge from './ui/Badge'
 import CriticalityIndicator from './ui/CriticalityIndicator'

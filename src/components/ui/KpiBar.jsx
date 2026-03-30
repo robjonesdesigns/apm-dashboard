@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { PLANT, KPI_24H } from '../../data/assets'
+import { PLANT, KPI_24H } from '../../data/baytown'
 
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
 

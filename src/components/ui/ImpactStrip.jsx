@@ -8,7 +8,7 @@
 // identifies the trigger, cascade consequences, and inspection findings.
 // The three-act structure answers "What affected System Health?"
 
-import { TIMELINE, INCIDENTS } from '../../data/assets'
+import { TIMELINE, INCIDENTS } from '../../data/baytown'
 
 // Severity ranking for picking the most significant consequence
 const SEVERITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 }

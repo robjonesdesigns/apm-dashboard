@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE } from '../../data/assets'
+import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE } from '../../data/baytown'
 import CriticalityIndicator from './CriticalityIndicator'
 import Badge from './Badge'
 import FilterChip from './FilterChip'

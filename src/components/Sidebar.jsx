@@ -3,7 +3,7 @@
 // Mobile: full-screen drawer with branding header.
 
 import { useState, useEffect, useRef } from 'react'
-import { PLANT } from '../data/assets'
+import { PLANT } from '../data/baytown'
 import useFocusTrap from '../hooks/useFocusTrap'
 
 // ── Nav icons (Feather Icons, 24x24 viewBox rendered at 20x20) ──────────────
