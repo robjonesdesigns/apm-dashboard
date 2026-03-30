@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/baytown'
 import WoPriority from './WoPriority'
 import CriticalityIndicator from './CriticalityIndicator'
-import MobileCardCarousel from './MobileCardCarousel'
 import useIsMobile from '../../hooks/useIsMobile'
 
 // Lookup asset criticality by assetId
@@ -147,7 +146,7 @@ function CaseSummaryLine({ summary }) {
 
 function WorkOrdersCard() {
   const [hoveredId, setHoveredId] = useState(null)
-  const isMobile = useIsMobile(899)
+  const isMobile = useIsMobile()
   const summary = buildWoSummary(WORK_ORDERS)
 
   // Show top 5, sorted by urgency (emergency first)
@@ -255,7 +254,7 @@ function WorkOrdersCard() {
 
 function InvestigationsCard() {
   const [hoveredId, setHoveredId] = useState(null)
-  const isMobile = useIsMobile(899)
+  const isMobile = useIsMobile()
   const summary = buildCaseSummary(INVESTIGATIONS)
 
   const visible = INVESTIGATIONS.slice(0, 5)
@@ -354,17 +353,6 @@ function InvestigationsCard() {
 // ── InProgress ──────────────────────────────────────────────────────────────
 
 export default function InProgress() {
-  const isMobile = useIsMobile(899)
-
-  if (isMobile) {
-    return (
-      <MobileCardCarousel>
-        <WorkOrdersCard />
-        <InvestigationsCard />
-      </MobileCardCarousel>
-    )
-  }
-
   return (
     <div className="grid-12">
       <WorkOrdersCard />
