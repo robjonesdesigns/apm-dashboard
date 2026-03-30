@@ -22,7 +22,7 @@ import MobileCardCarousel from './ui/MobileCardCarousel'
 import useIsMobile from '../hooks/useIsMobile'
 
 export default function PlantOverview({ onNavigate }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile(1055)
   // Independent filter states -- stack as AND filters on the Asset Table
   const [riskFilter, setRiskFilter] = useState(null)        // { criticality, status }
   const [alarmFilter, setAlarmFilter] = useState(null)       // 'confirmed' | 'falsePositives' | 'newEvents'

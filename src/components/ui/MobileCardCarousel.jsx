@@ -42,6 +42,7 @@ export default function MobileCardCarousel({ children, gap = 0 }) {
               flex: '0 0 100%',
               scrollSnapAlign: 'start',
               minWidth: 0,
+              overflow: 'hidden',
             }}
           >
             {child}

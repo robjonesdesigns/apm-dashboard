@@ -147,7 +147,7 @@ function CaseSummaryLine({ summary }) {
 
 function WorkOrdersCard() {
   const [hoveredId, setHoveredId] = useState(null)
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile(899)
   const summary = buildWoSummary(WORK_ORDERS)
 
   // Show top 5, sorted by urgency (emergency first)
@@ -255,7 +255,7 @@ function WorkOrdersCard() {
 
 function InvestigationsCard() {
   const [hoveredId, setHoveredId] = useState(null)
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile(899)
   const summary = buildCaseSummary(INVESTIGATIONS)
 
   const visible = INVESTIGATIONS.slice(0, 5)
@@ -354,7 +354,7 @@ function InvestigationsCard() {
 // ── InProgress ──────────────────────────────────────────────────────────────
 
 export default function InProgress() {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile(899)
 
   if (isMobile) {
     return (
