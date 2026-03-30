@@ -7,23 +7,19 @@ import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
 import useIsMobile from './hooks/useIsMobile'
 
+// ADR-028: Sidebar shows 4 plant-level screens. Asset Inspection reached via Asset Table row click.
 const VIEWS = {
-  // Current screens
-  health:   PlantOverview,
-  details:  AssetInspection,
-  trends:   Trends,
-  // New screen IDs (map to same components until dedicated screens are built)
   overview:       PlantOverview,
-  events:         PlantOverview,   // placeholder
+  events:         PlantOverview,   // placeholder until dedicated screen
   inspection:     AssetInspection,
-  rootcause:      PlantOverview,   // placeholder
-  workorders:     PlantOverview,   // placeholder
-  investigations: PlantOverview,   // placeholder
+  workorders:     PlantOverview,   // placeholder until dedicated screen
+  investigations: PlantOverview,   // placeholder until dedicated screen
+  trends:         Trends,
   settings:       PlantOverview,   // placeholder
 }
 
 export default function App() {
-  const [view, setView]                     = useState('health')
+  const [view, setView]                     = useState('overview')
   const [selectedAsset, setSelectedAsset]   = useState(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
@@ -36,7 +32,7 @@ export default function App() {
   }, [dense])
 
   const navigate = (target, options = {}) => {
-    if ((target === 'details' || target === 'inspection') && options.asset) {
+    if (target === 'inspection' && options.asset) {
       setSelectedAsset(options.asset)
     }
     if (target === 'trends' && options.attribute) {
@@ -110,7 +106,7 @@ export default function App() {
           <NotificationsPanel
             open={notificationsOpen}
             onClose={() => setNotificationsOpen(false)}
-            assetFilter={(view === 'details' || view === 'inspection') ? selectedAsset?.name : null}
+            assetFilter={view === 'inspection' ? selectedAsset?.name : null}
             isMobile={isMobile}
           />
         </div>

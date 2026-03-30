@@ -184,12 +184,7 @@ export default function Sidebar({ view, onNavigate, isMobile, open, onClose }) {
   // Desktop: hover-to-expand. Mobile: explicitly toggled drawer.
   const expanded = isMobile ? open : hovered
 
-  const normalizeView = (v) => {
-    if (v === 'health')   return 'overview'
-    if (v === 'details')  return 'inspection'
-    return v
-  }
-  const activeView = normalizeView(view)
+  const activeView = view
 
   const handleNav = (id) => {
     onNavigate(id)

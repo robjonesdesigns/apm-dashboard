@@ -281,7 +281,7 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             borderRadius: 'var(--radius-full)',
             background: 'var(--color-accent)',
             color: 'var(--color-layer-01)',
-            fontSize: '10px',
+            fontSize: 'var(--text-12)',
             fontWeight: 700,
             display: 'flex',
             alignItems: 'center',
@@ -302,7 +302,7 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
+            background: 'var(--color-overlay)',
             zIndex: 9998,
           }}
         />

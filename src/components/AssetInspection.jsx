@@ -367,7 +367,7 @@ export default function AssetInspection({ selectedAsset, onNavigate }) {
     <div className="section-gap">
       <AssetHeader
         asset={selectedAsset}
-        onBack={() => onNavigate('health')}
+        onBack={() => onNavigate('overview')}
         isMobile={isMobile}
       />
       <KpiStrip asset={selectedAsset} isMobile={isMobile} />

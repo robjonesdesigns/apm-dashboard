@@ -21,7 +21,7 @@ export default function FilterChip({ label, onClear }) {
       }}
     >
       <span>{label}</span>
-      <span style={{ fontSize: 14, lineHeight: 1 }}>&times;</span>
+      <span style={{ fontSize: 'var(--text-14)', lineHeight: 1 }}>&times;</span>
     </button>
   )
 }

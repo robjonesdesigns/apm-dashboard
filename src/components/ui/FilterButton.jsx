@@ -79,7 +79,7 @@ export default function FilterButton({ categories, filters, onToggle }) {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 10,
+            fontSize: 'var(--text-12)',
             fontWeight: 600,
           }}>
             {activeCount}

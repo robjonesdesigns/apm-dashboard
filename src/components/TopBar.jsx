@@ -6,16 +6,13 @@ import { PLANT, NOTIFICATIONS } from '../data/baytown.js'
 
 // Maps view ID → human-readable label
 const VIEW_LABELS = {
-  overview:      'Plant Overview',
-  inspection:    'Asset Inspection',
-  rootcause:     'Fault Tree',
-  trends:        'Trends',
-  workorders:    'Work Orders',
+  overview:       'Plant Overview',
+  events:         'Events',
+  inspection:     'Asset Inspection',
+  trends:         'Trends',
+  workorders:     'Work Orders',
   investigations: 'Investigations',
-  settings:      'Settings',
-  // Legacy aliases (App.jsx still uses these)
-  health:        'Plant Overview',
-  details:       'Asset Inspection',
+  settings:       'Settings',
 }
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
@@ -205,7 +202,7 @@ export default function TopBar({
   const viewLabel = VIEW_LABELS[view] ?? view
 
   // Determine breadcrumb segments
-  const isAssetDetail = (view === 'details' || view === 'inspection') && selectedAsset
+  const isAssetDetail = view === 'inspection' && selectedAsset
 
   return (
     <header
@@ -322,7 +319,7 @@ export default function TopBar({
                     <li>
                       <button
                         className="type-body"
-                        onClick={() => onNavigate(view === 'details' ? 'health' : 'inspection')}
+                        onClick={() => onNavigate('overview')}
                         style={{
                           color: 'var(--color-text-secondary)',
                           background: 'none',
@@ -334,7 +331,7 @@ export default function TopBar({
                         onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)' }}
                         onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)' }}
                       >
-                        {VIEW_LABELS[view === 'details' ? 'details' : 'inspection']}
+                        {VIEW_LABELS['inspection']}
                       </button>
                     </li>
                     <li aria-hidden="true" style={{ color: 'var(--color-text-helper)', display: 'flex' }}>
