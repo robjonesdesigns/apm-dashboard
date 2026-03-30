@@ -1,5 +1,2 @@
 # GitHub language detection
-# JSX is the primary application code; data files and research docs are supporting material
-*.jsx linguist-language=JSX
-src/data/*.js linguist-generated
 vector/** linguist-documentation
