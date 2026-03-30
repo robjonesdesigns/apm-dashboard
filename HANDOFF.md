@@ -1,7 +1,7 @@
-# APM Dashboard Handoff -- Session 15 End
+# APM Dashboard Handoff -- Session 16 End
 
 ## START HERE
-Full WCAG 2.1 AA sweep complete. All remaining a11y gaps fixed (ARIA table, keyboard tooltips, focus trap, high contrast mode). KPI cards consistent height at all viewports. All navigable rows tabbable. 24 ADRs, 16 desk research docs. README written.
+Massive mobile responsive pass + data surfacing improvements. Mobile layout fully reworked: KPI cards simplified, Asset Table as stacked list with filter/sort drawer, Needs Action as swipeable carousel, tooltips suppressed, dead links cleaned up. Dense mode toggle added for desktop power users. Cross-card alignment in In Progress. Criticality badge surfaced on Event Feed and WO/Investigation rows. Compact severity badge on Asset Table events column. Component renames: TodaysActivity -> InProgress, BadActors -> WatchList. 26 ADRs, 16 desk research docs.
 
 ## Deployed
 - **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
@@ -9,22 +9,10 @@ Full WCAG 2.1 AA sweep complete. All remaining a11y gaps fixed (ARIA table, keyb
 
 ## Next session priorities
 
-### 1. Mobile view pass
-Mobile layout needs a simplification pass. Engineers on the floor need quick decision-making, not the full desktop density. This is what hiring managers will check first on their phones. Consider:
-- Collapsing or hiding Needs Action section (Event Triage, Alarm Quality, Watch List) on mobile
-- Simplifying KPI cards (value + health indicator only, no delta)
-- Impact Strip as a single summary line instead of three cards
-- Asset Table: fewer columns on mobile (Status, Asset, Events, OEE)
-- Event Feed: full-screen overlay already works, check spacing and touch targets
-- Fix any weird layout issues at mobile breakpoints
+### 1. In Progress cards -- mobile layout
+WO and Investigation card rows are squished on mobile. Content overlaps. Need to decide what to surface per row on small screens -- likely simplify to: WO ID + task (line 1), asset + criticality (line 2), urgency indicator. Same for Investigations. May need a mobile-specific row like the Asset Table approach.
 
-### 2. Event Feed tab indexes
-NotificationsPanel internal links (incident links, related event links, WO links, investigation links, Quick Access links) are currently `<span className="type-link">` with `onClick={console.log}`. They need `tabIndex={0}`, `role="link"`, and `onKeyDown` handlers. Same pattern as the tabbable rows.
-
-### 3. Deploy
-Push all session 15 changes to Vercel. Nothing matters if it's not live.
-
-### 4. Asset Inspection screen
+### 2. Asset Inspection screen
 All the rules are in place. Biggest build, needs the other fixes shipped first. Drill-down view for a single asset. Three-level IA:
 - **Reliability**: failure risk, remaining useful life, event history
 - **Maintenance**: alerts, work orders, case management
@@ -32,66 +20,46 @@ All the rules are in place. Biggest build, needs the other fixes shipped first. 
 
 65 sub-assets with sensors, thresholds, statuses, narratives, and lessons already in the data model (`src/data/assets.js`). Sub-asset tree lets engineers isolate which components are affected without leaving the page.
 
+Re-enable asset row navigation: swap `onAssetClick={null}` back to `onAssetClick={(asset) => onNavigate('details', { asset })}` in PlantOverview.jsx.
+
+### 3. Portfolio updates
+- Replace "coming soon" APM case study assets with Asset Inspection screen videos/images
+- `/design-system` route (differentiator for hiring managers)
+
 ## What was completed this session
 
-### Accessibility sweep (ADR-024, DESK-RESEARCH-016)
+### Mobile responsive pass (ADR-025)
+- Card padding: 16px mobile, 24px desktop
+- KPI cards: 24px values, hidden info icons + delta rows, health indicator retained
+- Asset Table: stacked mobile rows (status+name, type, criticality+severity+events), full-screen filter/sort drawer with sort pills + filter checkboxes + Clear All/Done
+- Needs Action: CSS scroll-snap carousel with dot indicators, equal-height cards
+- Tooltips: suppressed on mobile (RiskMatrix, AlarmQuality, WatchList, EventSummary)
+- Dead links: all placeholder navigation stripped (Event Feed, In Progress, Impact Strip, KPI bar, Asset Table rows)
+- FilterChip: nowrap + flexShrink fix for long labels
+- Search input: responsive width (fills container on mobile)
+- `useIsMobile` hook extracted to shared module
+- `slideUp` keyframe animation for drawer
+- `.hide-mobile`, `.hide-scrollbar`, `.carousel-slide` utility classes
 
-**Global CSS (`src/styles/global.css`)**
-- `:focus-visible` system: 2px solid teal, 2px offset (8.6:1 contrast on dark)
-- `:focus:not(:focus-visible)` suppresses mouse focus rings
-- `@media (prefers-reduced-motion: reduce)` zeros all animation/transition durations
-- `@media (forced-colors: active)` for Windows High Contrast Mode
-- Skip-to-content link (`.skip-link`) hidden until keyboard focused
+### Dense mode + cross-card alignment (ADR-026)
+- Segmented control in TopBar (grid/list icons, teal active state)
+- Dense mode: card padding 12px, section gaps 24px, grid gaps 12px, page padding 16px
+- localStorage persistence (`apm-dense` key)
+- Visible on both desktop and mobile
+- In Progress: fixed 100px right column for urgency/status, assignee, timestamp across WO and Investigation cards
 
-**App shell (`src/App.jsx`)**
-- `<main id="main-content">` landmark wrapping content viewport
-- Skip link jumps to `#main-content`
-- `inert` attribute on main when mobile panels open
+### Data surfacing improvements
+- Event Feed: CriticalityIndicator badge on notification cards and event detail drill-in
+- Asset Table: compact severity Badge (tally marks only, no text) next to event count
+- Badge.jsx: new `compact` prop for tally-only rendering
+- Mobile Asset Table rows: severity badge + event count on criticality line
+- In Progress: CriticalityIndicator on WO and Investigation rows (next to asset name)
 
-**SVG chart keyboard access**
-- AlarmQuality.jsx: donut segments with tabIndex, role, aria-label, aria-pressed, onKeyDown, onFocus/onBlur
-- RiskMatrix.jsx: onFocus/onBlur for tooltip on keyboard focus
-- BadActors.jsx: bar rows with role="button", tabIndex, keyboard handlers
+### Component renames
+- `TodaysActivity.jsx` -> `InProgress.jsx` (matches "In Progress" section name)
+- `BadActors.jsx` -> `WatchList.jsx` (matches "Watch List" card title)
+- All imports updated, old files removed
 
-**Keyboard tooltip positioning**
-- RiskMatrix, AlarmQuality, BadActors: getBoundingClientRect() on focused element instead of mouse coords
-
-**Focus trap**
-- `src/hooks/useFocusTrap.js`: Tab/Shift+Tab wrapping at modal boundaries
-- Applied to NotificationsPanel (mobile) and Sidebar (mobile drawer)
-
-**AssetTable.jsx**
-- ARIA table roles (role="table", role="row", role="columnheader", role="cell", role="rowgroup")
-- Sortable headers: `<button>` with `aria-sort`
-- Search: combobox role, aria-expanded, aria-live on listbox
-- Rows tabbable with tabIndex, onKeyDown, onFocus/onBlur
-- RUL column: "RUL" header with native tooltip, 100px width
-
-**NotificationsPanel.jsx**
-- aria-modal, tabIndex, programmatic focus, Escape key
-
-**FilterButton.jsx**
-- aria-expanded, aria-haspopup, Escape key
-
-**Sidebar.jsx**
-- Escape key closes mobile drawer
-
-**TodaysActivity.jsx**
-- WO and Investigation rows tabbable with role="button", aria-label, keyboard handlers
-
-### KPI card fixes
-- Health indicator always renders (visibility:hidden when normal) for consistent card height
-- KPI card buttons use flex:1 to fill grid cells
-- Trains and Active Assets have placeholder rows matching KPI card structure
-- All six cards identical height at every viewport
-- Dropdown closes on outside click and Escape key
-
-### ADR update pass (8 stale ADRs + ADR-024)
-005, 009, 011, 012, 013, 014, 015, 019, 020 updated with current names and patterns.
-ADR-024 covers all accessibility decisions.
-ADR-019 updated for RUL column name.
-
-### New artifacts
-- `vector/decisions/ADR-024-accessibility-standards.md`
-- `vector/research/DESK-RESEARCH-016-accessibility-audit.md`
-- `README.md`
+### Accessibility
+- Event Feed: tabIndex + role + onKeyDown on all type-link spans (then removed when links made static)
+- Watch List tooltip: viewport clamping to prevent right-edge overflow

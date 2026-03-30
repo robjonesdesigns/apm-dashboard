@@ -43,7 +43,8 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 
 - **TopBar.jsx**: 48px fixed. Title: "Asset Performance Management".
 - **Sidebar.jsx**: 48px rail, hover-to-expand 256px overlay (no toggle button, no content push). Shadow: --shadow-overlay.
-- **NotificationsPanel.jsx**: 320px push panel (Event Feed), two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar. Escape key closes. Focus managed on open/close (ADR-024).
+- **NotificationsPanel.jsx**: 320px push panel (Event Feed), two-panel drill-in. Filter: shared FilterButton (severity multi-select). ADR-009 mutual exclusion with sidebar. Escape key closes. Focus managed on open/close (ADR-024). CriticalityIndicator badge on notification cards and event details.
+- **Dense mode**: Segmented control in TopBar (grid/list icons). Toggles `.dense` class on root. localStorage persisted. Reduces card padding, section gaps, grid gaps (ADR-026).
 
 ## Screens
 
@@ -53,20 +54,23 @@ Plant Overview | Events | Asset Inspection | Fault Tree | Trends | Work Orders |
 
 1. System Health -- KPI bar (6 cards, ADR-010). Health indicators: triangle (warning), diamond (critical).
 2. What Happened -- Incident-driven ImpactStrip. "Go to Events" links to Events screen.
-3. In Progress -- WOs (WoPriority urgency icons) + Investigations (triangle status icons).
-4. Needs Action -- Event Triage + Alarm Quality + Watch List (ADR-020, ADR-023).
-5. Assets -- data table with drill-down (ADR-019).
+3. In Progress -- WOs (WoPriority urgency icons) + Investigations (triangle status icons). CriticalityIndicator on asset names. Cross-card 100px right column alignment (ADR-026).
+4. Needs Action -- Event Triage + Alarm Quality + Watch List (ADR-020, ADR-023). Mobile: swipeable carousel with dot indicators (ADR-025).
+5. Assets -- data table with drill-down (ADR-019). Compact severity Badge in Events column.
 
 ## Asset Table (ADR-019)
 
-9 columns: Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
+9 columns (desktop): Status | Asset | Criticality | OEE | Events | Downtime | Work Orders | Investigations | Remaining Life
 
+- Events column: compact severity Badge (tally only) + count. Worst severity derived from TIMELINE.
 - Work Orders and Investigations derived from WORK_ORDERS/INVESTIGATIONS data (not hardcoded)
 - Toolbar: filter chips (left) + smart search with autocomplete + shared FilterButton (right)
 - Sortable column headers with always-visible up/down arrows
 - Event Triage filter: chip in both Event Triage card and table toolbar, smooth scroll on apply
 - Pagination: 10 rows per page, fixed height (measures actual row height)
 - Column dividers (--color-border-divider), 16px cell padding
+- Mobile (ADR-025): stacked rows (status+name, type, criticality+severity+events). Filter/sort drawer (bottom sheet). Search fills width. Sort by Status/Name/Criticality.
+- Asset row navigation disabled until Asset Inspection ships (`onAssetClick={null}`)
 
 ## Watch List
 
@@ -83,14 +87,14 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 | System | Shape | Color | Component |
 |--------|-------|-------|-----------|
 | Event severity | Tally bars in pill | Red/amber/blue | Badge.jsx |
-| Investigation status | Right triangles | Neutral gray | TodaysActivity |
+| Investigation status | Right triangles | Neutral gray | InProgress |
 | WO urgency | Circles + clock | Neutral gray | WoPriority.jsx |
 | Asset criticality | Letter grade pill | Status colors | CriticalityIndicator.jsx |
 | Asset status | Small dots + text | Status colors | AssetTable inline |
 
 ## ADR Index
 
-001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA)
+001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment
 
 ## Desk Research Index
 
@@ -103,13 +107,28 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 ## Shared Components
 
-- `Badge.jsx` -- event severity (tally + fill hierarchy). Events and notifications only.
-- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). `inverted` prop for tooltip contexts.
+- `Badge.jsx` -- event severity (tally + fill hierarchy). `compact` prop for tally-only (no text). Events, notifications, and Asset Table.
+- `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). `inverted` prop for tooltip contexts. Used in Asset Table, Event Feed, InProgress rows.
 - `Legend.jsx` -- chart legend (swatch + label + value).
-- `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table).
-- `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table + Notifications).
+- `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table). `whiteSpace: nowrap`, `flexShrink: 0`.
+- `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table desktop + Notifications).
 - `WoPriority.jsx` -- WO urgency indicator (circle icons + text).
 
 ## Handoff
 
-See `HANDOFF.md` for session 14 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 24 ADRs, 16 desk research docs, 2 stories.
+See `HANDOFF.md` for session 16 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 26 ADRs, 16 desk research docs, 2 stories.
+
+## Hooks
+
+- `useIsMobile.js` -- responsive breakpoint hook (671px). Shared across components.
+- `useFocusTrap.js` -- Tab/Shift+Tab wrapping for modals (NotificationsPanel, Sidebar).
+
+## Mobile Patterns (ADR-025)
+
+- Breakpoint: 671px (JS) / 672px (CSS)
+- `.hide-mobile` utility (display:none !important, flex at 672px+)
+- `.hide-scrollbar` utility (webkit + Firefox + IE)
+- `.carousel-slide` (flex stretch for equal-height carousel cards)
+- `slideUp` keyframe for bottom-sheet drawers
+- Tooltips suppressed on mobile (all chart components)
+- Filter/sort: full-screen bottom drawer pattern (not dropdown)
