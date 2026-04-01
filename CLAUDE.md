@@ -9,6 +9,8 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 **Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
+**Doctrine:** `VECTOR.md`, `HANDOFF.md`, `HEURISTICS.md` (Nielsen's 10 heuristic evaluation reference)
+
 ---
 
 ## Key Rules
