@@ -12,17 +12,10 @@ const KPI_DESCRIPTIONS = {
   activeAssets: 'The count of assets currently in an operational state out of all registered assets. Includes running and standby equipment.',
 }
 
-// ── Thresholds (from DESK-RESEARCH-006) ──────────────────────────────────────
-
-const THRESHOLDS = {
-  oee:          { warning: 85, critical: 75 },
-  availability: { warning: 90, critical: 80 },
-  performance:  { warning: 92, critical: 85 },
-  quality:      { warning: 98, critical: 95 },
-}
+// ── Thresholds from PLANT data (configurable per plant) ─────────────────────
 
 function getHealthState(key, value) {
-  const t = THRESHOLDS[key]
+  const t = PLANT.thresholds?.[key]
   if (!t) return 'normal'
   if (value < t.critical) return 'critical'
   if (value < t.warning) return 'warning'
@@ -179,7 +172,7 @@ function KpiCard({ config, onClick, isSelected }) {
   const deltaColor = 'var(--color-text-secondary)'
   const valueColor = 'var(--color-text-primary)'
 
-  const threshold = THRESHOLDS[config.key]
+  const threshold = PLANT.thresholds?.[config.key]
   const thresholdLabel = health === 'critical'
     ? `Below ${threshold.critical}%`
     : `Below ${threshold.warning}%`
@@ -249,7 +242,7 @@ function KpiCard({ config, onClick, isSelected }) {
           <Sparkline
             data={KPI_24H}
             dataKey={config.key}
-            threshold={THRESHOLDS[config.key]?.warning}
+            threshold={PLANT.thresholds?.[config.key]?.warning}
             eventIndex={7}
             label={config.label}
           />

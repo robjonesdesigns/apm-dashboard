@@ -8,7 +8,7 @@ import StatusIndicator from './ui/StatusIndicator'
 import SeverityBadge from './ui/SeverityBadge'
 import WoPriority from './ui/WoPriority'
 import useIsMobile from '../hooks/useIsMobile'
-import { TIMELINE, WORK_ORDERS, INVESTIGATIONS, K101_DEGRADATION, K101_FAULT_TREE, PERFORMANCE_ATTRIBUTES } from '../data/baytown'
+import { PLANT, TIMELINE, WORK_ORDERS, INVESTIGATIONS, K101_DEGRADATION, K101_FAULT_TREE, PERFORMANCE_ATTRIBUTES } from '../data/baytown'
 
 // ── Back arrow icon (Feather chevron-left) ───────────────────────────────────
 
@@ -96,13 +96,13 @@ function AssetHeader({ asset, onBack, isMobile }) {
   )
 }
 
-// ── OEE threshold (asset-level) ───────────────────────────────────────────────
-
-const OEE_THRESHOLD = { warning: 85, critical: 75 }
+// ── OEE health from PLANT thresholds (configurable per plant) ─────────────────
 
 function getOeeHealth(value) {
-  if (value < OEE_THRESHOLD.critical) return 'critical'
-  if (value < OEE_THRESHOLD.warning) return 'warning'
+  const t = PLANT.thresholds?.oee
+  if (!t) return 'normal'
+  if (value < t.critical) return 'critical'
+  if (value < t.warning) return 'warning'
   return 'normal'
 }
 
@@ -377,7 +377,7 @@ function KpiStrip({ asset, isMobile }) {
           title="OEE"
           value={`${asset.oee}%`}
           trend={asset.oeeTrend}
-          threshold={OEE_THRESHOLD.warning}
+          threshold={PLANT.thresholds?.oee?.warning}
           unit="%"
           label="OEE"
           health={oeeHealth}

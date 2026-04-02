@@ -29,6 +29,17 @@ export const PLANT = {
   activeAssets: 138,
   totalAssets: 168,
   lastRefreshed: '7:00 AM EST',
+
+  // KPI health thresholds -- configurable per plant.
+  // Values below warning = "Monitor" (amber). Below critical = "Action Required" (red).
+  // At or above warning = healthy (no label).
+  // In production: set by plant reliability manager based on site-specific targets.
+  thresholds: {
+    oee:          { warning: 85, critical: 75 },
+    availability: { warning: 90, critical: 80 },
+    performance:  { warning: 92, critical: 85 },
+    quality:      { warning: 98, critical: 95 },
+  },
 }
 
 // ── OEE Trend (last 12 months) ────────────────────────────────────────────────
@@ -2430,12 +2441,13 @@ const ASSET_OBS_HOURS = {
   'T-102': 2880,
 }
 
+// MTBF = observation hours / number of actual equipment failures.
+// Only trips count as failures. Closed alerts, alarms, and inspections
+// are not equipment failures -- they are resolved monitoring events.
 export function deriveMTBF(assetId, timelineEvents) {
-  const failures = timelineEvents.filter(
-    e => e.eventType === 'trip' || e.status === 'closed'
-  )
+  const failures = timelineEvents.filter(e => e.eventType === 'trip')
   const obsHours = ASSET_OBS_HOURS[assetId] ?? 2880
-  if (failures.length === 0) return null  // insufficient data
+  if (failures.length === 0) return null  // no failures in observation window
   return Math.round(obsHours / failures.length)
 }
 
@@ -2519,9 +2531,10 @@ export function deriveAvailability(assetId) {
 
 export function deriveAssetOEE(asset) {
   const availability = deriveAvailability(asset.id)
-  const performance = asset.assumedPerformance
-  const quality = asset.assumedQuality
-  return Math.round(availability * performance * quality * 1000) / 10  // percentage
+  const performance = asset.assumedPerformance ?? 0.95
+  const quality = asset.assumedQuality ?? 0.99
+  const oee = availability * performance * quality * 100
+  return Math.round(oee * 10) / 10  // percentage, one decimal
 }
 
 // Plant OEE = weighted sum of asset OEE values.
