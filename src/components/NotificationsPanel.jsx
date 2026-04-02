@@ -272,13 +272,13 @@ function EventDetails({ notification, onBack, onClose }) {
         )}
 
         {/* Linked Work Orders */}
-        {notification.linkedWOs && notification.linkedWOs.length > 0 && (
+        {notification.workOrderIds && notification.workOrderIds.length > 0 && (
           <div style={{ marginBottom: 'var(--spacing-16)' }}>
             <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               Linked Work Orders
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-              {notification.linkedWOs.map((wo) => (
+              {notification.workOrderIds.map((wo) => (
                 <span key={wo} className="type-link">
                   {wo}
                 </span>
@@ -288,13 +288,13 @@ function EventDetails({ notification, onBack, onClose }) {
         )}
 
         {/* Linked Investigations */}
-        {notification.linkedInvestigations && notification.linkedInvestigations.length > 0 && (
+        {notification.investigationIds && notification.investigationIds.length > 0 && (
           <div style={{ marginBottom: 'var(--spacing-16)' }}>
             <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
               Linked Investigations
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-              {notification.linkedInvestigations.map((inv) => (
+              {notification.investigationIds.map((inv) => (
                 <span key={inv} className="type-link">
                   {inv}
                 </span>

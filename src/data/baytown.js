@@ -12,6 +12,10 @@ export const PLANT = {
   name: 'Baytown Refinery',
   location: 'Baytown, TX',
   // Current KPIs -- post K-101 trip (7:00 AM Tuesday)
+  // oee is the authoritative measured plant-level value (from OEE_TREND / KPI_24H).
+  // The 10 demo assets in ASSETS account for ~80% of plant capacity; the remaining
+  // 128 assets run near 95%+ OEE. derivePlantOEE(ASSETS) returns ~83.5 from just
+  // these 10 assets -- correct formula, partial scope. 76.3 is the full-plant measurement.
   oee: 76.3,
   availability: 78.4,
   performance: 93.8,
@@ -84,6 +88,9 @@ export const ASSETS = [
     status: 'tripped',
     urgency: 'urgent',
     oee: 64.2,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.649,
+    assumedQuality: 0.990,
     oeeTrend: [89.1, 88.7, 88.4, 87.9, 86.2, 82.1, 64.2],
     rulTrend: [42, 35, 28, 21, 14, 9, 5],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 5],
@@ -93,6 +100,9 @@ export const ASSETS = [
     mtbf: 312,
     mttr: 4.2,
     pmCompliance: 88,
+    // productionWeight: fraction of plant OEE this asset contributes (0-1, all weights sum to 1.0)
+    // K-101 is the single highest-weight asset: sole H2 recycle compressor on the hydrocracker.
+    productionWeight: 0.20,
     narrative: 'Oil filter starts bypassing around day 14. Contaminated lubricant enters bearing housing. Journal bearing surfaces erode over two weeks. Oil pressure slowly drops as bearing clearances widen. Vibration climbs as shaft runs eccentric. Day 28, 1:30 AM: oil pressure drops to 1.2 bar. 2:03 AM: automatic trip on high vibration. The signals were there for 3 days with no intervention.',
     lesson: 'The signals were there. The system generated alerts. Nobody connected the dots in time.',
     subAssets: [
@@ -176,6 +186,9 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'urgent',
     oee: 78.4,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.793,
+    assumedQuality: 0.989,
     oeeTrend: [86.3, 85.8, 84.1, 82.7, 81.0, 79.8, 78.4],
     rulTrend: [90, 82, 74, 66, 58, 51, 45],
     downtimeTrend: [0, 6, 6, 6, 6, 6, 6],
@@ -185,6 +198,8 @@ export const ASSETS = [
     mtbf: 1820,
     mttr: 6.1,
     pmCompliance: 94,
+    // Hydrocracker feed pump. Production-critical but has standby.
+    productionWeight: 0.12,
     narrative: 'Third mechanical seal replacement in six months. Each time maintenance replaces the seal and the pump runs fine for 6-8 weeks, then starts leaking again. Root cause: shaft runout from improper alignment after second seal replacement. Shaft runs slightly eccentric, wearing the seal face unevenly. Each replacement addresses the symptom but not the cause. Coupling alignment at 73% of alarm threshold and trending up.',
     lesson: 'The engineer who connects recurring seal failures to creeping alignment finds the root cause.',
     subAssets: [
@@ -258,6 +273,9 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 82.1,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.831,
+    assumedQuality: 0.988,
     oeeTrend: [88.2, 88.0, 87.9, 87.8, 87.6, 87.4, 82.1],
     rulTrend: [152, 145, 138, 131, 124, 117, 110],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -267,6 +285,8 @@ export const ASSETS = [
     mtbf: 3200,
     mttr: 8.4,
     pmCompliance: 91,
+    // Interstage cooler for K-101. Support role; no cooling = reduced compression capacity.
+    productionWeight: 0.08,
     narrative: 'C-201 cools gas between compression stages on K-101. When K-101 tripped at 2:03 AM, the sudden pressure release sent a transient pulse through interstage piping. The fan belt was already losing tension over months. The pressure transient shifted the belt on the sheave. Fan now runs with intermittent vibration, 3.2 mm/s spiking to 4.8 during belt slip events. The cooler itself is fine. Purely a mechanical issue on the air side.',
     lesson: 'How one trip event cascades to adjacent equipment. Belt was already loose, transient made it worse.',
     subAssets: [
@@ -329,6 +349,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 88.1,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.890,
+    assumedQuality: 0.990,
     oeeTrend: [88.4, 88.3, 88.2, 88.2, 88.1, 88.1, 88.1],
     rulTrend: [222, 215, 208, 201, 194, 187, 180],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -338,6 +361,8 @@ export const ASSETS = [
     mtbf: 2800,
     mttr: 96,
     pmCompliance: 100,
+    // Utilities: 18.4 MW power generation. High weight -- plant grid stability.
+    productionWeight: 0.15,
     narrative: '12,000-hour combustion inspection was scheduled weeks ago. The maintenance window opened at 6:00 AM but K-101 tripped at 2:03 AM. Now there is a question: should we shut down a healthy power source during a crisis to do preventive maintenance that can wait another week? The turbine is healthy. Previous inspections found minor coating wear within expected limits. Maintenance team, contractors, parts, and scaffolding are standing by. Morning huddle will decide whether to proceed or defer.',
     lesson: 'Not every decision is reactive. Sometimes the dashboard helps with scheduling trade-offs during a crisis.',
     subAssets: [
@@ -421,6 +446,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 93.7,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.946,
+    assumedQuality: 0.990,
     oeeTrend: [96.1, 95.8, 95.4, 95.0, 94.6, 94.1, 93.7],
     rulTrend: [282, 275, 268, 261, 254, 247, 240],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -430,6 +458,8 @@ export const ASSETS = [
     mtbf: 4800,
     mttr: 12.0,
     pmCompliance: 97,
+    // Feed/effluent HX. Criticality C; downstream fired heater compensates when degraded.
+    productionWeight: 0.06,
     narrative: 'E-105 preheats hydrocracker feed using hot reactor effluent. Two months ago the refinery shifted to a heavier crude slate. Heavier feed produces more asphaltene precursors that deposit on tube surfaces faster than the fouling model predicted. Feed outlet temperature is 6C lower than expected. Model predicted this fouling at month 8; happened at month 4. Investigation IN-0896 checking whether accelerated fouling is purely from feed change or if there is a tube leak. Lab results pending. Exchanger still running, fired heater downstream compensates but burns more fuel.',
     lesson: 'Not all problems have alarms. Some are trends that need explaining. Tests whether the dashboard supports slow-burn investigation, not just crisis response.',
     subAssets: [
@@ -499,6 +529,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 95.2,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.960,
+    assumedQuality: 0.992,
     oeeTrend: [95.4, 95.3, 95.3, 95.2, 95.2, 95.2, 95.2],
     rulTrend: [407, 400, 393, 386, 379, 372, 365],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -508,6 +541,8 @@ export const ASSETS = [
     mtbf: 8760,
     mttr: 168,
     pmCompliance: 99,
+    // Most critical asset in the plant. Sole hydrocracker reactor -- failure shuts the unit.
+    productionWeight: 0.18,
     narrative: 'Most critical asset in the plant, most stable. Fixed-bed catalytic reactor, heavy hydrocarbons with hydrogen at high temp and pressure. Catalyst bed loaded 18 months ago, performing within expected parameters. Next reload scheduled for turnaround in 12 months. No events, no investigations. K-101 trip did not affect R-301 operationally because standby compressor picked up recycle gas duty.',
     lesson: 'If K-101 had no standby, R-301 would have been the real story. A healthy critical asset still needs context.',
     subAssets: [
@@ -590,6 +625,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 94.8,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.957,
+    assumedQuality: 0.991,
     oeeTrend: [95.0, 95.0, 94.9, 94.9, 94.8, 94.8, 94.8],
     rulTrend: [342, 335, 328, 321, 314, 307, 300],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -599,6 +637,8 @@ export const ASSETS = [
     mtbf: 6500,
     mttr: 24,
     pmCompliance: 98,
+    // HP separator: support function. Pressure transient documented but no damage.
+    productionWeight: 0.05,
     narrative: 'V-501 separates hydrogen-rich gas from liquid product downstream of reactor. When K-101 tripped, sudden loss of recycle gas compression caused pressure transient. V-501 saw brief spike from 152 bar to 161 bar over 90 seconds before control systems stabilized it. Design pressure is 180 bar. Relief valve did not lift. No damage. Operations flagged because any unexpected pressure excursion on a high-pressure hydrogen vessel gets documented. Investigation IN-0898 is verification: confirm no damage, review pressure trace, close it out.',
     lesson: 'Not every investigation means something is broken. Sometimes it is due diligence.',
     subAssets: [
@@ -677,6 +717,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 96.1,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.970,
+    assumedQuality: 0.991,
     oeeTrend: [96.3, 96.2, 96.2, 96.1, 96.1, 96.1, 96.1],
     rulTrend: [322, 315, 308, 301, 294, 287, 280],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -686,6 +729,8 @@ export const ASSETS = [
     mtbf: 2400,
     mttr: 5.2,
     pmCompliance: 96,
+    // Reflux pump: Criticality C with standby available. Lowest production contribution.
+    productionWeight: 0.04,
     narrative: 'Support pump in fractionation unit. Returns condensed liquid from top of fractionation column back into process. Simple, single-stage. Low criticality because spare pump available within minutes. No events, no investigations. Only routine preventive WOs. This pump runs, gets maintained on schedule, does not cause problems.',
     lesson: 'Background asset that fills out the table and shows the engineer most of the plant is fine.',
     subAssets: [
@@ -756,6 +801,9 @@ export const ASSETS = [
     status: 'degraded',
     urgency: 'scheduled',
     oee: 79.3,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.802,
+    assumedQuality: 0.989,
     oeeTrend: [88.1, 86.9, 85.4, 83.8, 82.1, 80.6, 79.3],
     rulTrend: [140, 132, 124, 116, 110, 102, 95],
     downtimeTrend: [0, 0, 0, 2, 2, 2, 2],
@@ -765,6 +813,8 @@ export const ASSETS = [
     mtbf: 980,
     mttr: 3.8,
     pmCompliance: 87,
+    // FCC wet gas compressor: Safety A but FCC is independent of hydrocracker.
+    productionWeight: 0.07,
     narrative: 'Operations noticed discharge temperature swinging by 8-10C every few minutes. Control room initially blamed the anti-surge control valve (hunting). WO-4494 opened to stroke-test the valve. Investigation IN-0893 started as a controls issue. Root cause: polymer fouling on the first-stage impeller blades. FCC wet gas carries heavy hydrocarbons that polymerize on blade surfaces. Buildup is uneven, so compressor oscillates between restricted flow (fouled) and partial break-off (cleaner). Control valve is responding correctly to the oscillation, not causing it.',
     lesson: 'Discharge temperature oscillates but suction conditions are stable. If it were a valve issue, suction pressure would fluctuate too. Steady suction with oscillating discharge points to something inside the compressor.',
     subAssets: [
@@ -847,6 +897,9 @@ export const ASSETS = [
     status: 'running',
     urgency: 'scheduled',
     oee: 91.4,
+    // MES-fed in production; static in demo
+    assumedPerformance: 0.924,
+    assumedQuality: 0.989,
     oeeTrend: [94.2, 93.8, 93.2, 92.7, 92.1, 91.8, 91.4],
     rulTrend: [242, 235, 228, 221, 214, 207, 200],
     downtimeTrend: [0, 0, 0, 0, 0, 0, 0],
@@ -856,6 +909,8 @@ export const ASSETS = [
     mtbf: 2200,
     mttr: 14.0,
     pmCompliance: 95,
+    // FCC power recovery turbine: 12.6 MW. Production B, FCC flue gas energy recovery.
+    productionWeight: 0.05,
     narrative: 'T-102 recovers energy from FCC flue gas. Running 14 months since last overhaul. Exhaust temperature spread widening over three weeks: 12C three weeks ago, now 22C. Alarm threshold is 30C. Root cause: two of eight fuel nozzles developing coke deposits. Coking restricts fuel flow, those nozzles run lean, other six compensate rich. Uneven combustion creates hot spots near clean nozzles, cool spots near coked ones. At current rate, spread hits 30C alarm in about two weeks, triggering forced outage. Investigation IN-0895 monitoring to decide whether to schedule cleaning now or wait.',
     lesson: 'Parallel to K-101: K-101 had signals for days before the trip and nobody acted. T-102 has signals now. Will this time be different?',
     subAssets: [
@@ -965,8 +1020,8 @@ export const TIMELINE = [
     consequence: { text: 'Pump taken offline for 6 hours for seal replacement. Spare pump covered duty. No production impact.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Seal replaced. Pump returned to service. No further action at the time.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // R-301: Catalyst Bed Hot Spot (3 months ago) -- closed
@@ -988,8 +1043,8 @@ export const TIMELINE = [
     consequence: { text: 'Brief temperature excursion in one of twelve zones. No catalyst damage. Quench system responded as designed once operator adjusted valve position. Bed delta-T returned to 28C within 2 hours.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Review quench valve auto-response during feed rate changes. Consider tighter setpoint band for zone 7 given its position relative to inlet distribution.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // P-102: Vibration Spike During Startup (3 months ago) -- closed
@@ -1011,8 +1066,8 @@ export const TIMELINE = [
     consequence: { text: 'No impact. Vibration returned to baseline within 10 minutes. All bearing temperatures nominal.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'No action required. Documented as baseline startup behavior for future reference.', source: 'human', confidence: null, updatedBy: 'James Park', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // T-102: Vibration Spike During Load Change (2 months ago) -- closed
@@ -1034,8 +1089,8 @@ export const TIMELINE = [
     consequence: { text: 'No damage. Transient event during normal operations. Bearings and seals unaffected.', source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Documented for baseline. Consider slower load ramp rate if FCC throughput changes become more frequent.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // R-301: Thermocouple Drift Alert (2 months ago) -- closed
@@ -1057,8 +1112,8 @@ export const TIMELINE = [
     consequence: { text: 'Bed temperature readings slightly off in three zones. Compensated by redundant sensors. No process impact. Recalibration brought all within 0.4C.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Recalibrate affected thermocouples. Update calibration schedule to account for drift rate at current operating temperatures.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // P-203: Seal Failure #2 (2 months ago) -- closed
@@ -1083,8 +1138,8 @@ export const TIMELINE = [
     consequence: { text: 'Second pump outage for seal replacement in 2 months. 6 hours downtime each time. Parts cost doubling. Same symptom, same fix, same result predicted.', source: 'model', confidence: 78, updatedBy: 'Recurring Failure Engine', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Do not simply replace the seal again. Investigate alignment, shaft runout, and coupling condition before next seal installation.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0894'],
+    workOrderIds: [],
+    investigationIds: ['IN-0894'],
   },
 
   // K-101: Vibration Baseline Check (6 weeks ago) -- closed
@@ -1115,8 +1170,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // K-101: Seal Gas DP Alert (5 weeks ago) -- false-positive
@@ -1138,8 +1193,8 @@ export const TIMELINE = [
     consequence: { text: 'No real seal gas pressure issue. False reading from drifting transmitter.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Transmitter recalibrated. Add to next PM cycle for early replacement if drift recurs.', source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // K-101: Anti-Surge Valve Alert (4 weeks ago) -- closed
@@ -1161,8 +1216,8 @@ export const TIMELINE = [
     consequence: { text: 'Valve cycling within acceptable limits. No surge event. Cycle count returned to normal after PID adjustment.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Monitor cycle count for one week to confirm PID tuning is stable. Consider surge margin trending if cycling recurs.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // T-401: Inlet Air Filter DP Alert (1 month ago) -- closed
@@ -1184,8 +1239,8 @@ export const TIMELINE = [
     consequence: { text: 'No performance impact. Filter replaced before DP reached alarm. Inlet conditions returned to normal.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Filter replaced. DP returned to 0.6 kPa. Normal PM cycle.', source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // K-101: Oil Sample Routine (3 weeks ago) -- closed
@@ -1216,8 +1271,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // C-201: Belt Tension Low (3 weeks ago) -- in-progress
@@ -1250,8 +1305,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4498'],
-    linkedInvestigations: [],
+    workOrderIds: ['WO-4498'],
+    investigationIds: [],
   },
 
   // P-203: Alignment Drift Detected (3 weeks ago) -- in-progress
@@ -1285,8 +1340,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0894'],
+    workOrderIds: [],
+    investigationIds: ['IN-0894'],
   },
 
   // E-105: Tube Leak Alert (3 weeks ago) -- false-positive
@@ -1309,8 +1364,8 @@ export const TIMELINE = [
     consequence: { text: 'No tube leak. False alarm from contaminated sample. Sampling procedure reviewed.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
     recommendation: { text: 'Update sampling SOP to require dedicated samplers per service or triple-flush between uses.', source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
 
   // K-101: Filter DP Elevated (2 weeks ago) -- closed
@@ -1341,8 +1396,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0897'],
+    workOrderIds: [],
+    investigationIds: ['IN-0897'],
   },
 
   // P-203: Seal Chamber Pressure Elevated (2 weeks ago) -- in-progress
@@ -1375,8 +1430,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4483'],
-    linkedInvestigations: ['IN-0894'],
+    workOrderIds: ['WO-4483'],
+    investigationIds: ['IN-0894'],
   },
 
   // K-302: Anti-Surge Valve Hunting Alert (10 days ago) -- false-positive
@@ -1400,8 +1455,8 @@ export const TIMELINE = [
     consequence: { text: 'No valve issue. Unnecessary WO opened. Diagnostic time wasted on wrong component.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '6:30 AM', status: 'confirmed' },
     recommendation: { text: 'Cancel valve stroke test WO-4494 or repurpose as verification only. Focus on impeller fouling as root cause.', source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '6:30 AM', status: 'confirmed' },
     kpiImpact: null,
-    linkedWOs: ['WO-4494'],
-    linkedInvestigations: ['IN-0893'],
+    workOrderIds: ['WO-4494'],
+    investigationIds: ['IN-0893'],
   },
 
   // E-105: Accelerated Fouling Detected (1 week ago) -- new
@@ -1432,8 +1487,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4487'],
-    linkedInvestigations: ['IN-0896'],
+    workOrderIds: ['WO-4487'],
+    investigationIds: ['IN-0896'],
   },
 
   // T-102: Exhaust Temperature Spread Widening (1 week ago) -- new
@@ -1464,8 +1519,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4488', 'WO-4495'],
-    linkedInvestigations: ['IN-0895'],
+    workOrderIds: ['WO-4488', 'WO-4495'],
+    investigationIds: ['IN-0895'],
   },
 
   // C-201: Belt Tension Declining (1 week ago) -- new
@@ -1498,8 +1553,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Fred Martinez', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4498'],
-    linkedInvestigations: [],
+    workOrderIds: ['WO-4498'],
+    investigationIds: [],
   },
 
   // P-203: Bearing Temperature Trend (1 week ago) -- in-progress
@@ -1532,8 +1587,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Sarah Chen', updatedAt: null, status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0894'],
+    workOrderIds: [],
+    investigationIds: ['IN-0894'],
   },
 
   // K-302: Discharge Temp Rate-of-Change (2 days ago) -- in-progress
@@ -1566,8 +1621,8 @@ export const TIMELINE = [
       source: 'system', confidence: null, updatedBy: 'Auto-detection', updatedAt: null, status: 'auto-generated',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0893'],
+    workOrderIds: [],
+    investigationIds: ['IN-0893'],
   },
 
   // K-101: Vibration Alert #1 (3 days ago) -- in-progress
@@ -1601,8 +1656,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0891'],
+    workOrderIds: [],
+    investigationIds: ['IN-0891'],
   },
 
   // K-101: Vibration Alert #2 (2 days ago) -- in-progress
@@ -1637,8 +1692,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0891'],
+    workOrderIds: [],
+    investigationIds: ['IN-0891'],
   },
 
   // K-302: Discharge Temp Rate-of-Change #2 (1 day ago) -- in-progress (kept as second occurrence)
@@ -1677,8 +1732,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Carlos Mendez', updatedAt: '7:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0891'],
+    workOrderIds: [],
+    investigationIds: ['IN-0891'],
   },
 
   // K-302: Efficiency Approaching Alarm (today) -- new
@@ -1711,8 +1766,8 @@ export const TIMELINE = [
       source: 'model', confidence: 87, updatedBy: 'Pattern Recognition Engine', updatedAt: '7:00 AM', status: 'auto-generated',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0893'],
+    workOrderIds: [],
+    investigationIds: ['IN-0893'],
   },
 
   // T-401: Combustion Inspection Due (today) -- in-progress
@@ -1743,8 +1798,8 @@ export const TIMELINE = [
       source: 'human', confidence: null, updatedBy: 'Mike Torres', updatedAt: '6:00 AM', status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4484'],
-    linkedInvestigations: [],
+    workOrderIds: ['WO-4484'],
+    investigationIds: [],
   },
 
   // ── Last 24 hours (the original 9 events, chronological) ───────────────────
@@ -1789,8 +1844,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4494'],
-    linkedInvestigations: ['IN-0893'],
+    workOrderIds: ['WO-4494'],
+    investigationIds: ['IN-0893'],
   },
   // Severity override: matrix yields 'medium' (alert x A), escalated to 'high' -- oil pressure at critical level with aux pump auto-start, immediate precursor to trip
   {
@@ -1834,8 +1889,8 @@ export const TIMELINE = [
       status: 'auto-generated',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
   // Severity override: matrix yields 'high' (alarm x A), escalated to 'critical' -- cascading failure with imminent trip, oil pressure below critical threshold
   {
@@ -1880,8 +1935,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
   // Severity override: matrix yields 'high' (alarm x A), escalated to 'critical' -- vibration exceeded trip threshold in cascading failure sequence
   {
@@ -1926,8 +1981,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: [],
-    linkedInvestigations: [],
+    workOrderIds: [],
+    investigationIds: [],
   },
   {
     id: 'EVT-005',
@@ -1972,8 +2027,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: 'Availability -12.1%, OEE -5.9%',
-    linkedWOs: ['WO-4481', 'WO-4482'],
-    linkedInvestigations: ['IN-0891', 'IN-0897'],
+    workOrderIds: ['WO-4481', 'WO-4482'],
+    investigationIds: ['IN-0891', 'IN-0897'],
   },
   // Severity override: matrix yields 'low' (anomaly x C), escalated to 'medium' -- pressure transient on high-pressure hydrogen vessel requires safety protocol response
   {
@@ -2017,8 +2072,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: 'Pressure excursion to 161 bar',
-    linkedWOs: [],
-    linkedInvestigations: ['IN-0898'],
+    workOrderIds: [],
+    investigationIds: ['IN-0898'],
   },
   {
     id: 'EVT-007',
@@ -2061,8 +2116,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4498'],
-    linkedInvestigations: ['IN-0892'],
+    workOrderIds: ['WO-4498'],
+    investigationIds: ['IN-0892'],
   },
   // Severity override: matrix yields 'low' (alert x B), escalated to 'high' -- active seal failure above alarm threshold, third recurrence in 6 months
   {
@@ -2104,8 +2159,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: null,
-    linkedWOs: ['WO-4483'],
-    linkedInvestigations: ['IN-0894'],
+    workOrderIds: ['WO-4483'],
+    investigationIds: ['IN-0894'],
   },
   // Severity override: matrix yields 'medium' (inspection x A), escalated to 'critical' -- post-trip bearing damage confirmed, compressor restart blocked, RUL revised to 5 days
   {
@@ -2150,8 +2205,8 @@ export const TIMELINE = [
       status: 'confirmed',
     },
     kpiImpact: 'RUL revised to 5 days',
-    linkedWOs: ['WO-4481', 'WO-4482'],
-    linkedInvestigations: ['IN-0891', 'IN-0897'],
+    workOrderIds: ['WO-4481', 'WO-4482'],
+    investigationIds: ['IN-0891', 'IN-0897'],
   },
 ]
 
@@ -2198,8 +2253,8 @@ export const INCIDENTS = [
     rootCauseEventId: 'EVT-002',
     triggerEventId: 'EVT-005',
     eventIds: ['EVT-002', 'EVT-003', 'EVT-004', 'EVT-005', 'EVT-006', 'EVT-007', 'EVT-011'],
-    linkedWOs: ['WO-4481', 'WO-4482', 'WO-4498'],
-    linkedInvestigations: ['IN-0891', 'IN-0892', 'IN-0897', 'IN-0898'],
+    workOrderIds: ['WO-4481', 'WO-4482', 'WO-4498'],
+    investigationIds: ['IN-0891', 'IN-0892', 'IN-0897', 'IN-0898'],
   },
 ]
 
@@ -2213,10 +2268,12 @@ export const WORK_ORDERS = [
     task: 'Bearing inspection and assessment',
     urgency: 'emergency',
     assignee: 'Sarah Chen',
-    status: 'in-progress',
+    // Inspection opened at 2:15 AM. Bearing damage confirmed at 6:45 AM (EVT-011). 4.5 hours total.
+    status: 'completed',
     created: '2:15 AM',
+    completedAt: '6:45 AM',
     eventId: 'EVT-005',
-    linkedInvestigations: ['IN-0891'],
+    investigationIds: ['IN-0891'],
   },
   {
     id: 'WO-4482',
@@ -2225,10 +2282,12 @@ export const WORK_ORDERS = [
     task: 'Lube oil system flush and filter replacement',
     urgency: 'emergency',
     assignee: null,
+    // Blocked pending bearing replacement completion. Not yet started.
     status: 'open',
     created: '2:30 AM',
+    completedAt: null,
     eventId: 'EVT-005',
-    linkedInvestigations: ['IN-0891'],
+    investigationIds: ['IN-0891'],
   },
   {
     id: 'WO-4483',
@@ -2239,8 +2298,9 @@ export const WORK_ORDERS = [
     assignee: 'Fred Martinez',
     status: 'in-progress',
     created: '5:00 AM',
+    completedAt: null,
     eventId: 'EVT-009',
-    linkedInvestigations: ['IN-0894'],
+    investigationIds: ['IN-0894'],
   },
   {
     id: 'WO-4484',
@@ -2251,32 +2311,33 @@ export const WORK_ORDERS = [
     assignee: 'Mike Torres',
     status: 'pending-decision',
     created: '6:00 AM',
+    completedAt: null,
     eventId: null,
-    linkedInvestigations: [],
+    investigationIds: [],
     note: 'Maintenance window opened but inspection not started. K-101 crisis raises scheduling question: defer one week or proceed? Morning huddle to decide. Contractors, parts, and scaffolding staged. Previous inspections at 6,000 and 9,000 hours found minor coating wear within limits.',
   },
   // Additional work orders -- eventId null for routine/preventive WOs not triggered by an acute event
-  { id: 'WO-4485', assetId: 'P-102', asset: 'Pump P-102', task: 'Quarterly vibration baseline measurement', urgency: 'scheduled', assignee: 'James Park', status: 'in-progress', created: 'Yesterday', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4486', assetId: 'V-501', asset: 'Vessel V-501', task: 'Pressure relief valve test and recertification', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: 'Yesterday', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4487', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Tube bundle fouling assessment', urgency: 'scheduled', assignee: null, status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['IN-0896'] },
-  { id: 'WO-4488', assetId: 'T-102', asset: 'Turbine T-102', task: 'Borescope inspection preparation', urgency: 'scheduled', assignee: 'Mike Torres', status: 'open', created: '2 days ago', eventId: null, linkedInvestigations: ['IN-0895'] },
-  { id: 'WO-4489', assetId: 'R-301', asset: 'Reactor R-301', task: 'Catalyst bed thermocouple calibration', urgency: 'scheduled', assignee: null, status: 'open', created: '3 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4490', assetId: 'K-302', asset: 'Compressor K-302', task: 'Discharge temperature sensor replacement', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '3 days ago', eventId: null, linkedInvestigations: ['IN-0893'] },
-  { id: 'WO-4491', assetId: 'P-102', asset: 'Pump P-102', task: 'Coupling alignment check', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4492', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Shell-side UT thickness survey', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4493', assetId: 'V-501', asset: 'Vessel V-501', task: 'Level transmitter recalibration', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4494', assetId: 'K-302', asset: 'Compressor K-302', task: 'Anti-surge valve stroke test', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', eventId: 'EVT-001', linkedInvestigations: ['IN-0893'] },
-  { id: 'WO-4495', assetId: 'T-102', asset: 'Turbine T-102', task: 'Exhaust temperature profile review', urgency: 'scheduled', assignee: null, status: 'open', created: '6 days ago', eventId: null, linkedInvestigations: ['IN-0895'] },
-  { id: 'WO-4496', assetId: 'P-203', asset: 'Pump P-203', task: 'Suction strainer cleaning', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4497', assetId: 'R-301', asset: 'Reactor R-301', task: 'Hydrogen analyzer calibration', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4498', assetId: 'C-201', asset: 'Cooler C-201', task: 'Fan belt tension check', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: 'EVT-007', linkedInvestigations: ['IN-0892'] },
-  { id: 'WO-4499', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Gasket inventory verification', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4500', assetId: 'K-302', asset: 'Compressor K-302', task: 'Lube oil sample and analysis', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '1 week ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4501', assetId: 'T-401', asset: 'Turbine T-401', task: 'Inlet air filter differential pressure check', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4502', assetId: 'V-501', asset: 'Vessel V-501', task: 'Corrosion coupon retrieval and analysis', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4503', assetId: 'P-102', asset: 'Pump P-102', task: 'Motor insulation resistance test', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4504', assetId: 'R-301', asset: 'Reactor R-301', task: 'Safety valve inspection scheduling', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', eventId: null, linkedInvestigations: [] },
-  { id: 'WO-4505', assetId: 'K-101', asset: 'Compressor K-101', task: 'Vibration probe gap voltage verification', urgency: 'scheduled', assignee: null, status: 'open', created: '3 weeks ago', eventId: null, linkedInvestigations: [] },
+  { id: 'WO-4485', assetId: 'P-102', asset: 'Pump P-102', task: 'Quarterly vibration baseline measurement', urgency: 'scheduled', assignee: 'James Park', status: 'in-progress', created: 'Yesterday', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4486', assetId: 'V-501', asset: 'Vessel V-501', task: 'Pressure relief valve test and recertification', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: 'Yesterday', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4487', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Tube bundle fouling assessment', urgency: 'scheduled', assignee: null, status: 'open', created: '2 days ago', completedAt: null, eventId: null, investigationIds: ['IN-0896'] },
+  { id: 'WO-4488', assetId: 'T-102', asset: 'Turbine T-102', task: 'Borescope inspection preparation', urgency: 'scheduled', assignee: 'Mike Torres', status: 'open', created: '2 days ago', completedAt: null, eventId: null, investigationIds: ['IN-0895'] },
+  { id: 'WO-4489', assetId: 'R-301', asset: 'Reactor R-301', task: 'Catalyst bed thermocouple calibration', urgency: 'scheduled', assignee: null, status: 'open', created: '3 days ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4490', assetId: 'K-302', asset: 'Compressor K-302', task: 'Discharge temperature sensor replacement', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '3 days ago', completedAt: null, eventId: null, investigationIds: ['IN-0893'] },
+  { id: 'WO-4491', assetId: 'P-102', asset: 'Pump P-102', task: 'Coupling alignment check', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4492', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Shell-side UT thickness survey', urgency: 'scheduled', assignee: null, status: 'open', created: '4 days ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4493', assetId: 'V-501', asset: 'Vessel V-501', task: 'Level transmitter recalibration', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4494', assetId: 'K-302', asset: 'Compressor K-302', task: 'Anti-surge valve stroke test', urgency: 'scheduled', assignee: null, status: 'open', created: '5 days ago', completedAt: null, eventId: 'EVT-001', investigationIds: ['IN-0893'] },
+  { id: 'WO-4495', assetId: 'T-102', asset: 'Turbine T-102', task: 'Exhaust temperature profile review', urgency: 'scheduled', assignee: null, status: 'open', created: '6 days ago', completedAt: null, eventId: null, investigationIds: ['IN-0895'] },
+  { id: 'WO-4496', assetId: 'P-203', asset: 'Pump P-203', task: 'Suction strainer cleaning', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4497', assetId: 'R-301', asset: 'Reactor R-301', task: 'Hydrogen analyzer calibration', urgency: 'scheduled', assignee: 'Sarah Chen', status: 'open', created: '1 week ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4498', assetId: 'C-201', asset: 'Cooler C-201', task: 'Fan belt tension check', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', completedAt: null, eventId: 'EVT-007', investigationIds: ['IN-0892'] },
+  { id: 'WO-4499', assetId: 'E-105', asset: 'Heat Exchanger E-105', task: 'Gasket inventory verification', urgency: 'scheduled', assignee: null, status: 'open', created: '1 week ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4500', assetId: 'K-302', asset: 'Compressor K-302', task: 'Lube oil sample and analysis', urgency: 'scheduled', assignee: 'Fred Martinez', status: 'open', created: '1 week ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4501', assetId: 'T-401', asset: 'Turbine T-401', task: 'Inlet air filter differential pressure check', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4502', assetId: 'V-501', asset: 'Vessel V-501', task: 'Corrosion coupon retrieval and analysis', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4503', assetId: 'P-102', asset: 'Pump P-102', task: 'Motor insulation resistance test', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4504', assetId: 'R-301', asset: 'Reactor R-301', task: 'Safety valve inspection scheduling', urgency: 'scheduled', assignee: null, status: 'open', created: '2 weeks ago', completedAt: null, eventId: null, investigationIds: [] },
+  { id: 'WO-4505', assetId: 'K-101', asset: 'Compressor K-101', task: 'Vibration probe gap voltage verification', urgency: 'scheduled', assignee: null, status: 'open', created: '3 weeks ago', completedAt: null, eventId: null, investigationIds: [] },
 ]
 
 // ── Cases (active at 7:00 AM) ─────────────────────────────────────────────────
@@ -2289,8 +2350,8 @@ export const INVESTIGATIONS = [
     description: 'Root cause analysis: recurring bearing degradation. Vibration alerts ignored for 3 days. Oil filter bypass suspected. Threshold review needed.',
     status: 'investigating',
     assignee: 'Carlos Mendez',
-    linkedWorkOrders: ['WO-4481', 'WO-4482'],
-    linkedEvents: ['EVT-002', 'EVT-003', 'EVT-004', 'EVT-005', 'EVT-011'],
+    workOrderIds: ['WO-4481', 'WO-4482'],
+    eventIds: ['EVT-002', 'EVT-003', 'EVT-004', 'EVT-005', 'EVT-011'],
     incidentId: 'INC-001',
     opened: '3:00 AM',
   },
@@ -2301,21 +2362,205 @@ export const INVESTIGATIONS = [
     description: 'Vibration anomaly on fan assembly. Determine if related to K-101 trip transient or independent belt degradation.',
     status: 'open',
     assignee: null,
-    linkedWorkOrders: ['WO-4498'],
-    linkedEvents: ['EVT-007'],
+    workOrderIds: ['WO-4498'],
+    eventIds: ['EVT-007'],
     incidentId: 'INC-001',
     opened: '2:15 AM',
   },
-  { id: 'IN-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4494'], linkedEvents: ['EVT-001'], incidentId: null, opened: '2 days ago' },
-  { id: 'IN-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', assignee: 'Sarah Chen', linkedWorkOrders: ['WO-4483'], linkedEvents: ['EVT-009'], incidentId: null, opened: '4 days ago' },
-  { id: 'IN-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4488', 'WO-4495'], linkedEvents: ['EVT-T102-H1'], incidentId: null, opened: '1 week ago' },
-  { id: 'IN-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', assignee: null, linkedWorkOrders: ['WO-4487'], linkedEvents: ['EVT-E105-H1'], incidentId: null, opened: '1 week ago' },
-  { id: 'IN-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-005'], incidentId: 'INC-001', opened: '3:30 AM' },
-  { id: 'IN-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, linkedWorkOrders: [], linkedEvents: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
+  { id: 'IN-0893', assetId: 'K-302', asset: 'Compressor K-302', description: 'Discharge temperature oscillation pattern. Determine if control valve hunting or early-stage fouling.', status: 'open', assignee: null, workOrderIds: ['WO-4494'], eventIds: ['EVT-001'], incidentId: null, opened: '2 days ago' },
+  { id: 'IN-0894', assetId: 'P-203', asset: 'Pump P-203', description: 'Recurring seal leakage. Third seal replacement in 6 months. Investigate shaft runout or alignment root cause.', status: 'investigating', assignee: 'Sarah Chen', workOrderIds: ['WO-4483'], eventIds: ['EVT-009'], incidentId: null, opened: '4 days ago' },
+  { id: 'IN-0895', assetId: 'T-102', asset: 'Turbine T-102', description: 'Gradual exhaust temperature spread widening. Monitor for combustion liner degradation.', status: 'open', assignee: null, workOrderIds: ['WO-4488', 'WO-4495'], eventIds: ['EVT-T102-H1'], incidentId: null, opened: '1 week ago' },
+  { id: 'IN-0896', assetId: 'E-105', asset: 'Heat Exchanger E-105', description: 'Heat duty declining faster than fouling model predicts. Investigate potential tube leak.', status: 'open', assignee: null, workOrderIds: ['WO-4487'], eventIds: ['EVT-E105-H1'], incidentId: null, opened: '1 week ago' },
+  { id: 'IN-0897', assetId: 'K-101', asset: 'Compressor K-101', description: 'Historical review: alarm threshold adequacy across all critical compressors. Initiated after K-101 trip.', status: 'open', assignee: null, workOrderIds: [], eventIds: ['EVT-005'], incidentId: 'INC-001', opened: '3:30 AM' },
+  { id: 'IN-0898', assetId: 'V-501', asset: 'Vessel V-501', description: 'Unexpected pressure fluctuation during K-101 trip transient. Confirm vessel integrity.', status: 'open', assignee: null, workOrderIds: [], eventIds: ['EVT-006'], incidentId: 'INC-001', opened: '2:10 AM' },
 ]
 
-// ── Computed: event, WO, and investigation counts on assets ─────────────────
+// ── Reliability derivation helpers ──────────────────────────────────────────
+//
+// Time parsing: relative strings -> hours since now (positive = in the past)
+// Today timestamps (e.g. '2:15 AM') are converted to hours from midnight.
+// Used only for MTTR derivation from WO created/completedAt strings.
+
+function parseTimeToHours(str) {
+  if (!str) return null
+  if (/^\d{1,2}:\d{2}\s*(AM|PM)$/i.test(str)) {
+    const [time, period] = str.split(' ')
+    let [h, m] = time.split(':').map(Number)
+    if (/pm/i.test(period) && h !== 12) h += 12
+    if (/am/i.test(period) && h === 12) h = 0
+    return h + m / 60
+  }
+  if (str === 'Yesterday') return 24
+  const daysMatch = str.match(/^(\d+)\s+days?\s+ago$/)
+  if (daysMatch) return Number(daysMatch[1]) * 24
+  const weeksMatch = str.match(/^(\d+)\s+weeks?\s+ago$/)
+  if (weeksMatch) return Number(weeksMatch[1]) * 168
+  if (str === '1 week ago') return 168
+  return null
+}
+
+// MTBF = total observation hours / number of failure events
+// Failure events = eventType 'trip' OR status 'closed' (validated failures)
+// Observation window approximated per asset from narrative timeframes (hours).
+// Assets with < 2 data points fall back to the hardcoded value in ASSETS
+// (noted inline on the asset).
+//
+// Observation windows by asset (conservative: uses story narrative context):
+//   K-101: 28 days = 672h (story spans day-1 to trip on day-28)
+//   P-203: 4 months = 2880h (two historical seal failures 4 and 2 months ago)
+//   C-201: 4 months = 2880h (first belt alert 3 weeks ago; no failures yet)
+//   T-401: 4 months = 2880h (only 1 closed event in 4 months)
+//   E-105: 4 months = 2880h (no closed events)
+//   R-301: 4 months = 2880h (2 closed minor events)
+//   V-501: 4 months = 2880h (no closed events)
+//   P-102: 4 months = 2880h (1 closed startup spike)
+//   K-302: 4 months = 2880h (no closed events; historical MTBF reflects older data)
+//   T-102: 4 months = 2880h (1 closed vibration spike)
+
+const ASSET_OBS_HOURS = {
+  'K-101': 672,   // 28-day failure chain narrative
+  'P-203': 2880,  // 4-month recurring seal pattern
+  'C-201': 2880,
+  'T-401': 2880,
+  'E-105': 2880,
+  'R-301': 2880,
+  'V-501': 2880,
+  'P-102': 2880,
+  'K-302': 2880,
+  'T-102': 2880,
+}
+
+export function deriveMTBF(assetId, timelineEvents) {
+  const failures = timelineEvents.filter(
+    e => e.eventType === 'trip' || e.status === 'closed'
+  )
+  const obsHours = ASSET_OBS_HOURS[assetId] ?? 2880
+  if (failures.length === 0) return null  // insufficient data
+  return Math.round(obsHours / failures.length)
+}
+
+// MTTR = average (completedAt - created) hours for completed WOs on this asset.
+// Only includes WOs where completedAt !== null.
+// Time strings parsed via parseTimeToHours(); today-timestamps anchored at
+// hours-from-midnight, relative strings at hours-before-now (7:00 AM = 7h).
+// For MTTR the delta is what matters, so absolute anchor cancels out as long
+// as created and completedAt are both today-timestamps or both relative.
+
+export function deriveMTTR(assetId, workOrders) {
+  const done = workOrders.filter(wo => wo.assetId === assetId && wo.completedAt !== null)
+  if (done.length === 0) return null
+  const durations = done.map(wo => {
+    const start = parseTimeToHours(wo.created)
+    const end   = parseTimeToHours(wo.completedAt)
+    if (start == null || end == null) return null
+    // If end < start, the WO crossed midnight (treat as same-day delta)
+    return end >= start ? end - start : 24 - start + end
+  }).filter(d => d !== null)
+  if (durations.length === 0) return null
+  const avg = durations.reduce((s, d) => s + d, 0) / durations.length
+  return Math.round(avg * 10) / 10
+}
+
+// RUL = linear projection of rulTrend to zero.
+// If the last two points are flat or rising, RUL = last value (stable, no decline).
+// If declining, compute the slope (days/step over 7 weekly steps) and project to 0.
+// rulTrend has 7 data points at weekly intervals; slope is in days per week.
+
+export function deriveRUL(rulTrend) {
+  if (!rulTrend || rulTrend.length < 2) return null
+  const last  = rulTrend[rulTrend.length - 1]
+  const prev  = rulTrend[rulTrend.length - 2]
+  const slope = last - prev  // days change per week (negative = declining)
+  if (slope >= 0) return `${last} days`  // stable or rising
+  // Weeks until zero crossing from the last reading: last / |slope|
+  const weeksToZero = last / Math.abs(slope)
+  const daysToZero  = Math.round(weeksToZero * 7)
+  // Cap at last value as an upper bound sanity check
+  return `${Math.min(daysToZero, last)} days`
+}
+
+// ── OEE Derivation ────────────────────────────────────────────────────────────
+//
+// OEE = Availability x Performance x Quality
+//
+// Availability = uptime / (uptime + downtime)
+//   Production: derived from DCS historian (asset run/stop status over time).
+//   Demo: derived from TIMELINE downtime events + WORK_ORDERS repair durations.
+//   Each asset's downtime hours come from events that took the asset offline.
+//
+// Performance = actual_throughput / rated_throughput
+//   Production: fed from MES (manufacturing execution system) production counters.
+//   Demo: assumed constant per asset. Held static to isolate reliability-driven
+//   OEE changes through availability. Documented as assumedPerformance.
+//
+// Quality = good_output / total_output
+//   Production: fed from MES quality inspection data and reject counters.
+//   Demo: assumed constant per asset. Documented as assumedQuality.
+//
+// Asset OEE = deriveAvailability(asset) x assumedPerformance x assumedQuality
+// Plant OEE = weighted sum of asset OEE values by productionWeight.
+// ──────────────────────────────────────────────────────────────────────────────
+
+// Total observation period in hours (same as MTBF observation window)
+const OBS_HOURS_TOTAL = 4320  // ~6 months
+
+export function deriveAvailability(assetId) {
+  // Sum downtime hours from TIMELINE events that took this asset offline (trips)
+  const trips = TIMELINE.filter(
+    e => e.assetId === assetId && e.eventType === 'trip'
+  )
+  // Each trip = MTTR hours of downtime. Use asset's derived MTTR or default 4h.
+  const asset = ASSETS.find(a => a.id === assetId)
+  const mttr = asset?.mttr ?? 4
+  const totalDowntime = trips.length * mttr
+  const uptime = OBS_HOURS_TOTAL - totalDowntime
+  return Math.round((uptime / OBS_HOURS_TOTAL) * 1000) / 1000  // e.g., 0.988
+}
+
+export function deriveAssetOEE(asset) {
+  const availability = deriveAvailability(asset.id)
+  const performance = asset.assumedPerformance
+  const quality = asset.assumedQuality
+  return Math.round(availability * performance * quality * 1000) / 10  // percentage
+}
+
+// Plant OEE = weighted sum of asset OEE values.
+// PLANT.oee = sum(asset.oee * asset.productionWeight) for all assets.
+// Weights sum to 1.0 (verified in ASSETS definitions above).
+// Note: PLANT.oee retains the measured plant-level value (76.3) because these
+// 10 assets are a scope subset of Baytown's 168 total assets.
+
+export function derivePlantOEE(assets) {
+  return Math.round(
+    assets.reduce((sum, a) => sum + (a.oee * a.productionWeight), 0) * 10
+  ) / 10
+}
+
+// getActiveIncident: returns the highest-priority active incident.
+// Active = status 'investigating' or 'open'.
+// Sort: severity (critical > high > medium > low), then by recency (most recently opened first).
+
+const SEVERITY_ORDER = { critical: 4, high: 3, medium: 2, low: 1 }
+
+export function getActiveIncident(incidents = INCIDENTS) {
+  const active = incidents.filter(
+    i => i.status === 'investigating' || i.status === 'open'
+  )
+  if (active.length === 0) return null
+  active.sort((a, b) => {
+    const sevDiff = (SEVERITY_ORDER[b.severity] ?? 0) - (SEVERITY_ORDER[a.severity] ?? 0)
+    if (sevDiff !== 0) return sevDiff
+    // Secondary sort: opened time -- today timestamps sorted as-is (string compare is fine for AM/PM here)
+    return (b.opened > a.opened) ? 1 : -1
+  })
+  return active[0]
+}
+
+// ── Computed: event, WO, investigation counts + reliability metrics ──────────
 // All counts derived from TIMELINE, WORK_ORDERS, and INVESTIGATIONS.
+// mtbf, mttr, and rul are derived from source data via the functions above.
+// Assets with insufficient TIMELINE data fall back to the source-of-truth values
+// declared on the asset (annotated with a comment on the asset itself).
 ASSETS.forEach(a => {
   const events = TIMELINE.filter(e => e.assetId === a.id)
   a.newEvents = events.filter(e => e.status === 'new').length
@@ -2326,6 +2571,26 @@ ASSETS.forEach(a => {
   a.totalEvents = events.length
   a.workOrders = WORK_ORDERS.filter(wo => wo.assetId === a.id).length
   a.investigations = INVESTIGATIONS.filter(c => c.assetId === a.id).length
+
+  // Derive mtbf from TIMELINE failure events. Falls back to hardcoded value if < 1 failure found.
+  const computedMtbf = deriveMTBF(a.id, events)
+  if (computedMtbf !== null) {
+    a.mtbf = computedMtbf
+  }
+  // else: a.mtbf retains the value declared in ASSETS (source-of-truth for data-sparse assets)
+
+  // Derive mttr from completed WOs for this asset.
+  const computedMttr = deriveMTTR(a.id, WORK_ORDERS)
+  if (computedMttr !== null) {
+    a.mttr = computedMttr
+  }
+  // else: a.mttr retains the value declared in ASSETS
+
+  // Derive rul from rulTrend. deriveRUL never returns null for valid trend arrays.
+  a.rul = deriveRUL(a.rulTrend) ?? a.rul
+
+  // Derive OEE from availability x assumed performance x assumed quality
+  a.oee = deriveAssetOEE(a)
 })
 
 // ── Notifications (most recent first) ────────────────────────────────────────
@@ -2354,8 +2619,8 @@ export const NOTIFICATIONS = recentEvents.slice().reverse().map((evt, i) => ({
   consequence: evt.consequence,
   recommendation: evt.recommendation,
   kpiImpact: evt.kpiImpact,
-  linkedWOs: evt.linkedWOs,
-  linkedInvestigations: evt.linkedInvestigations,
+  workOrderIds: evt.workOrderIds,
+  investigationIds: evt.investigationIds,
 }))
 
 // ── K-101 Degradation Timeline (30-day) ──────────────────────────────────────

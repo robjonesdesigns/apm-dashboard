@@ -328,8 +328,8 @@ function InvestigationsCard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
                   <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
                     {[
-                      `${c.linkedEvents.length} event${c.linkedEvents.length !== 1 ? 's' : ''}`,
-                      `${c.linkedWorkOrders.length} WO${c.linkedWorkOrders.length !== 1 ? 's' : ''}`,
+                      `${c.eventIds.length} event${c.eventIds.length !== 1 ? 's' : ''}`,
+                      `${c.workOrderIds.length} WO${c.workOrderIds.length !== 1 ? 's' : ''}`,
                     ].join(' · ')}
                   </span>
                   <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
