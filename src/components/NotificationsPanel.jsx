@@ -491,8 +491,19 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
   }
 
   // Track read state -- first 3 start as unread, clicking marks as read
-  const [readIds, setReadIds] = useState(new Set())
+  // Persisted to localStorage so read state survives page reloads
+  const [readIds, setReadIds] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('apm-notifications-read'))
+      return new Set(Array.isArray(stored) ? stored : [])
+    } catch { return new Set() }
+  })
   const initialNewIds = new Set(NOTIFICATIONS.slice(0, 3).map(n => n.id))
+
+  // Persist read state on every change
+  useEffect(() => {
+    localStorage.setItem('apm-notifications-read', JSON.stringify([...readIds]))
+  }, [readIds])
 
   function handleSelect(notification) {
     setReadIds(prev => new Set([...prev, notification.id]))

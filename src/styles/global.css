@@ -538,6 +538,27 @@ html, body, #root {
     }
   }
 
+/* ─── Sidebar custom tooltips (zero-delay, CSS only) ──────────────────── */
+.sidebar-tooltip {
+  position: absolute;
+  left: calc(var(--sidebar-rail) + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  padding: var(--spacing-4) var(--spacing-8);
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-tooltip);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-productive);
+  z-index: 10001;
+}
+.sidebar-nav-item:hover .sidebar-tooltip {
+  opacity: 1;
+}
+
 /* ─── Mobile visibility helpers ───────────────────────────────────────── */
 .hide-mobile { display: none !important; }
 @media (min-width: 672px) {

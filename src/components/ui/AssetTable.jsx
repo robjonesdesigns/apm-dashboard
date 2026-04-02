@@ -989,7 +989,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
               <SortableHeader label="Status"         sortKey="status"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.status} />
               <SortableHeader label="Asset"          sortKey="name"             activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.asset} />
               <SortableHeader label="Criticality"    sortKey="criticality"      activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.priority} />
-              <SortableHeader label="OEE"            sortKey="oee"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.oee} />
+              <SortableHeader label="OEE"            sortKey="oee"              activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.oee} title="Overall Equipment Effectiveness" />
               <SortableHeader label="Events"         sortKey="events"           activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.events} />
               <SortableHeader label="Downtime"       sortKey="downtime"         activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.downtime} />
               <SortableHeader label="Work Orders"    sortKey="workOrders"       activeSort={sortKey} activeDir={sortDir} onSort={handleSort} style={COL_STYLES.workOrders} />

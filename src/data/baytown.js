@@ -2163,8 +2163,12 @@ export const TIMELINE = [
 // Trip/Shutdown      Critical      High              Medium
 // Threshold breach   High          Medium            Low
 // Advisory/Info      Medium        Low               Low
+//
+// Note: anomaly and inspection types map to advisory (0) impact level.
 
-const IMPACT_MAP = { trip: 2, alarm: 1, alert: 0 }
+// `anomaly` and `inspection` event types fall back to advisory level (0) by default.
+// They are listed explicitly here for clarity.
+const IMPACT_MAP = { trip: 2, alarm: 1, alert: 0, anomaly: 0, inspection: 0 }
 const CRITICALITY_MAP = { A: 2, B: 1, C: 0 }
 const SEVERITY_MATRIX = [
   ['low', 'low', 'medium'],     // advisory (0) x [C, B, A]

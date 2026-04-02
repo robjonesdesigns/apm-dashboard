@@ -193,6 +193,8 @@ export default function TopBar({
   onNavigate,
   onToggleNotifications,
   notificationsOpen,
+  onToggleHelp,
+  helpOpen,
   onToggleSidebar,
   isMobile,
   dense,
@@ -274,8 +276,8 @@ export default function TopBar({
           />
         )}
 
-        {/* Breadcrumb — hidden on mobile */}
-        {!isMobile && <nav aria-label="Breadcrumb">
+        {/* Breadcrumb + timestamp — hidden on mobile */}
+        {!isMobile && <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-16)' }}>
           <ol
             style={{
               display: 'flex',
@@ -361,6 +363,11 @@ export default function TopBar({
               </>
             )}
           </ol>
+
+          {/* Last updated timestamp */}
+          <span className="type-meta" style={{ color: 'var(--color-text-helper)', whiteSpace: 'nowrap' }}>
+            Last updated: {PLANT.lastRefreshed}
+          </span>
         </nav>}
       </div>
 
@@ -374,7 +381,7 @@ export default function TopBar({
 
         {/* Help — hidden on mobile */}
         {!isMobile && (
-          <IconButton ariaLabel="Help">
+          <IconButton onClick={onToggleHelp} ariaLabel="Help" ariaExpanded={helpOpen} active={helpOpen}>
             <HelpIcon />
           </IconButton>
         )}

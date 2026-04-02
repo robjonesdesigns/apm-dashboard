@@ -104,9 +104,9 @@ function NavItem({ item, isActive, expanded, onClick }) {
   return (
     <button
       onClick={onClick}
-      title={!expanded ? label : undefined}
       aria-label={label}
       aria-current={isActive ? 'page' : undefined}
+      className="sidebar-nav-item"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -122,7 +122,8 @@ function NavItem({ item, isActive, expanded, onClick }) {
         borderLeft: isActive ? '4px solid var(--color-accent)' : '4px solid transparent',
         cursor: 'pointer',
         flexShrink: 0,
-        overflow: 'hidden',
+        overflow: 'visible',
+        position: 'relative',
         transition: `background var(--motion-fast) var(--ease-productive),
                      color var(--motion-fast) var(--ease-productive),
                      border-color var(--motion-fast) var(--ease-productive)`,
@@ -157,6 +158,13 @@ function NavItem({ item, isActive, expanded, onClick }) {
             fontWeight: isActive ? 600 : 400,
           }}
         >
+          {label}
+        </span>
+      )}
+
+      {/* Custom tooltip -- shown on hover when collapsed (CSS-driven, zero delay) */}
+      {!expanded && (
+        <span className="sidebar-tooltip type-label" aria-hidden="true">
           {label}
         </span>
       )}

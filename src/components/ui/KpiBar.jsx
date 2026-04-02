@@ -202,7 +202,7 @@ function KpiCard({ config, onClick, isSelected }) {
         {/* Label + info */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
           <span className="type-card-title">{config.label}</span>
-          <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS[config.key]} /></span>
+          <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
         </div>
 
         {/* Value */}

@@ -5,6 +5,8 @@ import PlantOverview from './components/PlantOverview'
 import AssetInspection from './components/AssetInspection'
 import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
+import HelpPanel from './components/HelpPanel'
+import ErrorBoundary from './components/ErrorBoundary'
 import useIsMobile from './hooks/useIsMobile'
 
 // ADR-028: Sidebar shows 4 plant-level screens. Asset Inspection reached via Asset Table row click.
@@ -25,6 +27,7 @@ export default function App() {
   })
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [selectedAttribute, setSelectedAttribute] = useState(null)
+  const [helpOpen, setHelpOpen]              = useState(false)
   const [sidebarOpen, setSidebarOpen]       = useState(false)
   const [dense, setDense]                   = useState(() => localStorage.getItem('apm-dense') === 'true')
   const isMobile = useIsMobile()
@@ -60,8 +63,10 @@ export default function App() {
         view={view}
         selectedAsset={selectedAsset}
         onNavigate={navigate}
-        onToggleNotifications={() => setNotificationsOpen((prev) => !prev)}
+        onToggleNotifications={() => { setNotificationsOpen((prev) => !prev); setHelpOpen(false) }}
         notificationsOpen={notificationsOpen}
+        onToggleHelp={() => { setHelpOpen((prev) => !prev); setNotificationsOpen(false) }}
+        helpOpen={helpOpen}
         onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
         isMobile={isMobile}
         dense={dense}
@@ -101,16 +106,18 @@ export default function App() {
               overflowX: 'hidden',
             }}
           >
-            <div
-              className="page-padding"
-              style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}
-            >
-              <View
-                onNavigate={navigate}
-                selectedAsset={selectedAsset}
-                selectedAttribute={selectedAttribute}
-              />
-            </div>
+            <ErrorBoundary>
+              <div
+                className="page-padding"
+                style={{ paddingTop: 'var(--spacing-24)', paddingBottom: 'var(--spacing-24)' }}
+              >
+                <View
+                  onNavigate={navigate}
+                  selectedAsset={selectedAsset}
+                  selectedAttribute={selectedAttribute}
+                />
+              </div>
+            </ErrorBoundary>
           </main>
 
           <NotificationsPanel
@@ -118,6 +125,11 @@ export default function App() {
             onClose={() => setNotificationsOpen(false)}
             assetFilter={view === 'inspection' ? selectedAsset?.name : null}
             isMobile={isMobile}
+          />
+
+          <HelpPanel
+            open={helpOpen}
+            onClose={() => setHelpOpen(false)}
           />
         </div>
       </div>
