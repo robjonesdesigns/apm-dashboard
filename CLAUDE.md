@@ -16,7 +16,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 ## Key Rules
 
 - No Honeywell branding. No inline color values. All colors reference tokens.
-- No inline font-size overrides. All typography from 9 type classes (ADR-018).
+- No inline font-size overrides. All typography from 10 type classes (ADR-018).
 - No inline rgba/hex. Shadows tokenized (--shadow-tooltip, --shadow-overlay).
 - 12-column grid. Card radius 10px, padding 24px. Titles: `type-card-title`.
 - **Spacing system (ADR-027):** Use `var(--gap-stack)` for vertical stacking between text lines (8px normal, 4px dense). Use `var(--gap-intra)` for intra-card grouping (12px normal, 8px dense). Never use raw `--spacing-4` for vertical stacking. Always place a 1px x 12px divider (`--color-border-strong`) between adjacent inline indicators.
@@ -33,6 +33,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 | Class | Size | Weight | Role |
 |-------|------|--------|------|
 | `section-header` | 14px | 500 | Uppercase section labels |
+| `type-heading` | 24px | 600 | Modal titles, panel headers |
 | `type-card-title` | 14px | 600 | Card headers |
 | `type-table-header` | 14px | 600 | Column headers |
 | `type-body` | 14px | 400 | General text, table data |

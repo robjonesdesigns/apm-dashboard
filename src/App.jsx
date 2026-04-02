@@ -6,6 +6,7 @@ import AssetInspection from './components/AssetInspection'
 import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
 import HelpModal from './components/HelpPanel'
+import DesignSystem from './components/DesignSystem'
 import ErrorBoundary from './components/ErrorBoundary'
 import useIsMobile from './hooks/useIsMobile'
 
@@ -18,10 +19,17 @@ const VIEWS = {
   investigations: PlantOverview,   // placeholder until dedicated screen
   trends:         Trends,
   settings:       PlantOverview,   // placeholder
+  'design-system': DesignSystem,   // internal reference, not in sidebar
 }
 
 export default function App() {
-  const [view, setView]                     = useState(() => sessionStorage.getItem('apm-view') || 'overview')
+  const [view, setView]                     = useState(() => {
+    // Support ?view=design-system URL param for internal access
+    const params = new URLSearchParams(window.location.search)
+    const urlView = params.get('view')
+    if (urlView && VIEWS[urlView]) return urlView
+    return sessionStorage.getItem('apm-view') || 'overview'
+  })
   const [selectedAsset, setSelectedAsset]   = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('apm-asset')) } catch { return null }
   })
@@ -35,6 +43,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('apm-dense', dense)
   }, [dense])
+
+  // Ctrl+Shift+D opens Design System reference (internal, not in sidebar)
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault()
+        setView((prev) => prev === 'design-system' ? 'overview' : 'design-system')
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // Persist view + asset for HMR stability
   useEffect(() => {

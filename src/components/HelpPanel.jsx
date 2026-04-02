@@ -87,7 +87,7 @@ export default function HelpModal({ open, onClose }) {
           borderBottom: '1px solid var(--color-border-subtle)',
           flexShrink: 0,
         }}>
-          <h2 className="type-card-title" style={{ margin: 0 }}>
+          <h2 className="type-heading" style={{ margin: 0 }}>
             About this dashboard
           </h2>
           <button
