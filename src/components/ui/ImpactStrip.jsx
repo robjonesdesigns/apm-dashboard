@@ -31,7 +31,7 @@ function buildNarrative(incident) {
   const consequences = incident.eventIds
     .map(id => eventMap[id])
     .filter(e => e && e.relationships?.some(r => r.type === 'caused_by' && r.eventId === incident.triggerEventId))
-    .sort((a, b) => (SEVERITY_RANK[a.type] ?? 9) - (SEVERITY_RANK[b.type] ?? 9))
+    .sort((a, b) => (SEVERITY_RANK[a.severity] ?? 9) - (SEVERITY_RANK[b.severity] ?? 9))
 
   if (consequences.length > 0) {
     acts.push({ label: 'Consequence', event: consequences[0] })

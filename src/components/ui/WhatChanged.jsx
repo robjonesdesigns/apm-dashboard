@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { TIMELINE } from '../../data/baytown'
 
-// Map event type to status-dot variant
-function dotVariant(type) {
-  if (type === 'critical') return 'status-dot dot-critical'
-  if (type === 'high')     return 'status-dot dot-high'
-  if (type === 'healthy')  return 'status-dot dot-low'
-  if (type === 'medium')   return 'status-dot dot-medium'
+// Map event severity to status-dot variant
+function dotVariant(severity) {
+  if (severity === 'critical') return 'status-dot dot-critical'
+  if (severity === 'high')     return 'status-dot dot-high'
+  if (severity === 'healthy')  return 'status-dot dot-low'
+  if (severity === 'medium')   return 'status-dot dot-medium'
   return 'status-dot dot-medium'
 }
 
@@ -79,7 +79,7 @@ function TimelineRow({ event, onAssetClick, onEventClick }) {
           paddingTop:     6,
         }}
       >
-        <span className={dotVariant(event.type)} />
+        <span className={dotVariant(event.severity)} />
       </div>
 
       {/* Event text */}

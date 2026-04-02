@@ -340,7 +340,7 @@ html, body, #root {
   .dot-success { background: var(--color-success); }
   .dot-info { background: var(--color-info); }
 
-  /* ── Badge ─────────────────────────────────────────────────────── */
+  /* ── SeverityBadge ────────────────────────────────────────────── */
   /* Tally + fill hierarchy: visual weight communicates severity.
      Tallies satisfy WCAG SC 1.4.1 (info not by color alone). */
   .badge {

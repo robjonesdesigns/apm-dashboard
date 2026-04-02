@@ -69,9 +69,9 @@ export const KPI_24H = [
 ]
 
 // ── Assets (all 10) ───────────────────────────────────────────────────────────
-// criticality: A=Safety/Critical, B=High, C=Medium, D=Low
+// Asset Criticality: A=Safety, B=Production, C=Support (permanent classification)
+// Event Severity: derived from eventType x asset criticality (see deriveEventSeverity)
 // status: running | tripped | degraded | planned-outage
-// priority: high | medium | low
 
 export const ASSETS = [
   {
@@ -946,11 +946,12 @@ export const TIMELINE = [
   // ── Historical events (oldest first) ────────────────────────────────────────
 
   // P-203: Seal Failure #1 (4 months ago) -- closed
+  // Severity override: matrix yields 'low' (alert x B), escalated to 'high' -- first occurrence of failure mode that becomes a recurring pattern
   {
     id: 'EVT-P203-H1',
     name: 'Mechanical Seal Failure',
     date: '4 months ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -973,7 +974,7 @@ export const TIMELINE = [
     id: 'EVT-R301-H1',
     name: 'Catalyst Bed Hot Spot',
     date: '3 months ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alarm',
     asset: 'Reactor R-301',
     assetId: 'R-301',
@@ -996,7 +997,7 @@ export const TIMELINE = [
     id: 'EVT-P102-H1',
     name: 'Vibration Spike During Startup',
     date: '3 months ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Pump P-102',
     assetId: 'P-102',
@@ -1019,7 +1020,7 @@ export const TIMELINE = [
     id: 'EVT-T102-H2',
     name: 'Vibration Spike During Load Change',
     date: '2 months ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Turbine T-102',
     assetId: 'T-102',
@@ -1042,7 +1043,7 @@ export const TIMELINE = [
     id: 'EVT-R301-H2',
     name: 'Thermocouple Drift Alert',
     date: '2 months ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'alert',
     asset: 'Reactor R-301',
     assetId: 'R-301',
@@ -1061,11 +1062,12 @@ export const TIMELINE = [
   },
 
   // P-203: Seal Failure #2 (2 months ago) -- closed
+  // Severity override: matrix yields 'low' (alert x B), escalated to 'high' -- second identical failure in 2 months, recurring failure pattern confirmed
   {
     id: 'EVT-P203-H2',
     name: 'Mechanical Seal Failure',
     date: '2 months ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -1090,7 +1092,7 @@ export const TIMELINE = [
     id: 'EVT-K101-H4',
     name: 'Quarterly Vibration Baseline',
     date: '6 weeks ago',
-    type: 'low',
+    severity: 'medium',
     eventType: 'inspection',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1122,7 +1124,7 @@ export const TIMELINE = [
     id: 'EVT-K101-H8',
     name: 'Seal Gas DP Alert',
     date: '5 weeks ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1145,7 +1147,7 @@ export const TIMELINE = [
     id: 'EVT-K101-H7',
     name: 'Anti-Surge Valve Cycling High',
     date: '4 weeks ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1168,7 +1170,7 @@ export const TIMELINE = [
     id: 'EVT-T401-H2',
     name: 'Inlet Air Filter DP Elevated',
     date: '1 month ago',
-    type: 'low',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Turbine T-401',
     assetId: 'T-401',
@@ -1191,7 +1193,7 @@ export const TIMELINE = [
     id: 'EVT-K101-H5',
     name: 'Oil Sample Marginal Results',
     date: '3 weeks ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'inspection',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1223,7 +1225,7 @@ export const TIMELINE = [
     id: 'EVT-C201-H1',
     name: 'Belt Tension Low',
     date: '3 weeks ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Cooler C-201',
     assetId: 'C-201',
@@ -1257,7 +1259,7 @@ export const TIMELINE = [
     id: 'EVT-P203-H3',
     name: 'Alignment Drift Detected',
     date: '3 weeks ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -1288,11 +1290,12 @@ export const TIMELINE = [
   },
 
   // E-105: Tube Leak Alert (3 weeks ago) -- false-positive
+  // Severity override: matrix yields 'low' (alert x B), escalated to 'high' -- potential tube leak on HX is a safety concern requiring immediate response
   {
     id: 'EVT-E105-H2',
     name: 'Tube Leak Alert',
     date: '3 weeks ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Heat Exchanger E-105',
     assetId: 'E-105',
@@ -1315,7 +1318,7 @@ export const TIMELINE = [
     id: 'EVT-K101-H6',
     name: 'Filter DP Elevated',
     date: '2 weeks ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1347,7 +1350,7 @@ export const TIMELINE = [
     id: 'EVT-P203-H4',
     name: 'Seal Chamber Pressure Elevated',
     date: '2 weeks ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -1381,7 +1384,7 @@ export const TIMELINE = [
     id: 'EVT-K302-H3',
     name: 'Anti-Surge Valve Hunting',
     date: '10 days ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'alert',
     asset: 'Compressor K-302',
     assetId: 'K-302',
@@ -1406,7 +1409,7 @@ export const TIMELINE = [
     id: 'EVT-E105-H1',
     name: 'Accelerated Fouling Detected',
     date: '1 week ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Heat Exchanger E-105',
     assetId: 'E-105',
@@ -1438,7 +1441,7 @@ export const TIMELINE = [
     id: 'EVT-T102-H1',
     name: 'Exhaust Temperature Spread Widening',
     date: '1 week ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Turbine T-102',
     assetId: 'T-102',
@@ -1470,7 +1473,7 @@ export const TIMELINE = [
     id: 'EVT-C201-H2',
     name: 'Belt Tension Declining',
     date: '1 week ago',
-    type: 'medium',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Cooler C-201',
     assetId: 'C-201',
@@ -1504,7 +1507,7 @@ export const TIMELINE = [
     id: 'EVT-P203-H5',
     name: 'Bearing Temperature Trending Up',
     date: '1 week ago',
-    type: 'low',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -1538,7 +1541,7 @@ export const TIMELINE = [
     id: 'EVT-K302-H1',
     name: 'Discharge Temp Rate-of-Change',
     date: '2 days ago',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'anomaly',
     asset: 'Compressor K-302',
     assetId: 'K-302',
@@ -1568,11 +1571,12 @@ export const TIMELINE = [
   },
 
   // K-101: Vibration Alert #1 (3 days ago) -- in-progress
+  // Severity override: matrix yields 'medium' (alert x A), escalated to 'high' -- first of three consecutive alerts in cascading bearing failure, no intervention taken
   {
     id: 'EVT-K101-H1',
     name: 'Vibration Alert',
     date: '3 days ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1602,11 +1606,12 @@ export const TIMELINE = [
   },
 
   // K-101: Vibration Alert #2 (2 days ago) -- in-progress
+  // Severity override: matrix yields 'medium' (alert x A), escalated to 'high' -- second consecutive alert, bearing in rapid degradation phase
   {
     id: 'EVT-K101-H2',
     name: 'Vibration Alert',
     date: '2 days ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1641,11 +1646,12 @@ export const TIMELINE = [
   // It is kept as a separate event because the rate-of-change threshold was exceeded again independently.
 
   // K-101: Vibration Alert #3 (1 day ago) -- in-progress
+  // Severity override: matrix yields 'medium' (alert x A), escalated to 'high' -- third consecutive alert, trip imminent within hours
   {
     id: 'EVT-K101-H3',
     name: 'Vibration Alert',
     date: '1 day ago',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1680,7 +1686,7 @@ export const TIMELINE = [
     id: 'EVT-K302-H4',
     name: 'Polytropic Efficiency Declining',
     time: '7:00 AM',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'anomaly',
     asset: 'Compressor K-302',
     assetId: 'K-302',
@@ -1714,7 +1720,7 @@ export const TIMELINE = [
     id: 'EVT-T401-H1',
     name: 'Combustion Inspection Due',
     time: '6:00 AM',
-    type: 'low',
+    severity: 'low',
     eventType: 'alert',
     asset: 'Turbine T-401',
     assetId: 'T-401',
@@ -1748,7 +1754,7 @@ export const TIMELINE = [
     name: 'Discharge Temperature Oscillation',
     time: '11:00 PM',
     timeNote: 'previous day',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'anomaly',
     asset: 'Compressor K-302',
     assetId: 'K-302',
@@ -1786,11 +1792,12 @@ export const TIMELINE = [
     linkedWOs: ['WO-4494'],
     linkedInvestigations: ['IN-0893'],
   },
+  // Severity override: matrix yields 'medium' (alert x A), escalated to 'high' -- oil pressure at critical level with aux pump auto-start, immediate precursor to trip
   {
     id: 'EVT-002',
     name: 'Oil Pressure Drop',
     time: '1:30 AM',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1830,11 +1837,12 @@ export const TIMELINE = [
     linkedWOs: [],
     linkedInvestigations: [],
   },
+  // Severity override: matrix yields 'high' (alarm x A), escalated to 'critical' -- cascading failure with imminent trip, oil pressure below critical threshold
   {
     id: 'EVT-003',
     name: 'Oil Pressure Alarm',
     time: '1:45 AM',
-    type: 'critical',
+    severity: 'critical',
     eventType: 'alarm',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1875,11 +1883,12 @@ export const TIMELINE = [
     linkedWOs: [],
     linkedInvestigations: [],
   },
+  // Severity override: matrix yields 'high' (alarm x A), escalated to 'critical' -- vibration exceeded trip threshold in cascading failure sequence
   {
     id: 'EVT-004',
     name: 'Vibration Exceedance',
     time: '2:00 AM',
-    type: 'critical',
+    severity: 'critical',
     eventType: 'alarm',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1924,7 +1933,7 @@ export const TIMELINE = [
     id: 'EVT-005',
     name: 'High Vibration Trip',
     time: '2:03 AM',
-    type: 'critical',
+    severity: 'critical',
     eventType: 'trip',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -1966,11 +1975,12 @@ export const TIMELINE = [
     linkedWOs: ['WO-4481', 'WO-4482'],
     linkedInvestigations: ['IN-0891', 'IN-0897'],
   },
+  // Severity override: matrix yields 'low' (anomaly x C), escalated to 'medium' -- pressure transient on high-pressure hydrogen vessel requires safety protocol response
   {
     id: 'EVT-006',
     name: 'Pressure Transient',
     time: '2:04 AM',
-    type: 'medium',
+    severity: 'medium',
     eventType: 'anomaly',
     asset: 'Vessel V-501',
     assetId: 'V-501',
@@ -2014,7 +2024,7 @@ export const TIMELINE = [
     id: 'EVT-007',
     name: 'Fan Vibration Anomaly',
     time: '2:05 AM',
-    type: 'medium',
+    severity: 'low',
     eventType: 'anomaly',
     asset: 'Cooler C-201',
     assetId: 'C-201',
@@ -2054,11 +2064,12 @@ export const TIMELINE = [
     linkedWOs: ['WO-4498'],
     linkedInvestigations: ['IN-0892'],
   },
+  // Severity override: matrix yields 'low' (alert x B), escalated to 'high' -- active seal failure above alarm threshold, third recurrence in 6 months
   {
     id: 'EVT-009',
     name: 'Discharge Pressure Low',
     time: '4:30 AM',
-    type: 'high',
+    severity: 'high',
     eventType: 'alert',
     asset: 'Pump P-203',
     assetId: 'P-203',
@@ -2096,11 +2107,12 @@ export const TIMELINE = [
     linkedWOs: ['WO-4483'],
     linkedInvestigations: ['IN-0894'],
   },
+  // Severity override: matrix yields 'medium' (inspection x A), escalated to 'critical' -- post-trip bearing damage confirmed, compressor restart blocked, RUL revised to 5 days
   {
     id: 'EVT-011',
     name: 'Bearing Damage Detected',
     time: '6:45 AM',
-    type: 'critical',
+    severity: 'critical',
     eventType: 'inspection',
     asset: 'Compressor K-101',
     assetId: 'K-101',
@@ -2142,6 +2154,29 @@ export const TIMELINE = [
     linkedInvestigations: ['IN-0891', 'IN-0897'],
   },
 ]
+
+// ── Event severity derivation ────────────────────────────────────────────────
+// Event severity derivation matrix (ISA-18.2 / IEC 62682 aligned)
+// Severity = f(event impact type, asset criticality)
+//
+//                    A (Safety)    B (Production)    C (Support)
+// Trip/Shutdown      Critical      High              Medium
+// Threshold breach   High          Medium            Low
+// Advisory/Info      Medium        Low               Low
+
+const IMPACT_MAP = { trip: 2, alarm: 1, alert: 0 }
+const CRITICALITY_MAP = { A: 2, B: 1, C: 0 }
+const SEVERITY_MATRIX = [
+  ['low', 'low', 'medium'],     // advisory (0) x [C, B, A]
+  ['low', 'medium', 'high'],    // threshold (1) x [C, B, A]
+  ['medium', 'high', 'critical'] // trip (2) x [C, B, A]
+]
+
+export function deriveEventSeverity(eventType, assetCriticality) {
+  const impact = IMPACT_MAP[eventType] ?? 0
+  const crit = CRITICALITY_MAP[assetCriticality] ?? 0
+  return SEVERITY_MATRIX[impact][crit]
+}
 
 // ── Incidents ────────────────────────────────────────────────────────────────
 // Groups related events into a single narrative. Each entity cross-references.
@@ -2298,7 +2333,7 @@ const recentEvents = TIMELINE.filter(evt => evt.time)
 export const NOTIFICATIONS = recentEvents.slice().reverse().map((evt, i) => ({
   id: i + 1,
   eventId: evt.id,
-  type: evt.type,
+  severity: evt.severity,
   eventType: evt.eventType,
   asset: evt.asset,
   assetId: evt.assetId,

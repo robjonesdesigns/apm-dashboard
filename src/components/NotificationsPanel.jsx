@@ -7,7 +7,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { NOTIFICATIONS, INCIDENTS, TIMELINE, ASSETS } from '../data/baytown.js'
 import useFocusTrap from '../hooks/useFocusTrap'
-import Badge from './ui/Badge'
+import SeverityBadge from './ui/SeverityBadge'
 import CriticalityIndicator from './ui/CriticalityIndicator'
 import FilterButton from './ui/FilterButton'
 
@@ -91,7 +91,7 @@ function NotificationItem({ notification, isNew, onSelect }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)', minWidth: 0, flex: 1 }}>
         {/* Row 1: severity badge + timestamp */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-          <Badge level={notification.type} />
+          <SeverityBadge severity={notification.severity} />
           <span className="type-meta" style={{ flexShrink: 0 }}>{notification.time}</span>
         </div>
 
@@ -196,7 +196,7 @@ function EventDetails({ notification, onBack, onClose }) {
       {/* Notification summary (repeated from list for identification) */}
       <div style={{ padding: 'var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--gap-stack)' }}>
-          <Badge level={notification.type} />
+          <SeverityBadge severity={notification.severity} />
           <span className="type-meta">{notification.time}</span>
         </div>
         <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--gap-stack)' }}>
@@ -487,7 +487,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
 
   // Apply severity filter (multi-select: show any checked levels, empty = all)
   if (severityFilters.length > 0) {
-    notifications = notifications.filter(n => severityFilters.includes(n.type))
+    notifications = notifications.filter(n => severityFilters.includes(n.severity))
   }
 
   // Track read state -- first 3 start as unread, clicking marks as read
@@ -571,7 +571,7 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
                 padding: 'var(--spacing-24)',
               }}>
                 <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                  No {filter !== 'All' ? filter.toLowerCase() + ' ' : ''}notifications{assetFilter ? ` for ${assetFilter}` : ''}
+                  No {severityFilters.length > 0 ? 'matching ' : ''}notifications{assetFilter ? ` for ${assetFilter}` : ''}
                 </span>
               </div>
             ) : (

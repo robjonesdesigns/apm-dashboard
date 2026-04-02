@@ -1,6 +1,6 @@
 // ── StatusIndicator ──────────────────────────────────────────────────────────
 // Asset status indicator. Dot + label for asset operational state.
-// Visually distinct from event severity (Badge) and criticality (CriticalityIndicator).
+// Visually distinct from event severity (SeverityBadge) and criticality (CriticalityIndicator).
 //
 // Usage:
 //   <StatusIndicator status="tripped" />          → ● Tripped

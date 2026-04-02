@@ -21,7 +21,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 - 12-column grid. Card radius 10px, padding 24px. Titles: `type-card-title`.
 - **Spacing system (ADR-027):** Use `var(--gap-stack)` for vertical stacking between text lines (8px normal, 4px dense). Use `var(--gap-intra)` for intra-card grouping (12px normal, 8px dense). Never use raw `--spacing-4` for vertical stacking. Always place a 1px x 12px divider (`--color-border-strong`) between adjacent inline indicators.
 - Status: coral-red + amber (ADR-010). Icon + color + text (never color alone, WCAG SC 1.4.1).
-- Event severity badges: shared Badge.jsx (tally + fill hierarchy, ADR-016). Critical=solid red, High=red outline, Medium=amber outline, Low=blue outline.
+- Event severity badges: shared SeverityBadge.jsx (tally + fill hierarchy, ADR-016). Critical=solid red, High=red outline, Medium=amber outline, Low=blue outline.
 - Asset criticality: shared CriticalityIndicator.jsx (A/B/C/D letter grade, `inverted` prop for light tooltip bg).
 - ISA-101 "dark and quiet". Tooltips: inverted (white bg), cursor-following where possible. Transitions: --motion-fast --ease-productive.
 - Chart legends: shared Legend.jsx (swatch + label + value). No gradient bars.
@@ -97,7 +97,7 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 | System | Shape | Color | Component |
 |--------|-------|-------|-----------|
-| Event severity | Tally bars in pill | Red/amber/blue | Badge.jsx |
+| Event severity | Tally bars in pill | Red/amber/blue | SeverityBadge.jsx |
 | Investigation status | Right triangles | Neutral gray | InProgress |
 | WO urgency | Circles + clock | Neutral gray | WoPriority.jsx |
 | Asset criticality | Letter grade pill | Status colors | CriticalityIndicator.jsx |
@@ -118,7 +118,7 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 ## Shared Components
 
-- `Badge.jsx` -- event severity (tally + fill hierarchy). `compact` prop for tally-only (no text). Events, notifications, and Asset Table.
+- `SeverityBadge.jsx` -- event severity (tally + fill hierarchy). `severity` prop (critical/high/medium/low). `compact` prop for tally-only (no text). Events, notifications, and Asset Table.
 - `CriticalityIndicator.jsx` -- asset criticality (A/B/C/D letter grade). `inverted` prop for tooltip contexts. Used in Asset Table, Event Feed, InProgress rows.
 - `StatusIndicator.jsx` -- asset status (dot + label). `compact` prop for dot-only. Used in Asset Table, Asset Inspection. Exports `statusLabel()` for aria/filter use.
 - `WoPriority.jsx` -- WO urgency indicator (circle icons + text).

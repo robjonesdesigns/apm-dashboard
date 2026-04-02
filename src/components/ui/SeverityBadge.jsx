@@ -1,12 +1,12 @@
-// ── Badge ─────────────────────────────────────────────────────────────────────
+// ── SeverityBadge ─────────────────────────────────────────────────────────────
 // Shared badge component for event severity.
 // Uses tally + fill hierarchy per ADR-016.
 //
 // Usage:
-//   <Badge level="critical" />       → |||| Critical (solid red)
-//   <Badge level="high" />           → ||| High (red outline)
-//   <Badge level="medium" />         → || Medium (amber outline)
-//   <Badge level="low" />            → | Low (blue outline)
+//   <SeverityBadge severity="critical" />       → |||| Critical (solid red)
+//   <SeverityBadge severity="high" />           → ||| High (red outline)
+//   <SeverityBadge severity="medium" />         → || Medium (amber outline)
+//   <SeverityBadge severity="low" />            → | Low (blue outline)
 
 const LEVELS = {
   critical: { className: 'badge badge-critical', bars: 4, label: 'Critical' },
@@ -32,8 +32,8 @@ function Tally({ count }) {
   )
 }
 
-export default function Badge({ level, compact }) {
-  const config = LEVELS[level]
+export default function SeverityBadge({ severity, compact }) {
+  const config = LEVELS[severity]
   if (!config) return null
 
   return (

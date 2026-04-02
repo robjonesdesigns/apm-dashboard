@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE } from '../../data/baytown'
 import CriticalityIndicator from './CriticalityIndicator'
 import StatusIndicator, { statusLabel } from './StatusIndicator'
-import Badge from './Badge'
+import SeverityBadge from './SeverityBadge'
 import FilterChip from './FilterChip'
 import FilterButton from './FilterButton'
 import useIsMobile from '../../hooks/useIsMobile'
@@ -12,8 +12,8 @@ const SEVERITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 }
 const worstSeverityByAsset = {}
 TIMELINE.forEach(evt => {
   const current = worstSeverityByAsset[evt.assetId]
-  if (!current || SEVERITY_RANK[evt.type] < SEVERITY_RANK[current]) {
-    worstSeverityByAsset[evt.assetId] = evt.type
+  if (!current || SEVERITY_RANK[evt.severity] < SEVERITY_RANK[current]) {
+    worstSeverityByAsset[evt.assetId] = evt.severity
   }
 })
 
@@ -113,7 +113,7 @@ function AssetRow({ asset, onAssetClick }) {
 
       {/* Events */}
       <div role="cell" className="type-body" style={{ ...COL_STYLES.events, gap: 'var(--spacing-4)' }}>
-        {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
+        {worstSeverityByAsset[asset.id] && <SeverityBadge severity={worstSeverityByAsset[asset.id]} compact />}
         {asset.activeEvents}
       </div>
 
@@ -190,7 +190,7 @@ function MobileAssetRow({ asset, onAssetClick }) {
           <>
             <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-              {worstSeverityByAsset[asset.id] && <Badge level={worstSeverityByAsset[asset.id]} compact />}
+              {worstSeverityByAsset[asset.id] && <SeverityBadge severity={worstSeverityByAsset[asset.id]} compact />}
               <span className="type-meta">{asset.activeEvents} {asset.activeEvents === 1 ? 'Event' : 'Events'}</span>
             </span>
           </>

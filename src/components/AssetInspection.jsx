@@ -5,7 +5,7 @@
 import { useState, useRef, useCallback } from 'react'
 import CriticalityIndicator from './ui/CriticalityIndicator'
 import StatusIndicator from './ui/StatusIndicator'
-import Badge from './ui/Badge'
+import SeverityBadge from './ui/SeverityBadge'
 import WoPriority from './ui/WoPriority'
 import useIsMobile from '../hooks/useIsMobile'
 import { TIMELINE, WORK_ORDERS, INVESTIGATIONS, K101_DEGRADATION, K101_FAULT_TREE, PERFORMANCE_ATTRIBUTES } from '../data/baytown'
@@ -649,7 +649,7 @@ function ActiveEvents({ asset, isMobile }) {
             borderBottom: i < events.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-              <Badge level={evt.type} compact />
+              <SeverityBadge severity={evt.severity} compact />
               <span className="type-body" style={{ fontWeight: 600 }}>{evt.name}</span>
             </div>
             <div style={{
@@ -719,7 +719,7 @@ function EventTimeline({ asset, isMobile }) {
             borderBottom: i < events.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
-              <Badge level={evt.type} compact />
+              <SeverityBadge severity={evt.severity} compact />
               <span className="type-body">{evt.name}</span>
             </div>
             <div style={{
