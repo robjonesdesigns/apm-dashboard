@@ -364,10 +364,6 @@ export default function TopBar({
             )}
           </ol>
 
-          {/* Last updated timestamp */}
-          <span className="type-meta" style={{ color: 'var(--color-text-helper)', whiteSpace: 'nowrap' }}>
-            Last updated: {PLANT.lastRefreshed}
-          </span>
         </nav>}
       </div>
 

@@ -5,7 +5,7 @@ import PlantOverview from './components/PlantOverview'
 import AssetInspection from './components/AssetInspection'
 import Trends from './components/Trends'
 import NotificationsPanel from './components/NotificationsPanel'
-import HelpPanel from './components/HelpPanel'
+import HelpModal from './components/HelpPanel'
 import ErrorBoundary from './components/ErrorBoundary'
 import useIsMobile from './hooks/useIsMobile'
 
@@ -57,6 +57,7 @@ export default function App() {
   const View = VIEWS[view] ?? PlantOverview
 
   return (
+    <>
     <div className={dense ? 'dense' : ''} style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <TopBar
@@ -127,12 +128,15 @@ export default function App() {
             isMobile={isMobile}
           />
 
-          <HelpPanel
-            open={helpOpen}
-            onClose={() => setHelpOpen(false)}
-          />
         </div>
       </div>
     </div>
+
+    {/* Help modal -- rendered outside layout flow */}
+    <HelpModal
+      open={helpOpen}
+      onClose={() => setHelpOpen(false)}
+    />
+  </>
   )
 }

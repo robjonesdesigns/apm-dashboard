@@ -19,6 +19,7 @@ import AlarmQuality from './ui/AlarmQuality'
 import WatchList from './ui/WatchList'
 import AssetTable from './ui/AssetTable'
 import useIsMobile from '../hooks/useIsMobile'
+import { PLANT } from '../data/baytown'
 
 // ── Mobile card carousel (CSS scroll-snap) ──────────────────────────────────
 
@@ -157,6 +158,13 @@ export default function PlantOverview({ onNavigate }) {
 
   return (
     <div className="section-gap">
+
+      {/* Last updated */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+          Last updated: {PLANT.lastRefreshed}
+        </span>
+      </div>
 
       {/* 1. System Health — "How's my plant?" */}
       <section>

@@ -114,6 +114,7 @@
   --radius-0: 0px;
   --radius-4: 4px;
   --radius-8: 8px;
+  --radius-10: 10px;
   --radius-full: 9999px;
 
   /* ── Font ──────────────────────────────────────────────────────────── */
@@ -693,6 +694,16 @@ html, body, #root {
     border-color: Highlight;
     color: Highlight;
   }
+}
+
+/* ─── Help modal ──────────────────────────────────────────────────────── */
+@keyframes help-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes help-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── Scrollbar ───────────────────────────────────────────────────────── */
