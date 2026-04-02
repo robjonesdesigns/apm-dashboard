@@ -121,9 +121,9 @@ export default function HelpModal({ open, onClose }) {
           <p className="type-label" style={{ margin: '0 0 var(--spacing-16) 0', color: 'var(--color-text-helper)', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 'var(--type-body-compact-01)' }}>
             Section guide
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-20)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-24)' }}>
             {SECTIONS.map((section) => (
-              <div key={section.name}>
+              <div key={section.name} style={{ borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: 'var(--spacing-24)' }}>
                 <p className="type-body" style={{ margin: '0 0 var(--gap-stack) 0', color: 'var(--color-text-primary)', fontWeight: 600 }}>
                   {section.name}
                 </p>

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { TIMELINE } from '../../data/baytown'
 
-// Map event severity to status-dot variant
+// Map event severity to status-dot color variant
+// Uses status-dot classes for compact timeline density (SeverityBadge would be too heavy here)
 function dotVariant(severity) {
   if (severity === 'critical') return 'status-dot dot-critical'
   if (severity === 'high')     return 'status-dot dot-high'
-  if (severity === 'healthy')  return 'status-dot dot-low'
   if (severity === 'medium')   return 'status-dot dot-medium'
+  if (severity === 'low')      return 'status-dot dot-low'
   return 'status-dot dot-medium'
 }
 
