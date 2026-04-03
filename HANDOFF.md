@@ -4,7 +4,7 @@
 Nielsen heuristic audit complete (24 findings). Not yet triaged -- that is the first task next session. After triage and fixes, Rob wants to review Asset Inspection holistically for data surfacing, visual hierarchy, and information density.
 
 ## Deployed
-- **APM Dashboard**: https://apm-dashboard-eosin.vercel.app
+- **APM Dashboard**: https://apm.designedbyrob.com
 - **Portfolio case study**: https://designedbyrob.com/projects/honeywell-apm
 
 ## Next session priorities
