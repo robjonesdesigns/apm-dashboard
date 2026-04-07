@@ -2,10 +2,13 @@
 project:
   name: APM Dashboard
   description: >
-    Unbranded recreation of Honeywell's Asset Performance Management dashboards
-    for Rob Jones' design portfolio. Dark-themed enterprise monitoring UI built
-    with React, Recharts, and Tailwind. Three screens: Asset Health (plant overview),
-    Asset Details (single asset deep dive), and Trends (attribute analysis).
+    Rob's vision of what APM should be, built from first principles with
+    Honeywell domain expertise. Dark-themed enterprise monitoring UI built
+    with React and Tailwind. Five screens: PlantOverview (plant-wide health),
+    AssetInspection (single asset deep dive), Trends (attribute analysis),
+    DesignSystem (token reference), and HelpPanel (contextual help).
+    Strategic reframe in session 23 from unbranded recreation to Rob's
+    own APM platform.
   stage: development
   started: 2026-03-25
   repo: https://github.com/robjonesdesigns/apm-dashboard
@@ -18,10 +21,10 @@ knowledge:
 
 # VECTOR -- APM Dashboard
 
-> This is a portfolio demonstration project, not a production application.
-> It recreates dashboards Rob designed at Honeywell (2022-2025) in an unbranded
-> form that can be shown to hiring managers, recorded for case study videos,
-> and published on GitHub as a code artifact.
+> Rob's APM platform built from first principles with Honeywell domain expertise.
+> Not a recreation -- Rob's vision of what APM should be, informed by three years
+> of designing the original product. Built for portfolio case study videos,
+> hiring manager demos, and potential commercial exploration.
 
 ---
 
@@ -35,23 +38,24 @@ the unbranded recreation based on Rob's descriptions and design decisions.
 
 ## What This Project Is
 
-An unbranded, dark-themed recreation of Honeywell's APM platform dashboards.
-Built in React with Recharts for data visualization and Tailwind for layout.
-Uses realistic industrial data (compressors, pumps, turbines, heat exchangers)
-but no Honeywell branding, client names, or proprietary data.
+Rob's vision of what APM should be, built from first principles with three years
+of Honeywell domain expertise. Dark-themed enterprise monitoring platform built
+in React with Tailwind for layout. Uses realistic industrial data (compressors,
+pumps, turbines, heat exchangers) but no Honeywell branding, client names, or
+proprietary data.
 
 The project serves three purposes:
 1. Portfolio case study screenshots and video recordings
 2. GitHub repository demonstrating Rob's technical and design capability
-3. Interview artifact showing how Rob thinks about enterprise data visualization
+3. Foundation for potential commercial APM product
 
 ---
 
 ## What This Is Not
 
-- Not a production monitoring tool
-- Not Honeywell's actual product (unbranded recreation from memory)
-- Not a design system (uses tokens but is a single-purpose demo)
+- Not a production monitoring tool (yet -- commercial viability under exploration)
+- Not Honeywell's actual product (Rob's own platform, informed by domain expertise)
+- Not a design system (uses tokens but is a single-purpose platform)
 - Not attempting to replicate the exact Honeywell Forge design system
 
 ---
@@ -64,23 +68,23 @@ operators (oil and gas, chemical manufacturing, power generation). Companies
 like Shell were target customers.
 
 ### What Rob owned
-- Redesign of Asset Health dashboard (SUS scores from low 70s to high 80s)
-- Ground-up design of Asset Details dashboard (three-level IA)
+- Redesign of PlantOverview dashboard (SUS scores from low 70s to high 80s)
+- Ground-up design of AssetInspection dashboard (three-level IA)
 - Design of a compressor performance dashboard for the Performance Suite
 - Research: wrote screeners, ran ~16 moderated usability sessions
 - Heuristic evaluation of the separate Warehouse Operations platform
 
 ### The engineer's workflow
 1. Log in, select a plant (e.g., Baytown Refinery)
-2. Land on Asset Health: plant-wide overview of OEE, availability, performance, quality
+2. Land on PlantOverview: plant-wide overview of OEE, availability, performance, quality
 3. Scan Risk Matrix, Event Summary, Bad Actors to identify problems
 4. Filter the Asset Summary table or click a specific asset
-5. Drill down to Asset Details: three-level deep dive (Reliability, Maintenance, Performance)
+5. Drill down to AssetInspection: narrative-driven deep dive (how bad, why, who's on it, history)
 6. Navigate to Trends for attribute-level analysis (discharge pressure, vibration, surge margin)
 7. Notifications panel available throughout for real-time alerts
 
 ### Key design decisions from the original product
-- Research supported tabs for Asset Details (cognitive load reduction). PM and SMEs
+- Research supported tabs for AssetInspection (cognitive load reduction). PM and SMEs
   pushed for single page. Compromise: three-level modular IA using existing Forge
   design system cards on a single page.
 - Rob designed and tested affordances on KPI cards (hover state with outline + background
@@ -99,6 +103,7 @@ like Shell were target customers.
   consistently change their minds. Tunnel vision on individual requirements.
 - The navigation decision (tabs vs left panel) was made late and created downstream
   problems rather than being designed holistically from the start.
+  In the recreation, this is resolved: plant-level sidebar + asset drill-down (ADR-028).
 
 ---
 
@@ -130,10 +135,10 @@ like Shell were target customers.
 ### Color Palette (Dark Theme)
 | Token | Value | Use |
 |-------|-------|-----|
-| bg | #0f1117 | Page background |
-| surface | #1a1d27 | Card backgrounds |
-| surface-raised | #252830 | Elevated elements (tooltips, dropdowns) |
-| surface-hover | #2e313b | Hover states |
+| bg | #161616 | Page background |
+| surface (layer-01) | #262626 | Card backgrounds |
+| surface-raised | #333333 | Elevated elements (tooltips, dropdowns) |
+| surface-hover | #3e3e3e | Hover states |
 | accent | #2dd4bf | Primary interactive (teal/cyan) |
 | critical | #ef4444 (desaturated for dark) | Critical status |
 | warning | #f59e0b (desaturated for dark) | Warning status |
@@ -192,7 +197,7 @@ on dark surfaces. Raw Tailwind colors are too saturated for dark mode.
 
 **Not a user:** Technicians/craftspeople (use CMMS mobile for work orders only, not APM analytics).
 
-Both personas use Plant Overview as their morning entry point but look at different sections. See DESK-RESEARCH-003 for the full role comparison.
+Both personas use PlantOverview as their morning entry point but look at different sections. See DESK-RESEARCH-003 for the full role comparison.
 
 ---
 
@@ -202,10 +207,9 @@ Both personas use Plant Overview as their morning entry point but look at differ
 |------|----------|--------|
 | Personas | `vector/research/personas/` | PER-001 (reliability manager), PER-002 (maintenance manager) -- confirmed |
 | Interviews | `vector/research/` | INTERVIEW-001 (product walkthrough), INTERVIEW-002 (engineer decision flow) -- complete |
-| Desk research | `vector/research/` | 12 docs: DESK-RESEARCH-001 (dashboard design), 002 (engineering data), 003 (user roles), 004 (Carbon design system), 005 (typography), 006 (KPI card anatomy), 007 (work order cards), 008 (event context), 009 (timeline label alignment), 010 (analysis cards), 011 (chart legend accessibility), 012 (event assignment status + view switching) |
+| Desk research | `vector/research/` | 21 docs (001-021, including 020b): dashboard design, engineering data, user roles, Carbon design system, typography, KPI card anatomy, work order cards, event context, timeline labels, analysis cards, chart legend accessibility, event assignment, asset criticality, event summary viz, urgency iconography, accessibility audit, asset detail patterns, maintenance decision flow, info density/compliance, competitive analysis (+ 020b deep dive), AI assistant landscape |
 | Figma review | `vector/research/` | FIGMA-REVIEW-001 (gap analysis) -- complete |
 | Interaction spec | `vector/research/` | INTERACTION-SPEC-001 -- complete |
-| Story/data | `vector/research/` | STORY-001 (Baytown Refinery, 10 assets) -- updated 2026-03-27 (E-105 → K-101 bearing damage) |
+| Story/data | `vector/research/` | STORY-001 (Baytown Refinery, 10 assets), STORY-002 (asset narratives, all 10 assets with sub-assets/sensors/thresholds/failure stories) |
 | Session checklists | `vector/research/` | SESSION-CHECKLIST-003 (current -- Risk Matrix redesign, analysis cards, Asset Table) |
-| Decisions | `vector/decisions/` | ADR-001 through ADR-014 -- accepted |
-| Architecture audit | `vector/audits/` | invest-architecture.md -- needs re-run after session 9 changes |
+| Decisions | `vector/decisions/` | ADR-001 through ADR-028 -- accepted. ADR-029/030/031 pending (role toggle, AI assistant, data model expansion). |

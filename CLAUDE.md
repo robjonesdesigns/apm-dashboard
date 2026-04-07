@@ -1,6 +1,6 @@
 # APM Dashboard -- Claude Context
 
-Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
+Portfolio demo. Rob's APM platform built from first principles. Dark theme only.
 
 **Path:** `~/Documents/Dev/apm-dashboard/`
 **Dev:** `npx vite` (port 5173)
@@ -10,6 +10,7 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
 **Doctrine:** `VECTOR.md`, `HANDOFF.md`, `HEURISTICS.md` (Nielsen's 10 heuristic evaluation reference)
+**Direction:** Rob's APM platform built from first principles with Honeywell domain expertise (not a recreation).
 
 ---
 
@@ -62,6 +63,12 @@ Portfolio demo. Unbranded Honeywell APM recreation. Dark theme only.
 - **Group D (collapsible):** Event Timeline (collapsed by default)
 - **Group E (K-101 only):** Degradation Trends + Performance Attributes (two-col) | Fault Tree (full width)
 
+### Other Screens
+- **DesignSystem.jsx**: Token reference screen. Shows colors, typography, spacing, and component examples.
+- **HelpPanel.jsx**: Contextual help overlay.
+- **ErrorBoundary.jsx**: React error boundary wrapper. Catches render errors gracefully.
+- **WhatChanged.jsx** (ui/): Currently unused/dead code. Not imported by any screen.
+
 ## Plant Overview Sections (ADR-020)
 
 1. System Health -- KPI bar (6 cards, ADR-010). Health indicators: triangle (warning), diamond (critical).
@@ -108,9 +115,12 @@ Three levels: Emergency (filled circle) / Urgent (hollow circle) / Scheduled (cl
 
 001 Dark theme + teal | 002 Color system (Carbon g100) | 003 Superseded | 004 Storytelling density | 005 Collapsible sidebar | 006 Fluid type | 007 Fault tree | 008 Screen names | 009 Sidebar/notif exclusion | 010 Status labels/icons/colors | 011 Priority badges | 012 Impact Strip + section order | 013 Three-layer event context | 014 Timeline visual design | 015 Risk Matrix redesign | 016 Badge system + asset criticality | 017 Alarm Quality card | 018 Typography system | 019 Asset Table redesign | 020 Section + card naming | 021 Data reconciliation | 022 WO urgency + icon system | 023 Unified Needs Action filter | 024 Accessibility standards (WCAG 2.1 AA) | 025 Mobile responsive design | 026 Dense mode + cross-card alignment | 027 Spacing system + semantic tokens | 028 Navigation architecture (plant sidebar, asset drill-down)
 
+**Pending ADRs (to be written when building):**
+029 Role-based toggle (Reliability/Maintenance view switching) | 030 AI assistant architecture (Claude Haiku, Cloudflare Worker, system prompt) | 031 Data model expansion (sensors, PdM, PM compliance calculations)
+
 ## Desk Research Index
 
-001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography | 016 Accessibility audit (WCAG 2.1 AA)
+001 Dashboard design | 002 Engineering data | 003 User roles | 004 Carbon design system | 005 Typography | 006 KPI card anatomy | 007 Work order cards | 008 Event context | 009 Timeline labels | 010 Analysis cards | 011 Chart legend accessibility | 012 Event assignment status + view switching | 013 Asset criticality vs priority | 014 Event summary visualization | 015 Urgency iconography | 016 Accessibility audit (WCAG 2.1 AA) | 017 APM asset detail page patterns | 018 Maintenance manager decision flow (Diane persona) | 019 Information density by role/scope + PdM/PM compliance calculations | 020 Comprehensive competitive analysis (full IA, all page types, 6 tools) | 020b Competitor page deep dive (exhaustive detail, pending) | 021 AI assistant competitive landscape + implementation plan
 
 ## Story Index
 
@@ -129,7 +139,7 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 
 ## Handoff
 
-See `HANDOFF.md` for session 18 end state. Deployed to https://apm-dashboard-eosin.vercel.app. 27 ADRs, 16 desk research docs, 2 stories.
+See `HANDOFF.md` for session 23 end state. Deployed to https://apm.designedbyrob.com. 28 ADRs (3 pending), 21 desk research docs, 2 interviews, 2 personas, 2 stories.
 
 ## Hooks
 

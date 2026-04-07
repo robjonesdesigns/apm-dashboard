@@ -1,6 +1,6 @@
 # ARCHITECTURE.md -- APM Dashboard
 
-**Last updated:** 2026-03-26
+**Last updated:** 2026-04-06
 
 ---
 
@@ -13,7 +13,7 @@
 | Styling | Tailwind CSS v4 + CSS custom properties |
 | Charts | Recharts |
 | Font | Inter (Google Fonts CDN) |
-| Deployment | GitHub Pages or Vercel (TBD) |
+| Deployment | Vercel at apm.designedbyrob.com |
 
 ---
 
@@ -21,13 +21,14 @@
 
 | Layer | Location | Rule |
 |-------|----------|------|
-| Pages/Screens | `src/components/` | Top-level screen components (AssetHealth, AssetDetails, Trends, FaultTree). Own their data and state. |
+| Pages/Screens | `src/components/` | Top-level screen components (PlantOverview, AssetInspection, Trends, DesignSystem, HelpPanel, ErrorBoundary). Own their data and state. |
 | Shell | `src/components/` | App shell (Sidebar, TopBar, NotificationsPanel). Shared across screens. |
-| UI Primitives | `src/components/ui/` | Stateless building blocks (Tooltip, Badge, StatusDot). No business logic. No navigation. |
-| Data | `src/data/` | Static sample data. No components. No logic beyond data shaping. |
+| UI Primitives | `src/components/ui/` | Stateless building blocks (Tooltip, Badge, StatusDot, WhatChanged [unused/dead code]). No business logic. No navigation. |
+| Hooks | `src/hooks/` | Shared hooks (useIsMobile.js, useFocusTrap.js). No component code. |
+| Data | `src/data/` | Static sample data (baytown.js). No components. No logic beyond data shaping. |
 | Styles | `src/styles/` | Tokens (global.css, tokens.js). No component code. |
 
-**Import direction:** Screens import from UI, Data, and Styles. UI imports from Styles only. Data imports nothing. Styles import nothing.
+**Import direction:** Screens import from UI, Hooks, Data, and Styles. UI imports from Styles only. Hooks import nothing. Data imports nothing. Styles import nothing.
 
 ---
 
@@ -61,7 +62,7 @@ Gutters are 24px both horizontally and vertically at all breakpoints.
 
 | Element | Size | Notes |
 |---------|------|-------|
-| Header (TopBar) | 48px tall | Fixed, full width, z-index 10000 |
+| Header (TopBar) | 56px tall | Fixed, full width, z-index 10000 |
 | Sidebar rail | 48px wide | Icons only, default state |
 | Sidebar expanded | 256px wide | Icons + labels |
 | Nav item height | 48px | Matches header height |
@@ -100,23 +101,18 @@ Content area uses margin-left to offset from sidebar (48px rail or 256px expande
 
 All typography uses composition classes from global.css. No inline font styles.
 
-| Class | Size | Weight | Color | Use |
-|-------|------|--------|-------|-----|
-| `type-heading-01` | 14px | 600 | primary | Inline headings, notification asset names |
-| `type-heading-02` | 16px | 600 | card-title (#c6c6c6) | Card titles (dimmed, not competing with data) |
-| `type-heading-03` | 20px | 400 | primary | Page section titles |
-| `type-heading-04` | 28px | 400 | primary | Large headings |
-| `type-body-01` | 14px | 400 | primary | Body text |
-| `type-body-compact` | 14px | 400 | primary | Table/data text (tighter line height) |
-| `type-body-02` | 16px | 400 | primary | Larger body text |
-| `type-label` | 12px | 400 | helper (#a8a8a8) | Labels, axis text, delta text |
-| `type-label-semibold` | 12px | 600 | helper | Bold labels |
-| `type-helper` | 12px | 400 | helper | Timestamps, metadata |
-| `type-kpi` | 28px | 400 | primary (or health color) | KPI values |
-| `type-kpi-lg` | 32px | 400 | primary | Hero KPI |
-| `type-callout` | 48px | 300 | primary | Large callout numbers |
-| `type-link` | 14px | 400 | link (#78a9ff) | Contextual links |
-| `section-header` | 12px | 600 | helper, uppercase | Section labels above card groups |
+| Class | Size | Weight | Role |
+|-------|------|--------|------|
+| `section-header` | 14px | 500 | Uppercase section labels |
+| `type-heading` | 24px | 600 | Modal titles, panel headers |
+| `type-card-title` | 14px | 600 | Card headers |
+| `type-table-header` | 14px | 600 | Column headers |
+| `type-body` | 14px | 400 | General text, table data |
+| `type-meta` | 12px | 400 | Timestamps, helper text |
+| `type-label` | 12px | 500 | Legend items, chips |
+| `type-kpi` | 28px | 700 | KPI values |
+| `type-kpi-hero` | 32px | 700 | Donut center, large callouts |
+| `type-link` | 14px | 400 | Teal links |
 
 **Rules:**
 - All numeric displays use `font-variant-numeric: tabular-nums`
@@ -207,9 +203,9 @@ See `vector/research/INTERACTION-SPEC-001-all-screens.md` for the full specifica
 
 | Type | Convention | Example |
 |------|-----------|---------|
-| Screen components | PascalCase | `AssetHealth.jsx` |
+| Screen components | PascalCase | `PlantOverview.jsx` |
 | UI primitives | PascalCase | `Tooltip.jsx` |
-| Data files | camelCase | `assets.js` |
+| Data files | camelCase | `baytown.js` |
 | Style files | kebab-case | `global.css` |
 | CSS classes | kebab-case | `section-header` |
 | JS constants | SCREAMING_SNAKE | `WORK_ORDERS` |
