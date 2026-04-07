@@ -9,8 +9,17 @@ Portfolio demo. Rob's APM platform built from first principles. Dark theme only.
 **Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
-**Doctrine:** `VECTOR.md`, `HANDOFF.md`, `HEURISTICS.md` (Nielsen's 10 heuristic evaluation reference)
+**Doctrine:** `VECTOR.md`, `ARCHITECTURE.md`, `HANDOFF.md`, `HEURISTICS.md` (Nielsen's 10 heuristic evaluation reference)
 **Direction:** Rob's APM platform built from first principles with Honeywell domain expertise (not a recreation).
+
+---
+
+## Zero Vector Principle
+
+All code generation must adhere to VECTOR.md. Before writing code:
+1. Read VECTOR.md to understand intent, audience, constraints, and design principles.
+2. If a requested change conflicts with VECTOR.md, flag the conflict before writing code.
+3. Move from intent to execution without intermediate mockups. VECTOR.md defines what to build and why. ARCHITECTURE.md defines how. Code is the output.
 
 ---
 
