@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { EVENT_SUMMARY } from '../../data/baytown'
 import FilterChip from './FilterChip'
 import Legend from './Legend'
+import useIsMobile from '../../hooks/useIsMobile'
 
 // ── Segment config ──────────────────────────────────────────────────────────
 
@@ -25,11 +26,33 @@ const SEGMENT_LABELS = {
 
 const maxValue = Math.max(...ALARM_SEGMENTS.map(s => s.value))
 
+// ── Tooltip (cursor-following, matches Watch List / Risk Matrix) ────────────
+
+function AlarmTooltip({ segment, total, x, y }) {
+  if (!segment) return null
+  const pct = Math.round((segment.value / total) * 100)
+
+  return (
+    <div
+      className="tooltip-fixed"
+      style={{ left: Math.min(x + 12, window.innerWidth - 240), top: y - 8 }}
+    >
+      <div className="tooltip-bubble flex flex-col gap-[var(--gap-stack)] rounded-[var(--radius-4)] py-8 px-12 whitespace-nowrap">
+        <div className="flex items-center gap-8">
+          <div className="shrink-0 rounded-sm" style={{ width: 10, height: 10, background: segment.color }} />
+          <span className="type-meta">{segment.label}</span>
+          <span className="type-meta font-semibold">{segment.value} ({pct}%)</span>
+        </div>
+        <span className="type-meta opacity-60">Click to filter Asset Table</span>
+      </div>
+    </div>
+  )
+}
+
 // ── Bar row (matches Watch List hover affordance) ───────────────────────────
 
-function BarRow({ segment, isHovered, isSelected, isDimmed, onHover, onLeave, onClick }) {
+function BarRow({ segment, isHovered, isSelected, isDimmed, onHover, onLeave, onClick, onFocusEl, onBlurEl }) {
   const pct = (segment.value / maxValue) * 100
-  const showBorder = isHovered || isSelected
 
   return (
     <div
@@ -39,6 +62,8 @@ function BarRow({ segment, isHovered, isSelected, isDimmed, onHover, onLeave, on
       aria-pressed={isSelected}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
+      onFocus={(e) => { onFocusEl?.(e.currentTarget); onHover() }}
+      onBlur={() => { onBlurEl?.(); onLeave() }}
       onClick={() => onClick?.(segment.key)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(segment.key) } }}
       className="flex items-center gap-8 px-8 py-4 cursor-pointer rounded-[var(--radius-4)]"
@@ -78,8 +103,21 @@ function BarRow({ segment, isHovered, isSelected, isDimmed, onHover, onLeave, on
 // ── AlarmQuality card ───────────────────────────────────────────────────────
 
 export default function AlarmQuality({ selectedSegment, onSegmentClick, onClearFilter }) {
+  const isMobile = useIsMobile()
   const [hoveredKey, setHoveredKey] = useState(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const focusedElRef = useRef(null)
   const total = EVENT_SUMMARY.total
+
+  const hoveredSegment = hoveredKey ? ALARM_SEGMENTS.find(s => s.key === hoveredKey) : null
+
+  const getTooltipPos = useCallback(() => {
+    if (focusedElRef.current) {
+      const r = focusedElRef.current.getBoundingClientRect()
+      return { x: r.right, y: r.top }
+    }
+    return mousePos
+  }, [mousePos])
 
   const legendItems = ALARM_SEGMENTS.map(seg => ({
     label: seg.label,
@@ -88,7 +126,13 @@ export default function AlarmQuality({ selectedSegment, onSegmentClick, onClearF
   }))
 
   return (
-    <div className="card flex flex-col gap-16">
+    <div
+      className="card flex flex-col gap-16"
+      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+    >
+      {/* Tooltip (desktop only) */}
+      {!isMobile && <AlarmTooltip segment={hoveredSegment} total={total} x={getTooltipPos().x} y={getTooltipPos().y} />}
+
       {/* Header */}
       <div className="flex items-center justify-between gap-8">
         <span className="type-card-title">Alarm Quality</span>
@@ -118,11 +162,13 @@ export default function AlarmQuality({ selectedSegment, onSegmentClick, onClearF
             onHover={() => setHoveredKey(seg.key)}
             onLeave={() => setHoveredKey(null)}
             onClick={onSegmentClick}
+            onFocusEl={(el) => { focusedElRef.current = el }}
+            onBlurEl={() => { focusedElRef.current = null }}
           />
         ))}
       </div>
 
-      {/* Legend -- matches Risk Matrix and Watch List */}
+      {/* Legend */}
       <Legend items={legendItems} shape="square" title="Event Status" />
     </div>
   )
