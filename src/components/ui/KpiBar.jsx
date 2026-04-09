@@ -162,15 +162,27 @@ function KpiCard({ config, onClick, isSelected }) {
 
         <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
 
-        <div className="hide-mobile items-center gap-4 mt-[var(--gap-stack)]">
-          <span className="type-meta text-[var(--color-text-secondary)]">
-            {deltaSign}{delta.toFixed(1)}% vs yesterday
-          </span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
-            {delta >= 0
-              ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            }
+        <div className="hide-mobile flex items-center justify-between gap-4 mt-[var(--gap-stack)]">
+          <div className="flex items-center gap-4">
+            <span className="type-meta text-[var(--color-text-secondary)]">
+              {deltaSign}{delta.toFixed(1)}% vs yesterday
+            </span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
+              {delta >= 0
+                ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              }
+            </svg>
+          </div>
+          <svg
+            width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
+            className="shrink-0"
+            style={{
+              transform: isSelected ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform var(--motion-fast) var(--ease-productive)',
+            }}
+          >
+            <path d="M2.5 4.5L6 8l3.5-3.5" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </button>
@@ -263,8 +275,16 @@ function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
         className="block w-full h-full"
         aria-hidden="true"
       >
+        {/* Top + threshold dotted reference lines */}
+        <line
+          x1={0} y1={py} x2={vbWidth} y2={py}
+          stroke="var(--color-border-subtle)" strokeWidth={1} strokeDasharray="3 3" vectorEffect="non-scaling-stroke"
+        />
         {threshold && (
-          <rect x={0} y={0} width={vbWidth} height={toY(threshold)} fill="var(--color-accent)" opacity={0.06} />
+          <line
+            x1={0} y1={toY(threshold)} x2={vbWidth} y2={toY(threshold)}
+            stroke="var(--color-border-subtle)" strokeWidth={1} strokeDasharray="3 3" vectorEffect="non-scaling-stroke"
+          />
         )}
         {eventIndex != null && (
           <line
