@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { ASSETS, WORK_ORDERS, INVESTIGATIONS, TIMELINE, INCIDENTS } from '../../data/baytown'
 import WoPriority from './WoPriority'
 import CriticalityIndicator from './CriticalityIndicator'
@@ -14,18 +13,11 @@ function getEventName(eventId) {
   return evt ? evt.name : null
 }
 
-function getIncidentName(incidentId) {
-  if (!incidentId) return null
-  const inc = INCIDENTS.find(i => i.id === incidentId)
-  return inc ? inc.name : null
-}
-
 function getIncidentForEvent(eventId) {
   if (!eventId) return null
   const inc = INCIDENTS.find(i => i.eventIds.includes(eventId))
   return inc ? inc.name : null
 }
-
 
 // ── Summary builders ────────────────────────────────────────────────────────
 
@@ -40,31 +32,6 @@ function buildCaseSummary(cases) {
   cases.forEach((c) => { counts[c.status] = (counts[c.status] || 0) + 1 })
   return counts
 }
-
-// ── Row hover styles ────────────────────────────────────────────────────────
-
-function rowBaseStyle(isHovered) {
-  return {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 'var(--gap-stack)',
-    padding: 'var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-8)',
-    margin: '0 calc(-1 * var(--spacing-4))',
-    borderBottom: '1px solid var(--color-border-subtle)',
-    borderLeft: isHovered ? '2px solid var(--color-accent)' : '2px solid transparent',
-    borderRadius: isHovered ? 'var(--radius-4)' : '0',
-    background: isHovered ? 'var(--color-hover-01)' : 'transparent',
-    cursor: 'default',
-    transition: [
-      'background var(--motion-fast) var(--ease-productive)',
-      'border-left-color var(--motion-fast) var(--ease-productive)',
-      'border-radius var(--motion-fast) var(--ease-productive)',
-    ].join(', '),
-  }
-}
-
-// ── Shared column widths for cross-card alignment ───────────────────────────
-const RIGHT_COL = { minWidth: 100, width: 100, textAlign: 'right', flexShrink: 0 }
 
 // ── Investigation status icons (right-pointing triangles = progress) ─────────
 
@@ -90,54 +57,90 @@ function InvestigationStatus({ status }) {
   const label = isInvestigating ? 'Investigating' : 'Open'
 
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)', color: 'var(--color-text-secondary)' }}>
+    <span className="inline-flex items-center gap-4 text-[var(--color-text-secondary)]">
       <Icon />
-      <span className="type-label" style={{ color: 'var(--color-text-secondary)' }}>{label}</span>
+      <span className="type-label">{label}</span>
     </span>
   )
 }
 
-// ── WO summary line ─────────────────────────────────────────────────────────
+// ── Summary lines ──────────────────────────────────────────────────────────
 
-function WoSummaryLine({ summary }) {
-  const parts = []
-  if (summary.emergency > 0) parts.push({ count: summary.emergency, urgency: 'emergency' })
-  if (summary.urgent > 0)    parts.push({ count: summary.urgent,    urgency: 'urgent' })
-  if (summary.scheduled > 0) parts.push({ count: summary.scheduled, urgency: 'scheduled' })
-
+function SummaryLine({ parts, renderItem }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
+    <div className="flex items-center gap-8 mb-16 flex-wrap">
       {parts.map((p, i) => (
-        <span key={p.urgency} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-          <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{p.count}</span>
-          <WoPriority urgency={p.urgency} />
-          {i < parts.length - 1 && (
-            <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
-          )}
+        <span key={p.key} className="inline-flex items-center gap-4">
+          <span className="type-body font-semibold tabular-nums">{p.count}</span>
+          {renderItem(p)}
+          {i < parts.length - 1 && <span className="type-label ml-4">&middot;</span>}
         </span>
       ))}
     </div>
   )
 }
 
-// ── Case summary line ───────────────────────────────────────────────────────
+function WoSummaryLine({ summary }) {
+  const parts = []
+  if (summary.emergency > 0) parts.push({ key: 'emergency', count: summary.emergency, urgency: 'emergency' })
+  if (summary.urgent > 0)    parts.push({ key: 'urgent',    count: summary.urgent,    urgency: 'urgent' })
+  if (summary.scheduled > 0) parts.push({ key: 'scheduled', count: summary.scheduled, urgency: 'scheduled' })
+  return <SummaryLine parts={parts} renderItem={(p) => <WoPriority urgency={p.urgency} />} />
+}
 
 function CaseSummaryLine({ summary }) {
   const parts = []
-  if (summary.investigating > 0) parts.push({ count: summary.investigating, status: 'investigating' })
-  if (summary.open > 0)          parts.push({ count: summary.open,          status: 'open' })
+  if (summary.investigating > 0) parts.push({ key: 'investigating', count: summary.investigating, status: 'investigating' })
+  if (summary.open > 0)          parts.push({ key: 'open',          count: summary.open,          status: 'open' })
+  return <SummaryLine parts={parts} renderItem={(p) => <InvestigationStatus status={p.status} />} />
+}
 
+// ── Row sub-components ─────────────────────────────────────────────────────
+
+function RowIdTitle({ id, title }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)', flexWrap: 'wrap' }}>
-      {parts.map((p, i) => (
-        <span key={p.status} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-          <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{p.count}</span>
-          <InvestigationStatus status={p.status} />
-          {i < parts.length - 1 && (
-            <span className="type-label" style={{ marginLeft: 'var(--spacing-4)' }}>·</span>
-          )}
-        </span>
-      ))}
+    <div className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--color-accent)]">
+      <span className="type-meta text-[var(--color-text-helper)]">{id}</span>
+      <span className="type-meta text-[var(--color-text-helper)]"> &middot; </span>
+      <span className="type-body text-inherit">{title}</span>
+    </div>
+  )
+}
+
+function RowAssetCriticality({ asset, assetId }) {
+  return (
+    <div className="flex items-center gap-8 min-w-0">
+      <span className="type-body text-[var(--color-text-secondary)]">{asset}</span>
+      {critByAsset[assetId] && (
+        <>
+          <span className="divider-v" />
+          <CriticalityIndicator level={critByAsset[assetId]} />
+        </>
+      )}
+    </div>
+  )
+}
+
+function MobileRowIdTitle({ id, title }) {
+  return (
+    <div className="flex items-center gap-4 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+      <span className="type-meta text-[var(--color-text-helper)] shrink-0">{id}</span>
+      <span className="type-meta text-[var(--color-text-helper)] shrink-0">&middot;</span>
+      <span className="type-body text-[var(--color-accent)] overflow-hidden text-ellipsis whitespace-nowrap">{title}</span>
+    </div>
+  )
+}
+
+function MobileRowAssetCriticality({ asset, assetId }) {
+  return (
+    <div className="flex items-center gap-8 min-w-0">
+      <span className="type-meta text-[var(--color-text-secondary)]">{asset}</span>
+      {critByAsset[assetId] && (
+        <>
+          <span className="divider-v" />
+          <CriticalityIndicator level={critByAsset[assetId]} />
+        </>
+      )}
     </div>
   )
 }
@@ -145,84 +148,51 @@ function CaseSummaryLine({ summary }) {
 // ── Work Orders card ────────────────────────────────────────────────────────
 
 function WorkOrdersCard() {
-  const [hoveredId, setHoveredId] = useState(null)
   const isMobile = useIsMobile()
   const summary = buildWoSummary(WORK_ORDERS)
 
-  // Show top 5, sorted by urgency (emergency first)
   const urgencyOrder = { emergency: 0, urgent: 1, scheduled: 2 }
   const visible = [...WORK_ORDERS]
     .sort((a, b) => (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9))
     .slice(0, 5)
 
   return (
-    <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
-
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
+    <div className="card col-half flex flex-col">
+      <div className="flex items-center justify-between mb-[var(--gap-stack)]">
         <span className="type-card-title">Work Orders</span>
         <span className="type-label">{WORK_ORDERS.length} Total</span>
       </div>
 
-      {/* Summary */}
       <WoSummaryLine summary={summary} />
 
-      {/* Rows (max 5, no internal scroll) */}
-      <div style={{ flex: 1 }}>
+      <div className="flex-1">
         {visible.map((wo) => (
           <div
             key={wo.id}
+            className="row-hover flex flex-col gap-[var(--gap-stack)] border-b border-[var(--color-border-subtle)]"
+            style={{ padding: 'var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-8)', margin: '0 calc(-1 * var(--spacing-4))' }}
             aria-label={`${wo.id}: ${wo.task}, ${wo.asset}, ${wo.urgency}`}
-            style={rowBaseStyle(hoveredId === wo.id)}
-            onMouseEnter={isMobile ? undefined : () => setHoveredId(wo.id)}
-            onMouseLeave={isMobile ? undefined : () => setHoveredId(null)}
           >
             {isMobile ? (
               <>
-                {/* Mobile Line 1: WO ID + task (truncated) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>{wo.id}</span>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
-                  <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.task}</span>
-                </div>
-                {/* Mobile Line 2: asset + criticality */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{wo.asset}</span>
-                  {critByAsset[wo.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[wo.assetId]} /></>)}
-                </div>
-                {/* Mobile Line 3: urgency */}
+                <MobileRowIdTitle id={wo.id} title={wo.task} />
+                <MobileRowAssetCriticality asset={wo.asset} assetId={wo.assetId} />
                 <WoPriority urgency={wo.urgency} />
               </>
             ) : (
               <>
-                {/* Line 1: WO ID + task | urgency */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                    <span className="type-body" style={{ color: 'inherit' }}>{wo.task}</span>
-                  </div>
-                  <div style={RIGHT_COL}>
-                    <WoPriority urgency={wo.urgency} />
-                  </div>
+                <div className="flex justify-between items-center gap-8">
+                  <RowIdTitle id={wo.id} title={wo.task} />
+                  <div className="col-right-100"><WoPriority urgency={wo.urgency} /></div>
                 </div>
-
-                {/* Line 2: asset + criticality | assignee */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
-                    <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                      {wo.asset}
-                    </span>
-                    {critByAsset[wo.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[wo.assetId]} /></>)}
-                  </div>
-                  <span className="type-label" style={{ ...RIGHT_COL, color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                <div className="flex justify-between items-center gap-8">
+                  <RowAssetCriticality asset={wo.asset} assetId={wo.assetId} />
+                  <span className="type-label col-right-100" style={{ color: wo.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                     {wo.assignee || 'Unassigned'}
                   </span>
                 </div>
-
-                {/* Line 3: event + incident | timestamp */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                <div className="flex justify-between items-center gap-8">
+                  <span className="type-meta text-[var(--color-text-helper)]">
                     {wo.eventId && getEventName(wo.eventId) ? (
                       <>
                         {getEventName(wo.eventId)}
@@ -232,9 +202,7 @@ function WorkOrdersCard() {
                       'Routine maintenance'
                     )}
                   </span>
-                  <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
-                    {wo.created}
-                  </span>
+                  <span className="type-meta col-right-100 text-[var(--color-text-helper)]">{wo.created}</span>
                 </div>
               </>
             )}
@@ -242,8 +210,7 @@ function WorkOrdersCard() {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom, right-aligned */}
-      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)', textAlign: 'right' }}>
+      <div className="mt-auto pt-16 text-right">
         <span className="type-link">Go to Work Orders &rarr;</span>
       </div>
     </div>
@@ -253,88 +220,53 @@ function WorkOrdersCard() {
 // ── Investigations card ─────────────────────────────────────────────────────
 
 function InvestigationsCard() {
-  const [hoveredId, setHoveredId] = useState(null)
   const isMobile = useIsMobile()
   const summary = buildCaseSummary(INVESTIGATIONS)
-
   const visible = INVESTIGATIONS.slice(0, 5)
 
   return (
-    <div className="card col-half" style={{ display: 'flex', flexDirection: 'column' }}>
-
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
+    <div className="card col-half flex flex-col">
+      <div className="flex items-center justify-between mb-[var(--gap-stack)]">
         <span className="type-card-title">Investigations</span>
         <span className="type-label">{INVESTIGATIONS.length} Total</span>
       </div>
 
-      {/* Summary */}
       <CaseSummaryLine summary={summary} />
 
-      {/* Rows (max 5, no internal scroll) */}
-      <div style={{ flex: 1 }}>
+      <div className="flex-1">
         {visible.map((c) => (
           <div
             key={c.id}
+            className="row-hover flex flex-col gap-[var(--gap-stack)] border-b border-[var(--color-border-subtle)]"
+            style={{ padding: 'var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-8)', margin: '0 calc(-1 * var(--spacing-4))' }}
             aria-label={`${c.id}: ${c.description}, ${c.asset}, ${c.status}`}
-            style={rowBaseStyle(hoveredId === c.id)}
-            onMouseEnter={isMobile ? undefined : () => setHoveredId(c.id)}
-            onMouseLeave={isMobile ? undefined : () => setHoveredId(null)}
           >
             {isMobile ? (
               <>
-                {/* Mobile Line 1: Case ID + description (truncated) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>{c.id}</span>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)', flexShrink: 0 }}>·</span>
-                  <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.description}</span>
-                </div>
-                {/* Mobile Line 2: asset + criticality */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>{c.asset}</span>
-                  {critByAsset[c.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[c.assetId]} /></>)}
-                </div>
-                {/* Mobile Line 3: status */}
+                <MobileRowIdTitle id={c.id} title={c.description} />
+                <MobileRowAssetCriticality asset={c.asset} assetId={c.assetId} />
                 <InvestigationStatus status={c.status} />
               </>
             ) : (
               <>
-                {/* Line 1: Investigation ID + description | status */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-accent)' }}>
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{c.id}</span>
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}> · </span>
-                    <span className="type-body" style={{ color: 'inherit' }}>{c.description}</span>
-                  </div>
-                  <div style={RIGHT_COL}>
-                    <InvestigationStatus status={c.status} />
-                  </div>
+                <div className="flex justify-between items-center gap-8">
+                  <RowIdTitle id={c.id} title={c.description} />
+                  <div className="col-right-100"><InvestigationStatus status={c.status} /></div>
                 </div>
-
-                {/* Line 2: asset + criticality | assignee */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', minWidth: 0 }}>
-                    <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
-                      {c.asset}
-                    </span>
-                    {critByAsset[c.assetId] && (<><span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} /><CriticalityIndicator level={critByAsset[c.assetId]} /></>)}
-                  </div>
-                  <span className="type-label" style={{ ...RIGHT_COL, color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
+                <div className="flex justify-between items-center gap-8">
+                  <RowAssetCriticality asset={c.asset} assetId={c.assetId} />
+                  <span className="type-label col-right-100" style={{ color: c.assignee ? 'var(--color-text-secondary)' : 'var(--color-text-helper)' }}>
                     {c.assignee || 'Unassigned'}
                   </span>
                 </div>
-
-                {/* Line 3: scope (events + WOs) | timestamp */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-                  <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                <div className="flex justify-between items-center gap-8">
+                  <span className="type-meta text-[var(--color-text-helper)]">
                     {[
                       `${c.eventIds.length} event${c.eventIds.length !== 1 ? 's' : ''}`,
                       `${c.workOrderIds.length} WO${c.workOrderIds.length !== 1 ? 's' : ''}`,
                     ].join(' · ')}
                   </span>
-                  <span className="type-meta" style={{ ...RIGHT_COL, color: 'var(--color-text-helper)' }}>
-                    {c.opened}
-                  </span>
+                  <span className="type-meta col-right-100 text-[var(--color-text-helper)]">{c.opened}</span>
                 </div>
               </>
             )}
@@ -342,8 +274,7 @@ function InvestigationsCard() {
         ))}
       </div>
 
-      {/* Footer -- pinned to bottom, right-aligned */}
-      <div style={{ marginTop: 'auto', paddingTop: 'var(--spacing-16)', textAlign: 'right' }}>
+      <div className="mt-auto pt-16 text-right">
         <span className="type-link">Go to Investigations &rarr;</span>
       </div>
     </div>

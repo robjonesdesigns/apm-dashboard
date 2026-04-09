@@ -22,25 +22,10 @@ const chartData = [
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
   return (
-    <div
-      style={{
-        background: chartStyle.tooltipBg,
-        border: `1px solid ${chartStyle.tooltipBorder}`,
-        borderRadius: 'var(--radius-8)',
-        padding: 'var(--spacing-8) var(--spacing-12)',
-      }}
-    >
+    <div className="tooltip-bubble">
       {payload.map((entry) => (
-        <div
-          key={entry.name}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--spacing-8)',
-            marginBottom: 'var(--spacing-4)',
-          }}
-        >
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: entry.fill, flexShrink: 0 }} />
+        <div key={entry.name} className="flex items-center gap-8 mb-4">
+          <div className="status-dot" style={{ background: entry.fill }} />
           <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>{entry.name}</span>
           <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600 }}>{entry.value}</span>
         </div>
@@ -61,11 +46,11 @@ export default function EventSummary() {
   })
 
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
+    <div className="card flex flex-col gap-16">
       {/* Header row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+      <div className="flex items-center justify-between gap-8">
         <span className="type-card-title">Event Summary</span>
-        <div style={{ display: 'flex', gap: 'var(--spacing-8)' }}>
+        <div className="flex gap-8">
           <button
             className={`chip${activeTab === 'events' ? ' chip-active' : ''}`}
             onClick={() => setActiveTab('events')}
@@ -82,7 +67,7 @@ export default function EventSummary() {
       </div>
 
       {/* Large callout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
+      <div className="flex flex-col gap-[var(--gap-stack)]">
         <span className="type-label">Active Events</span>
         <span className="type-kpi-hero">{total}</span>
       </div>

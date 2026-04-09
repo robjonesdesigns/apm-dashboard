@@ -44,18 +44,9 @@ export default function WoPriority({ urgency }) {
   const { Icon } = config
 
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-4)',
-        color: 'var(--color-text-secondary)',
-      }}
-    >
+    <span className="inline-flex items-center gap-4 text-[var(--color-text-secondary)]">
       <Icon />
-      <span className="type-label" style={{ color: 'var(--color-text-secondary)' }}>
-        {config.label}
-      </span>
+      <span className="type-label">{config.label}</span>
     </span>
   )
 }

@@ -28,65 +28,29 @@ function AssetHeader({ asset, onBack, isMobile }) {
       {/* Back link -- flush to page margin */}
       <button
         onClick={onBack}
-        className="type-link"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 'var(--spacing-4)',
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-          color: 'var(--color-accent)',
-          fontSize: 'var(--text-14)',
-          marginBottom: 'var(--gap-intra)',
-        }}
+        className="btn-reset type-link inline-flex items-center gap-4 mb-[var(--gap-intra)]"
       >
         <ChevronLeft />
         Plant Overview
       </button>
 
       {/* Asset name */}
-      <p className="section-header" style={{ marginBottom: 0 }}>{asset.name}</p>
+      <p className="section-header mb-0">{asset.name}</p>
 
       {/* Status + criticality */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--gap-stack)',
-        marginTop: 'var(--gap-stack)',
-      }}>
+      <div className="flex items-center gap-[var(--gap-stack)] mt-[var(--gap-stack)]">
         <StatusIndicator status={asset.status} />
-        <span style={{
-          width: 1,
-          height: 12,
-          background: 'var(--color-border-strong)',
-          flexShrink: 0,
-        }} />
+        <span className="divider-v" />
         <CriticalityIndicator level={asset.criticality} />
       </div>
 
       {/* Specs row: type · service · process unit */}
       {specs.length > 0 && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--gap-stack)',
-          marginTop: 'var(--gap-stack)',
-        }}>
+        <div className="flex items-center gap-[var(--gap-stack)] mt-[var(--gap-stack)]">
           {specs.map((spec, i) => (
-            <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              {i > 0 && (
-                <span style={{
-                  width: 1,
-                  height: 12,
-                  background: 'var(--color-border-strong)',
-                  flexShrink: 0,
-                }} />
-              )}
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-                {spec}
-              </span>
+            <span key={i} className="flex items-center gap-8">
+              {i > 0 && <span className="divider-v" />}
+              <span className="type-meta">{spec}</span>
             </span>
           ))}
         </div>
@@ -167,7 +131,8 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
   return (
     <div
       ref={containerRef}
-      style={{ position: 'relative', width: '100%', height: 40 }}
+      className="relative w-full"
+      style={{ height: 40 }}
       role="img"
       aria-label={ariaText}
       onMouseMove={handleMouseMove}
@@ -176,7 +141,7 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
       <svg
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
         preserveAspectRatio="none"
-        style={{ display: 'block', width: '100%', height: '100%' }}
+        className="block w-full h-full"
         aria-hidden="true"
       >
         {/* Threshold line */}
@@ -220,8 +185,8 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
       {/* Current value dot (hidden when hovering a different point) */}
       {(hover == null || hover.idx === data.length - 1) && (
         <span
+          className="absolute pointer-events-none"
           style={{
-            position: 'absolute',
             left: `${lastDotLeftPct}%`,
             top: `${lastDotTopPct}%`,
             transform: 'translate(-3px, -3px)',
@@ -229,15 +194,14 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
             height: 6,
             borderRadius: 'var(--radius-full)',
             background: 'var(--color-accent)',
-            pointerEvents: 'none',
           }}
         />
       )}
       {/* Hover dot */}
       {hover != null && hover.idx !== data.length - 1 && (
         <span
+          className="absolute pointer-events-none"
           style={{
-            position: 'absolute',
             left: `${((px + hover.idx * stepX) / vbWidth) * 100}%`,
             top: `${(toY(data[hover.idx]) / vbHeight) * 100}%`,
             transform: 'translate(-3px, -3px)',
@@ -245,32 +209,24 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
             height: 6,
             borderRadius: 'var(--radius-full)',
             background: 'var(--color-accent)',
-            pointerEvents: 'none',
           }}
         />
       )}
       {/* Tooltip */}
       {hover != null && (
         <div
+          className="tooltip-fixed"
           style={{
-            position: 'fixed',
             top: hover.y - 36,
             left: hover.x,
             transform: 'translateX(-50%)',
-            background: 'var(--color-tooltip-bg)',
-            color: 'var(--color-tooltip-text)',
-            borderRadius: 'var(--radius-4)',
-            padding: '4px 8px',
-            boxShadow: 'var(--shadow-tooltip)',
-            pointerEvents: 'none',
-            zIndex: 10001,
-            whiteSpace: 'nowrap',
-            animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
           }}
         >
-          <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>
-            {WEEK_LABELS[hover.idx]}: <strong>{data[hover.idx]}{unit || ''}</strong>
-          </span>
+          <div className="tooltip-bubble" style={{ padding: '4px 8px', borderRadius: 'var(--radius-4)' }}>
+            <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>
+              {WEEK_LABELS[hover.idx]}: <strong>{data[hover.idx]}{unit || ''}</strong>
+            </span>
+          </div>
         </div>
       )}
     </div>
@@ -289,28 +245,20 @@ function KpiCard({ title, value, subtitle, trend, threshold, unit, label, health
   const isCompact = useIsMobile(1055)
 
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
-      <span className="type-card-title" style={{ marginBottom: 'var(--gap-stack)' }}>
+    <div className="card flex flex-col">
+      <span className="type-card-title mb-[var(--gap-stack)]">
         {title}
       </span>
-      <div style={{
-        display: 'flex',
-        flexDirection: isCompact ? 'column' : 'row',
-        alignItems: isCompact ? 'flex-start' : 'center',
-        gap: isCompact ? 'var(--gap-intra)' : 'var(--spacing-16)',
-      }}>
-        <div style={{ flexShrink: 0 }}>
-          <span className="type-kpi" style={{ display: 'block' }}>
+      <div className={`flex ${isCompact ? 'flex-col items-start gap-[var(--gap-intra)]' : 'flex-row items-center gap-16'}`}>
+        <div className="shrink-0">
+          <span className="type-kpi block">
             {value}
           </span>
           {/* Health indicator or subtitle */}
           {health ? (
             <div
+              className="flex items-center gap-4 mt-4"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-4)',
-                marginTop: 'var(--spacing-4)',
                 color: health.hasAlert ? health.color : undefined,
                 visibility: health.hasAlert ? 'visible' : 'hidden',
               }}
@@ -323,13 +271,13 @@ function KpiCard({ title, value, subtitle, trend, threshold, unit, label, health
               </span>
             </div>
           ) : (
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)', marginTop: 'var(--spacing-4)', display: 'block' }}>
+            <span className="type-meta block mt-4">
               {subtitle}
             </span>
           )}
         </div>
         {trend && (
-          <div style={{ flex: 1, minWidth: 0, width: isCompact ? '100%' : undefined }}>
+          <div className={`min-w-0 flex-1 ${isCompact ? 'w-full' : ''}`}>
             <Sparkline
               data={trend}
               threshold={threshold}
@@ -337,13 +285,9 @@ function KpiCard({ title, value, subtitle, trend, threshold, unit, label, health
               unit={unit}
               isMobile={isMobile}
             />
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: 'var(--spacing-2)',
-            }}>
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>6w ago</span>
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>Now</span>
+            <div className="flex justify-between mt-2">
+              <span className="type-meta">6w ago</span>
+              <span className="type-meta">Now</span>
             </div>
           </div>
         )}
@@ -415,10 +359,10 @@ const ChevronRight = ({ expanded }) => (
     viewBox="0 0 16 16"
     fill="none"
     aria-hidden="true"
+    className="shrink-0"
     style={{
       transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
       transition: `transform var(--motion-fast) var(--ease-productive)`,
-      flexShrink: 0,
     }}
   >
     <path
@@ -458,21 +402,9 @@ function SensorRow({ sensor, isMobile }) {
   const valueColor = isAlert ? sensorStatusColor(sensor.status) : 'var(--color-text-primary)'
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: isMobile ? 'flex-start' : 'center',
-      flexDirection: isMobile ? 'column' : 'row',
-      gap: isMobile ? 'var(--spacing-2)' : 'var(--spacing-8)',
-      padding: `var(--spacing-4) 0`,
-    }}>
+    <div className={`flex ${isMobile ? 'flex-col items-start gap-2' : 'flex-row items-center gap-8'} py-4`}>
       {/* Sensor name */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-8)',
-        minWidth: isMobile ? undefined : 180,
-        flexShrink: 0,
-      }}>
+      <div className="flex items-center gap-8 shrink-0" style={{ minWidth: isMobile ? undefined : 180 }}>
         <span className={sensorStatusDot(sensor.status)} />
         <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
           {sensor.name}
@@ -480,12 +412,7 @@ function SensorRow({ sensor, isMobile }) {
       </div>
 
       {/* Value + unit */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-8)',
-        marginLeft: isMobile ? 'var(--spacing-16)' : 0,
-      }}>
+      <div className={`flex items-center gap-8 ${isMobile ? 'ml-16' : ''}`}>
         <span className="type-body" style={{ color: valueColor, fontWeight: 600 }}>
           {sensor.value}{sensor.unit ? ` ${sensor.unit}` : ''}
         </span>
@@ -493,13 +420,8 @@ function SensorRow({ sensor, isMobile }) {
         {/* Alarm threshold */}
         {sensor.alarm != null && (
           <>
-            <span style={{
-              width: 1,
-              height: 12,
-              background: 'var(--color-border-strong)',
-              flexShrink: 0,
-            }} />
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+            <span className="divider-v" />
+            <span className="type-meta">
               Alarm: {sensor.alarm}{sensor.unit ? ` ${sensor.unit}` : ''}
             </span>
           </>
@@ -508,13 +430,8 @@ function SensorRow({ sensor, isMobile }) {
         {/* Note */}
         {sensor.note && (
           <>
-            <span style={{
-              width: 1,
-              height: 12,
-              background: 'var(--color-border-strong)',
-              flexShrink: 0,
-            }} />
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)', fontStyle: 'italic' }}>
+            <span className="divider-v" />
+            <span className="type-meta italic">
               {sensor.note}
             </span>
           </>
@@ -534,24 +451,14 @@ function SubAssetRow({ subAsset, isMobile }) {
   const isDegraded = subAsset.status === 'degraded'
 
   return (
-    <div style={{
-      borderBottom: '1px solid var(--color-border-subtle)',
-    }}>
+    <div className="border-b border-[var(--color-border-subtle)]">
       {/* Collapsed row: chevron + status dot + name + sensor count */}
       <button
         onClick={() => setExpanded(prev => !prev)}
         aria-expanded={expanded}
         aria-label={`${subAsset.name}: ${subAsset.status}. ${subAsset.sensors.length} sensors${alertCount ? `, ${alertCount} in alarm` : ''}`}
+        className="btn-reset flex items-center gap-8 w-full py-12"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--spacing-8)',
-          width: '100%',
-          padding: `var(--spacing-12) 0`,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--color-text-primary)',
           transition: `background var(--motion-fast) var(--ease-productive)`,
         }}
       >
@@ -562,9 +469,8 @@ function SubAssetRow({ subAsset, isMobile }) {
         </span>
 
         {/* Sensor count + alert count */}
-        <span className="type-meta" style={{
-          color: alertCount ? 'var(--color-warning)' : 'var(--color-text-helper)',
-          marginLeft: 'auto',
+        <span className="type-meta ml-auto" style={{
+          color: alertCount ? 'var(--color-warning)' : undefined,
         }}>
           {subAsset.sensors.length} sensor{subAsset.sensors.length !== 1 ? 's' : ''}
           {alertCount > 0 && ` · ${alertCount} alert${alertCount !== 1 ? 's' : ''}`}
@@ -573,11 +479,7 @@ function SubAssetRow({ subAsset, isMobile }) {
 
       {/* Expanded: sensor rows */}
       {expanded && (
-        <div style={{
-          paddingLeft: 'var(--spacing-24)',
-          paddingBottom: 'var(--spacing-12)',
-          animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
-        }}>
+        <div className="pl-24 pb-12" style={{ animation: 'fadeIn var(--motion-fast) var(--ease-productive)' }}>
           {subAsset.sensors.map((sensor, i) => (
             <SensorRow key={i} sensor={sensor} isMobile={isMobile} />
           ))}
@@ -600,13 +502,8 @@ function SubAssetTree({ asset, isMobile }) {
 
   return (
     <div>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-8)',
-        marginBottom: 'var(--spacing-16)',
-      }}>
-        <p className="section-header" style={{ marginBottom: 0 }}>Sub-Assets</p>
+      <div className="flex items-center gap-8 mb-16">
+        <p className="section-header mb-0">Sub-Assets</p>
         {totalAlerts > 0 && (
           <span className="type-meta" style={{ color: 'var(--color-warning)' }}>
             {totalAlerts} alert{totalAlerts !== 1 ? 's' : ''}
@@ -632,42 +529,32 @@ function ActiveEvents({ asset, isMobile }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--spacing-16)' }}>
-        <p className="section-header" style={{ marginBottom: 0 }}>Active Events</p>
+      <div className="flex items-center gap-8 mb-16">
+        <p className="section-header mb-0">Active Events</p>
         <span className="type-meta" style={{ color: 'var(--color-warning)' }}>
           {events.length} active
         </span>
       </div>
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card p-0">
         {events.map((evt, i) => (
-          <div key={evt.id} style={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            gap: isMobile ? 'var(--spacing-4)' : 'var(--spacing-8)',
-            padding: 'var(--spacing-12) var(--spacing-24)',
+          <div key={evt.id} className={`flex ${isMobile ? 'flex-col items-start gap-4' : 'flex-row items-center gap-8'} px-24 py-12`} style={{
             borderBottom: i < events.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+            <div className="flex items-center gap-8 shrink-0">
               <SeverityBadge severity={evt.severity} compact />
               <span className="type-body" style={{ fontWeight: 600 }}>{evt.name}</span>
             </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-8)',
-              marginLeft: isMobile ? 0 : 'auto',
-            }}>
+            <div className={`flex items-center gap-8 ${isMobile ? '' : 'ml-auto'}`}>
               {evt.subAsset && (
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{evt.subAsset}</span>
+                <span className="type-meta">{evt.subAsset}</span>
               )}
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+              <span className="divider-v" />
+              <span className="type-meta">
                 {evt.time || evt.date}
               </span>
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <span className="divider-v" />
               <span className="type-meta" style={{
-                color: evt.status === 'new' ? 'var(--color-accent)' : 'var(--color-text-helper)',
+                color: evt.status === 'new' ? 'var(--color-accent)' : undefined,
                 fontWeight: evt.status === 'new' ? 600 : 400,
               }}>
                 {evt.status === 'new' ? 'New' : 'In Progress'}
@@ -708,34 +595,24 @@ function EventTimeline({ asset, isMobile }) {
 
   return (
     <div>
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card p-0">
         {events.slice().reverse().map((evt, i) => (
-          <div key={evt.id} style={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            gap: isMobile ? 'var(--spacing-4)' : 'var(--spacing-8)',
-            padding: 'var(--spacing-12) var(--spacing-24)',
+          <div key={evt.id} className={`flex ${isMobile ? 'flex-col items-start gap-4' : 'flex-row items-center gap-8'} px-24 py-12`} style={{
             borderBottom: i < events.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+            <div className="flex items-center gap-8 shrink-0">
               <SeverityBadge severity={evt.severity} compact />
               <span className="type-body">{evt.name}</span>
             </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-8)',
-              marginLeft: isMobile ? 0 : 'auto',
-            }}>
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+            <div className={`flex items-center gap-8 ${isMobile ? '' : 'ml-auto'}`}>
+              <span className="type-meta">
                 {evt.time || evt.date}
               </span>
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <span className="divider-v" />
               <span className="type-meta" style={{ color: statusColor(evt.status) }}>
                 {statusLabel(evt.status)}
               </span>
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <span className="divider-v" />
               <span className="type-label">{evt.eventType}</span>
             </div>
           </div>
@@ -756,41 +633,30 @@ function WorkOrdersSection({ asset, isMobile }) {
   return (
     <div>
       <p className="section-header">Work Orders & Investigations</p>
-      <div className={isMobile ? '' : 'grid-12'} style={isMobile ? { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-24)' } : undefined}>
+      <div className={isMobile ? 'flex flex-col gap-24' : 'grid-12'}>
         {/* Work Orders */}
         {wos.length > 0 && (
           <div className={isMobile ? '' : 'col-half'}>
-            <p className="type-card-title" style={{ marginBottom: 'var(--gap-stack)' }}>
+            <p className="type-card-title mb-[var(--gap-stack)]">
               Work Orders ({wos.length})
             </p>
-            <div className="card" style={{ padding: 0 }}>
+            <div className="card p-0">
               {wos.map((wo, i) => (
-                <div key={wo.id} style={{
-                  display: 'flex',
-                  flexDirection: isMobile ? 'column' : 'row',
-                  alignItems: isMobile ? 'flex-start' : 'center',
-                  gap: isMobile ? 'var(--spacing-4)' : 'var(--spacing-8)',
-                  padding: 'var(--spacing-12) var(--spacing-24)',
+                <div key={wo.id} className={`flex ${isMobile ? 'flex-col items-start gap-4' : 'flex-row items-center gap-8'} px-24 py-12`} style={{
                   borderBottom: i < wos.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flex: 1, minWidth: 0 }}>
+                  <div className="flex items-center gap-8 flex-1 min-w-0">
                     <WoPriority urgency={wo.urgency} />
                     <span className="type-body" style={{ fontWeight: 500 }}>{wo.task}</span>
                   </div>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--spacing-8)',
-                    marginLeft: isMobile ? 0 : 'auto',
-                    flexShrink: 0,
-                  }}>
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.id}</span>
-                    <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                  <div className={`flex items-center gap-8 shrink-0 ${isMobile ? '' : 'ml-auto'}`}>
+                    <span className="type-meta">{wo.id}</span>
+                    <span className="divider-v" />
+                    <span className="type-meta">
                       {wo.assignee || 'Unassigned'}
                     </span>
-                    <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-                    <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{wo.status}</span>
+                    <span className="divider-v" />
+                    <span className="type-meta">{wo.status}</span>
                   </div>
                 </div>
               ))}
@@ -801,33 +667,27 @@ function WorkOrdersSection({ asset, isMobile }) {
         {/* Investigations */}
         {invs.length > 0 && (
           <div className={isMobile ? '' : 'col-half'}>
-            <p className="type-card-title" style={{ marginBottom: 'var(--gap-stack)' }}>
+            <p className="type-card-title mb-[var(--gap-stack)]">
               Investigations ({invs.length})
             </p>
-            <div className="card" style={{ padding: 0 }}>
+            <div className="card p-0">
               {invs.map((inv, i) => (
-                <div key={inv.id} style={{
-                  padding: 'var(--spacing-12) var(--spacing-24)',
+                <div key={inv.id} className="px-24 py-12" style={{
                   borderBottom: i < invs.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
                 }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: isMobile ? 'flex-start' : 'center',
-                    gap: 'var(--spacing-8)',
-                    flexDirection: isMobile ? 'column' : 'row',
-                  }}>
+                  <div className={`flex gap-8 ${isMobile ? 'flex-col items-start' : 'flex-row items-center'}`}>
                     <span className="type-body" style={{ fontWeight: 500 }}>{inv.id}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginLeft: isMobile ? 0 : 'auto' }}>
-                      <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
+                    <div className={`flex items-center gap-8 ${isMobile ? '' : 'ml-auto'}`}>
+                      <span className="type-meta">
                         {inv.assignee || 'Unassigned'}
                       </span>
-                      <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-                      <span className="type-meta" style={{ color: inv.status === 'investigating' ? 'var(--color-warning)' : 'var(--color-text-helper)' }}>
+                      <span className="divider-v" />
+                      <span className="type-meta" style={{ color: inv.status === 'investigating' ? 'var(--color-warning)' : undefined }}>
                         {inv.status === 'investigating' ? 'Investigating' : 'Open'}
                       </span>
                     </div>
                   </div>
-                  <p className="type-body" style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-4)' }}>
+                  <p className="type-body mt-4" style={{ color: 'var(--color-text-secondary)' }}>
                     {inv.description}
                   </p>
                 </div>
@@ -880,14 +740,14 @@ function DegradationTrends({ asset }) {
     <div>
       <p className="section-header">Degradation Trends</p>
       <div className="card">
-        <p className="type-meta" style={{ color: 'var(--color-text-helper)', marginBottom: 'var(--gap-intra)' }}>
+        <p className="type-meta mb-[var(--gap-intra)]">
           30-day normalized view. Each metric scaled to its own range.
         </p>
-        <div style={{ position: 'relative', width: '100%', height: 180 }} role="img" aria-label="K-101 degradation trends over 30 days">
+        <div className="relative w-full" style={{ height: 180 }} role="img" aria-label="K-101 degradation trends over 30 days">
           <svg
             viewBox={`0 0 ${vbWidth} ${vbHeight}`}
             preserveAspectRatio="none"
-            style={{ display: 'block', width: '100%', height: '100%' }}
+            className="block w-full h-full"
             aria-hidden="true"
           >
             {metrics.map(m => (
@@ -905,11 +765,11 @@ function DegradationTrends({ asset }) {
           </svg>
         </div>
         {/* Legend */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-16)', marginTop: 'var(--gap-stack)' }}>
+        <div className="flex flex-wrap gap-16 mt-[var(--gap-stack)]">
           {metrics.map(m => (
-            <div key={m.key} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-              <span style={{ width: 12, height: 2, background: m.color, borderRadius: 1, flexShrink: 0 }} />
-              <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{m.label}</span>
+            <div key={m.key} className="flex items-center gap-4">
+              <span className="shrink-0" style={{ width: 12, height: 2, background: m.color, borderRadius: 1 }} />
+              <span className="type-meta">{m.label}</span>
             </div>
           ))}
         </div>
@@ -926,28 +786,26 @@ function FaultTreeNode({ node, depth = 0 }) {
   const borderColor = node.type === 'critical' ? 'var(--color-error)' : node.type === 'high' ? 'var(--color-warning)' : 'var(--color-border-subtle)'
 
   return (
-    <div style={{ marginLeft: depth > 0 ? 'var(--spacing-24)' : 0 }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-2)',
-        padding: 'var(--spacing-8) var(--spacing-12)',
-        borderLeft: `3px solid ${borderColor}`,
-        background: isRoot ? 'var(--color-error-bg)' : 'transparent',
-        borderRadius: isRoot ? 'var(--radius-4)' : 0,
-        marginBottom: 'var(--spacing-4)',
-      }}>
+    <div className={depth > 0 ? 'ml-24' : ''}>
+      <div
+        className="flex flex-col gap-2 px-12 py-8 mb-4"
+        style={{
+          borderLeft: `3px solid ${borderColor}`,
+          background: isRoot ? 'var(--color-error-bg)' : 'transparent',
+          borderRadius: isRoot ? 'var(--radius-4)' : 0,
+        }}
+      >
         <span className="type-body" style={{ fontWeight: isRoot ? 700 : 400 }}>
           {node.event}
-          {isRoot && <span className="type-meta" style={{ color: 'var(--color-error)', marginLeft: 'var(--spacing-8)' }}>ROOT CAUSE</span>}
+          {isRoot && <span className="type-meta ml-8" style={{ color: 'var(--color-error)' }}>ROOT CAUSE</span>}
         </span>
         {node.value && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+          <div className="flex items-center gap-8">
             <span className="type-meta" style={{ color: 'var(--color-text-secondary)', fontWeight: 600 }}>{node.value}</span>
             {node.threshold && (
               <>
-                <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-                <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>Threshold: {node.threshold}</span>
+                <span className="divider-v" />
+                <span className="type-meta">Threshold: {node.threshold}</span>
               </>
             )}
           </div>
@@ -989,29 +847,27 @@ function PerformanceAttrs({ asset, isMobile }) {
   return (
     <div>
       <p className="section-header">Performance Attributes</p>
-      <div className="card" style={{ padding: 0, overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }} role="table">
+      <div className="card p-0 overflow-x-auto">
+        <table className="w-full border-collapse" role="table">
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-              <th className="type-table-header" style={{ textAlign: 'left', padding: 'var(--spacing-12) var(--spacing-16)' }}>Attribute</th>
-              <th className="type-table-header" style={{ textAlign: 'right', padding: 'var(--spacing-12) var(--spacing-16)' }}>Value</th>
-              <th className="type-table-header" style={{ textAlign: 'right', padding: 'var(--spacing-12) var(--spacing-16)' }}>Expected</th>
-              <th className="type-table-header" style={{ textAlign: 'right', padding: 'var(--spacing-12) var(--spacing-16)' }}>Deviation</th>
+            <tr className="border-b border-[var(--color-border-subtle)]">
+              <th className="type-table-header text-left px-16 py-12">Attribute</th>
+              <th className="type-table-header text-right px-16 py-12">Value</th>
+              <th className="type-table-header text-right px-16 py-12">Expected</th>
+              <th className="type-table-header text-right px-16 py-12">Deviation</th>
             </tr>
           </thead>
           <tbody>
             {PERFORMANCE_ATTRIBUTES.map((row, i) => (
               <tr key={i} style={{ borderBottom: i < PERFORMANCE_ATTRIBUTES.length - 1 ? '1px solid var(--color-border-subtle)' : 'none' }}>
-                <td className="type-body" style={{ padding: 'var(--spacing-8) var(--spacing-16)' }}>{row.attribute}</td>
-                <td className="type-body" style={{ padding: 'var(--spacing-8) var(--spacing-16)', textAlign: 'right', fontWeight: 600 }}>
+                <td className="type-body px-16 py-8">{row.attribute}</td>
+                <td className="type-body text-right px-16 py-8" style={{ fontWeight: 600 }}>
                   {row.value} {row.unit}
                 </td>
-                <td className="type-meta" style={{ padding: 'var(--spacing-8) var(--spacing-16)', textAlign: 'right', color: 'var(--color-text-helper)' }}>
+                <td className="type-meta text-right px-16 py-8">
                   {row.expected} {row.unit}
                 </td>
-                <td className="type-body" style={{
-                  padding: 'var(--spacing-8) var(--spacing-16)',
-                  textAlign: 'right',
+                <td className="type-body text-right px-16 py-8" style={{
                   fontWeight: 600,
                   color: deviationColor(row.deviation),
                 }}>
@@ -1038,22 +894,12 @@ function CollapsibleSection({ title, count, defaultOpen = false, children }) {
       <button
         onClick={() => setOpen(prev => !prev)}
         aria-expanded={open}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--spacing-8)',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: 0,
-          marginBottom: open ? 'var(--spacing-16)' : 0,
-          width: '100%',
-        }}
+        className={`btn-reset flex items-center gap-8 w-full ${open ? 'mb-16' : 'mb-0'}`}
       >
         <ChevronRight expanded={open} />
-        <span className="section-header" style={{ marginBottom: 0 }}>{title}</span>
+        <span className="section-header mb-0">{title}</span>
         {count != null && (
-          <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{count}</span>
+          <span className="type-meta">{count}</span>
         )}
       </button>
       {open && (
@@ -1101,7 +947,7 @@ export default function AssetInspection({ selectedAsset, onNavigate }) {
         <div>
           <div className={isMobile ? '' : 'grid-12'}>
             {activeEvents.length > 0 && (
-              <div className={isMobile ? '' : 'col-half'} style={{ marginBottom: isMobile ? 'var(--spacing-24)' : 0 }}>
+              <div className={isMobile ? 'mb-24' : 'col-half'}>
                 <ActiveEvents asset={selectedAsset} isMobile={isMobile} />
               </div>
             )}
@@ -1133,7 +979,7 @@ export default function AssetInspection({ selectedAsset, onNavigate }) {
       {hasDeepAnalysis && (
         <>
           <div className={isMobile ? '' : 'grid-12'}>
-            <div className={isMobile ? '' : 'col-half'} style={{ marginBottom: isMobile ? 'var(--spacing-24)' : 0 }}>
+            <div className={isMobile ? 'mb-24' : 'col-half'}>
               <DegradationTrends asset={selectedAsset} />
             </div>
             <div className={isMobile ? '' : 'col-half'}>

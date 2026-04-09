@@ -26,6 +26,7 @@ function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, o
 
   return (
     <button
+      className="btn-reset flex items-center justify-center rounded-[var(--radius-8)]"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -35,24 +36,15 @@ function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, o
       aria-pressed={isSelected}
       style={{
         background,
-        borderRadius: 'var(--radius-8)',
-        padding: 'var(--spacing-12)',
         border: `2px solid ${borderColor}`,
-        cursor: 'pointer',
+        padding: 'var(--spacing-12)',
         transition: 'all var(--motion-fast) var(--ease-productive)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         minHeight: 48,
       }}
     >
       <span
-        className="type-body"
-        style={{
-          color: isSelected ? 'var(--color-accent)' : 'var(--color-text-primary)',
-          fontVariantNumeric: 'tabular-nums',
-          fontWeight: 600,
-        }}
+        className="type-body font-semibold tabular-nums"
+        style={{ color: isSelected ? 'var(--color-accent)' : 'var(--color-text-primary)' }}
       >
         {count}
       </span>
@@ -72,32 +64,20 @@ function MatrixTooltip({ hoveredCell, dataByCriticality, x, y }) {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        left: x + 12,
-        top: y - 8,
-        background: 'var(--color-tooltip-bg)',
-        borderRadius: 'var(--radius-4)',
-        padding: 'var(--spacing-8) var(--spacing-12)',
-        boxShadow: 'var(--shadow-tooltip)',
-        whiteSpace: 'nowrap',
-        zIndex: 100,
-        pointerEvents: 'none',
-        animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-4)',
-      }}
+      className="tooltip-fixed"
+      style={{ left: x + 12, top: y - 8 }}
     >
-      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>{status} Events</span>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{count}</span>
+      <div className="tooltip-bubble flex flex-col gap-4 rounded-[var(--radius-4)] py-8 px-12 whitespace-nowrap">
+        <div className="flex items-center gap-8">
+          <span className="type-meta">{status} Events</span>
+          <span className="type-meta font-semibold">{count}</span>
+        </div>
+        <div className="flex items-center gap-8">
+          <span className="type-meta">Asset Criticality</span>
+          <CriticalityIndicator level={crit} inverted />
+        </div>
+        <span className="type-meta opacity-60">Click to filter Asset Table</span>
       </div>
-      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Asset Criticality</span>
-        <CriticalityIndicator level={crit} inverted />
-      </div>
-      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter Asset Table</span>
     </div>
   )
 }
@@ -137,18 +117,17 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
 
   return (
     <div
-      className="card"
-      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}
+      className="card flex flex-col gap-16"
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
     >
       {/* Tooltip (desktop only) */}
       {!isMobile && <MatrixTooltip hoveredCell={hoveredCell} dataByCriticality={dataByCriticality} x={getTooltipPos().x} y={getTooltipPos().y} />}
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)', flexWrap: 'wrap' }}>
+      <div className="flex items-center justify-between gap-8 flex-wrap">
         <span className="type-card-title">Event Triage</span>
         {selectedCell && (
-          <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
+          <div className="flex gap-4">
             <FilterChip
               label={CRIT_LABELS[selectedCell.criticality] || selectedCell.criticality}
               onClear={onClearFilter}
@@ -162,22 +141,14 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
       </div>
 
       {/* Grid: criticality on x-axis (columns), status on y-axis (rows) */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '90px repeat(3, 1fr)',
-            gap: 'var(--spacing-8)',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
+      <div className="flex-1 flex items-center">
+        <div className="grid w-full gap-8 items-center" style={{ gridTemplateColumns: '90px repeat(3, 1fr)' }}>
           {/* Rows */}
           {STATUSES.map(status => {
             const statusKey = status === 'New' ? 'newEvents' : 'inProgress'
             return (
               <div key={status} style={{ display: 'contents' }}>
-                <span className="type-label" style={{ color: 'var(--color-text-secondary)' }}>
+                <span className="type-label text-[var(--color-text-secondary)]">
                   {status}
                 </span>
                 {CRITICALITY_CONFIG.map(c => {
@@ -207,7 +178,7 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
           {/* Column labels below grid */}
           <div />
           {CRITICALITY_CONFIG.map(c => (
-            <span key={c.key} className="type-label" style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+            <span key={c.key} className="type-label text-center text-[var(--color-text-secondary)]">
               {c.key}
             </span>
           ))}

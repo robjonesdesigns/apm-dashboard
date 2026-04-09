@@ -24,20 +24,14 @@ function Swatch({ color, shape = 'square' }) {
 
 export default function Legend({ items, shape = 'square', interactive = false, onItemClick, activeItem, title }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--gap-stack)', marginTop: 'auto', paddingTop: 'var(--spacing-16)' }}>
+    <div className="flex flex-col items-center gap-[var(--gap-stack)] mt-auto pt-4">
       {title && (
-        <span className="type-body" style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{title}</span>
+        <span className="type-body font-semibold">{title}</span>
       )}
       <div
         role={interactive ? 'group' : undefined}
         aria-label={interactive ? 'Chart legend' : undefined}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 'var(--spacing-16)',
-          flexWrap: 'wrap',
-        }}
+        className="flex items-center justify-center gap-16 flex-wrap"
       >
       {items.map((item) => {
         const dimmed = activeItem && activeItem !== item.label
@@ -45,30 +39,17 @@ export default function Legend({ items, shape = 'square', interactive = false, o
         return (
           <Tag
             key={item.label}
+            className={`flex items-center gap-8${interactive ? ' btn-reset py-1' : ''}`}
             onClick={interactive ? () => onItemClick?.(item.label) : undefined}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--spacing-8)',
               opacity: dimmed ? 0.35 : 1,
               transition: 'opacity var(--motion-fast) var(--ease-productive)',
-              cursor: interactive ? 'pointer' : 'default',
-              // Reset button styles
-              ...(interactive ? {
-                background: 'none',
-                border: 'none',
-                padding: '4px 0',
-                color: 'inherit',
-                font: 'inherit',
-              } : {}),
             }}
           >
             <Swatch color={item.color} shape={item.shape || shape} />
-            <span className="type-label" style={{ letterSpacing: '0.2px' }}>
-              {item.label}
-            </span>
+            <span className="type-label">{item.label}</span>
             {item.value !== undefined && (
-              <span className="type-label" style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+              <span className="type-label text-[var(--color-text-primary)] font-semibold">
                 {item.value}
               </span>
             )}

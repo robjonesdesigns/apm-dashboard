@@ -33,35 +33,21 @@ function WatchListTooltip({ item, x, y }) {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        left: Math.min(x + 12, window.innerWidth - 240),
-        top: y - 8,
-        background: 'var(--color-tooltip-bg)',
-        borderRadius: 'var(--radius-4)',
-        padding: 'var(--spacing-8) var(--spacing-12)',
-        boxShadow: 'var(--shadow-tooltip)',
-        whiteSpace: 'nowrap',
-        zIndex: 100,
-        pointerEvents: 'none',
-        animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--gap-stack)',
-      }}
+      className="tooltip-fixed"
+      style={{ left: Math.min(x + 12, window.innerWidth - 240), top: y - 8 }}
     >
-      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>
-        {item.name}
-      </span>
-      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Events (30d)</span>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{item.events}</span>
+      <div className="tooltip-bubble flex flex-col gap-[var(--gap-stack)] rounded-[var(--radius-4)] py-8 px-12 whitespace-nowrap">
+        <span className="type-meta font-semibold">{item.name}</span>
+        <div className="flex items-center gap-8">
+          <span className="type-meta">Events (30d)</span>
+          <span className="type-meta font-semibold">{item.events}</span>
+        </div>
+        <div className="flex items-center gap-8">
+          <span className="type-meta">Asset Criticality</span>
+          <CriticalityIndicator level={item.criticality} inverted />
+        </div>
+        <span className="type-meta opacity-60">Click to filter Asset Table</span>
       </div>
-      <div style={{ display: 'flex', gap: 'var(--spacing-8)', alignItems: 'center' }}>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>Asset Criticality</span>
-        <CriticalityIndicator level={item.criticality} inverted />
-      </div>
-      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter Asset Table</span>
     </div>
   )
 }
@@ -84,60 +70,33 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
       onBlur={() => { onBlurEl?.(); onLeave() }}
       onClick={() => onClick(item.assetId)}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(item.assetId) } }}
+      className="flex items-center gap-8 px-8 py-4 cursor-pointer rounded-[var(--radius-4)]"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-8)',
-        padding: 'var(--spacing-4) var(--spacing-8)',
-        cursor: 'pointer',
         opacity: isDimmed ? 0.35 : 1,
         transition: 'all var(--motion-fast) var(--ease-productive)',
-        borderRadius: 'var(--radius-4)',
         border: showBorder ? '1.5px solid var(--color-accent)' : '1.5px solid transparent',
         background: isSelected ? 'var(--color-accent-bg)' : 'transparent',
       }}
     >
       {/* Asset name */}
-      <span
-        className="type-meta"
-        style={{
-          width: 120,
-          flexShrink: 0,
-          textAlign: 'right',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          color: 'var(--color-accent)',
-        }}
-      >
+      <span className="type-meta shrink-0 text-right overflow-hidden text-ellipsis whitespace-nowrap text-[var(--color-accent)]" style={{ width: 120 }}>
         {item.name}
       </span>
 
       {/* Bar + count */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-        <div style={{ flex: 1, height: 20, background: 'var(--color-layer-02)', borderRadius: 'var(--radius-4)', overflow: 'hidden' }}>
+      <div className="flex-1 flex items-center gap-8">
+        <div className="flex-1 overflow-hidden rounded-[var(--radius-4)] bg-[var(--color-layer-02)]" style={{ height: 20 }}>
           <div
+            className="h-full rounded-[var(--radius-4)]"
             style={{
               width: `${pct}%`,
-              height: '100%',
               background: barColor(item.criticality),
-              borderRadius: 'var(--radius-4)',
               transition: 'width var(--motion-slow) var(--ease-productive)',
               minWidth: 4,
             }}
           />
         </div>
-        <span
-          className="type-meta"
-          style={{
-            width: 24,
-            flexShrink: 0,
-            textAlign: 'right',
-            fontWeight: 600,
-            fontVariantNumeric: 'tabular-nums',
-            color: 'var(--color-text-primary)',
-          }}
-        >
+        <span className="type-meta shrink-0 text-right font-semibold tabular-nums text-[var(--color-text-primary)]" style={{ width: 24 }}>
           {item.events}
         </span>
       </div>
@@ -166,12 +125,11 @@ export default function WatchList({ onAssetClick, selectedAsset, onClearFilter }
 
   return (
     <div
-      className="card"
-      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}
+      className="card flex flex-col gap-16"
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
     >
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+      <div className="flex items-center justify-between gap-8">
         <span className="type-card-title">Watch List</span>
         {selectedAsset ? (
           <FilterChip label={selectedName || selectedAsset} onClear={onClearFilter} />
@@ -181,7 +139,7 @@ export default function WatchList({ onAssetClick, selectedAsset, onClearFilter }
       </div>
 
       {/* Bars -- centered vertically in card */}
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+      <div className="flex flex-col flex-1 justify-center">
         {BAD_ACTORS.map((item, i) => (
           <BarRow
             key={item.assetId}

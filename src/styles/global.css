@@ -97,6 +97,8 @@
   --color-kpi-quality: #2dd4bf;
 
   /* ── Spacing (Carbon scale, 8px base) ─────────────────────────────── */
+  /* Base multiplier: gap-4 = 4px, p-16 = 16px, etc. */
+  --spacing: 1px;
   --spacing-2: 2px;
   --spacing-4: 4px;
   --spacing-8: 8px;
@@ -156,24 +158,26 @@
   --gap-intra: var(--spacing-12);
 }
 
-/* ─── Base ────────────────────────────────────────────────────────────── */
+/* ─── Base (layered so Tailwind utilities can override) ──────────────── */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-html, body, #root {
-  height: 100%;
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-14);
-  line-height: 1.429;
-  letter-spacing: 0.16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  html, body, #root {
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-14);
+    line-height: 1.429;
+    letter-spacing: 0.16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 /* ─── Typography Scale ────────────────────────────────────────────────── */
@@ -721,6 +725,213 @@ html, body, #root {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border-subtle); border-radius: var(--radius-4); }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-border-strong); }
+
+/* ─── Filter chip (dismissable tag) ──────────────────────────────────── */
+/* Distinct from .chip (toggle pill). Used for active filter indicators. */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: 0 var(--spacing-8);
+  height: 26px;
+  border-radius: var(--radius-4);
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  font-size: var(--text-12);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease-productive);
+}
+.filter-chip:hover {
+  background: var(--color-accent-bg-strong);
+}
+
+/* ─── Filter button ──────────────────────────────────────────────────── */
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: 0 var(--spacing-12);
+  height: 32px;
+  border-radius: var(--radius-4);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-layer-02);
+  color: var(--color-text-secondary);
+  font-size: var(--text-12);
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease-productive);
+}
+.filter-btn-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+}
+
+/* ─── Filter dropdown ────────────────────────────────────────────────── */
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-4);
+  width: 240px;
+  background: var(--color-layer-01);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-8);
+  box-shadow: var(--shadow-tooltip);
+  z-index: 20;
+  padding: var(--spacing-8) 0;
+  animation: fadeInOnly var(--motion-fast) var(--ease-productive);
+}
+
+/* ─── Count badge (small circle) ─────────────────────────────────────── */
+.count-badge {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-12);
+  font-weight: 600;
+}
+
+/* ─── Icon button (48x48, TopBar + shell) ────────────────────────────── */
+.icon-btn {
+  width: var(--nav-item-height);
+  height: var(--nav-item-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--color-icon-secondary);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition:
+    background var(--motion-fast) var(--ease-productive),
+    color var(--motion-fast) var(--ease-productive);
+}
+.icon-btn:hover {
+  background: var(--color-hover-01);
+}
+.icon-btn-active {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+}
+.icon-btn-active:hover {
+  background: var(--color-accent-bg);
+}
+
+/* ─── Modal overlay ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-overlay);
+  animation: help-fade-in var(--motion-fast) var(--ease-productive);
+}
+
+/* ─── Breadcrumb link ────────────────────────────────────────────────── */
+.breadcrumb-link {
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--motion-fast) var(--ease-productive);
+}
+.breadcrumb-link:hover {
+  color: var(--color-text-primary);
+}
+
+/* ─── Right column (cross-card alignment, ADR-026) ───────────────────── */
+.col-right-100 {
+  min-width: 100px;
+  width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─── Button reset ───────────────────────────────────────────────────── */
+/* Unstyled button for interactive containers that need no default chrome */
+.btn-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+/* ─── Vertical divider ───────────────────────────────────────────────── */
+/* 1px x 12px separator between adjacent inline indicators (ADR-027)     */
+.divider-v {
+  width: 1px;
+  height: 12px;
+  background: var(--color-border-strong);
+  flex-shrink: 0;
+}
+
+/* ─── Row hover ──────────────────────────────────────────────────────── */
+/* Shared hover pattern for list rows (Asset Table, InProgress, Notifs)  */
+.row-hover {
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  transition:
+    background var(--motion-fast) var(--ease-productive),
+    border-left-color var(--motion-fast) var(--ease-productive),
+    border-radius var(--motion-fast) var(--ease-productive);
+}
+.row-hover:hover,
+.row-hover:focus-visible {
+  background: var(--color-hover-01);
+  border-left: 2px solid var(--color-accent);
+  border-radius: var(--radius-4);
+}
+
+/* ─── Tooltip (fixed position, inverted) ─────────────────────────────── */
+.tooltip-fixed {
+  position: fixed;
+  z-index: 10001;
+  pointer-events: none;
+  animation: fadeIn var(--motion-fast) var(--ease-productive);
+}
+.tooltip-bubble {
+  background: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  padding: var(--spacing-12) var(--spacing-16);
+  border-radius: var(--radius-8);
+  box-shadow: var(--shadow-tooltip);
+}
+
+/* ─── Notification item ──────────────────────────────────────────────── */
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16);
+  border-bottom: 1px solid var(--color-border-subtle);
+  width: 100%;
+  text-align: left;
+  transition: all var(--motion-fast) var(--ease-productive);
+}
+.notification-item-new {
+  background: var(--color-accent-bg-subtle);
+}
+.notification-item-new:hover {
+  background: var(--color-accent-bg-strong);
+}
 
 /* ─── Recharts ────────────────────────────────────────────────────────── */
 .recharts-tooltip-wrapper { outline: none; }

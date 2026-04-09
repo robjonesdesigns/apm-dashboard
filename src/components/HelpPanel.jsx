@@ -32,7 +32,6 @@ export default function HelpModal({ open, onClose }) {
       }
     }
     document.addEventListener('keydown', handleKeyDown)
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden'
     return () => {
       clearTimeout(timer)
@@ -45,16 +44,7 @@ export default function HelpModal({ open, onClose }) {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'var(--color-overlay)',
-        animation: 'help-fade-in var(--motion-fast) var(--ease-productive)',
-      }}
+      className="modal-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
@@ -63,73 +53,39 @@ export default function HelpModal({ open, onClose }) {
         aria-label="About this dashboard"
         aria-modal="true"
         tabIndex={-1}
+        className="flex flex-col w-full overflow-hidden rounded-[var(--radius-10)] border border-[var(--color-border-subtle)] bg-[var(--color-layer-01)] m-16"
         style={{
-          background: 'var(--color-layer-01)',
-          borderRadius: 'var(--radius-10)',
-          border: '1px solid var(--color-border-subtle)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-          width: '100%',
-          maxWidth: '560px',
+          maxWidth: 560,
           maxHeight: '80vh',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          margin: 'var(--spacing-16)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
           animation: 'help-slide-up var(--motion-moderate) var(--ease-productive)',
         }}
       >
         {/* Header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: 'var(--spacing-24)',
-          borderBottom: '1px solid var(--color-border-subtle)',
-          flexShrink: 0,
-        }}>
-          <h2 className="type-heading" style={{ margin: 0 }}>
-            About this dashboard
-          </h2>
+        <div className="flex items-center justify-between p-24 border-b border-[var(--color-border-subtle)] shrink-0">
+          <h2 className="type-heading">About this dashboard</h2>
           <button
+            className="btn-reset flex items-center justify-center rounded-[var(--radius-4)] text-[var(--color-text-helper)]"
             onClick={onClose}
             aria-label="Close"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: 'var(--radius-4)',
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--color-text-helper)',
-              cursor: 'pointer',
-              transition: `all var(--motion-fast) var(--ease-productive)`,
-            }}
+            style={{ width: 32, height: 32 }}
           >
             <CloseIcon />
           </button>
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-24)' }}>
-          <p className="type-body" style={{ margin: '0 0 var(--spacing-24) 0', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+        <div className="flex-1 overflow-y-auto p-24">
+          <p className="type-body text-[var(--color-text-secondary)] mb-24" style={{ lineHeight: 1.6 }}>
             Plant Overview for Baytown Refinery. Designed for reliability engineers to triage overnight events, check asset health, and prioritize the day's work. Sections are ordered by the morning workflow: check health, understand cause, check response, identify remaining work, then drill into specifics.
           </p>
 
-          {/* Section guide */}
-          <p className="type-label" style={{ margin: '0 0 var(--spacing-16) 0', color: 'var(--color-text-helper)', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 'var(--type-body-compact-01)' }}>
-            Section guide
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-24)' }}>
+          <p className="section-header mb-16">Section guide</p>
+          <div className="flex flex-col gap-24">
             {SECTIONS.map((section) => (
-              <div key={section.name} style={{ borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: 'var(--spacing-24)' }}>
-                <p className="type-body" style={{ margin: '0 0 var(--gap-stack) 0', color: 'var(--color-text-primary)', fontWeight: 600 }}>
-                  {section.name}
-                </p>
-                <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                  {section.description}
-                </p>
+              <div key={section.name} className="border-b border-[var(--color-border-subtle)] pb-24">
+                <p className="type-body font-semibold mb-[var(--gap-stack)]">{section.name}</p>
+                <p className="type-body text-[var(--color-text-secondary)]" style={{ lineHeight: 1.5 }}>{section.description}</p>
               </div>
             ))}
           </div>

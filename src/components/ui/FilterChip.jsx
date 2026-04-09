@@ -1,27 +1,12 @@
 export default function FilterChip({ label, onClear }) {
   return (
     <button
+      className="filter-chip"
       onClick={onClear}
       aria-label={`Clear filter: ${label}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-4)',
-        padding: '0 var(--spacing-8)',
-        height: 26,
-        borderRadius: 'var(--radius-4)',
-        border: '1px solid var(--color-accent)',
-        background: 'var(--color-accent-bg)',
-        color: 'var(--color-accent)',
-        fontSize: 'var(--text-12)',
-        whiteSpace: 'nowrap',
-        flexShrink: 0,
-        cursor: 'pointer',
-        transition: 'background var(--motion-fast) var(--ease-productive)',
-      }}
     >
       <span>{label}</span>
-      <span style={{ fontSize: 'var(--text-14)', lineHeight: 1 }}>&times;</span>
+      <span className="text-14 leading-none">&times;</span>
     </button>
   )
 }

@@ -41,18 +41,12 @@ const InfoIcon = () => (
   </svg>
 )
 
-// Warning: solid inverted triangle (amber) -- "attention, declining"
-// Same geometric family as the critical diamond. No directional
-// confusion with delta arrows (which have tails).
 const WarningIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M8 14L1 3h14L8 14z" fill="currentColor" />
   </svg>
 )
 
-// Critical: solid filled diamond (red) -- "act now, threshold crossed"
-// Diamond has no directional confusion with chevron (warning) or delta arrows.
-// ISA-101 highest severity shape. Reads as "stop and look."
 const CriticalIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M8 1L15 8L8 15L1 8Z" fill="currentColor" />
@@ -65,27 +59,11 @@ function Tooltip({ show, pos, children }) {
   if (!show) return null
   return (
     <div
-      style={{
-        position: 'fixed',
-        top: pos.top,
-        left: pos.left,
-        width: '220px',
-        zIndex: 10001,
-        animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
-        pointerEvents: 'none',
-      }}
+      className="tooltip-fixed"
+      style={{ top: pos.top, left: pos.left, width: 220 }}
     >
-      <div
-        style={{
-          background: 'var(--color-tooltip-bg)',
-          borderRadius: 'var(--radius-4)',
-          padding: 'var(--spacing-12) var(--spacing-16)',
-          boxShadow: 'var(--shadow-tooltip)',
-        }}
-      >
-        <p className="type-body" style={{ color: 'var(--color-tooltip-text)', margin: 0 }}>
-          {children}
-        </p>
+      <div className="tooltip-bubble rounded-[var(--radius-4)]">
+        <p className="type-body">{children}</p>
       </div>
     </div>
   )
@@ -106,23 +84,17 @@ function InfoButton({ description }) {
     const centered = iconCenter - tooltipWidth / 2
     const rightEdge = window.innerWidth - tooltipWidth - 8
     const bubbleLeft = Math.max(8, Math.min(centered, rightEdge))
-    // Caret offset: how far the icon center is from the bubble's left edge
-    const caretLeft = iconCenter - bubbleLeft
-    setPos({ top: r.bottom + 8, left: bubbleLeft, caretLeft })
+    setPos({ top: r.bottom + 8, left: bubbleLeft })
   }
 
   return (
     <>
       <span
         ref={ref}
-        style={{
-          color: 'var(--color-text-helper)',
-          cursor: 'help',
-          display: 'flex',
-          transition: 'color var(--motion-fast) var(--ease-productive)',
-        }}
-        onMouseEnter={(e) => { e.stopPropagation(); updatePos(); setShow(true); e.currentTarget.style.color = 'var(--color-text-primary)' }}
-        onMouseLeave={(e) => { setShow(false); e.currentTarget.style.color = 'var(--color-text-helper)' }}
+        className="flex cursor-help text-[var(--color-text-helper)] hover:text-[var(--color-text-primary)]"
+        style={{ transition: 'color var(--motion-fast) var(--ease-productive)' }}
+        onMouseEnter={() => { updatePos(); setShow(true) }}
+        onMouseLeave={() => setShow(false)}
         onClick={(e) => { e.stopPropagation(); updatePos(); setShow(!show) }}
         role="img"
         aria-label={description}
@@ -145,10 +117,8 @@ function HealthIndicator({ state, thresholdLabel }) {
 
   return (
     <div
+      className="flex items-center gap-4"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--spacing-4)',
         color: isNormal ? undefined : color,
         visibility: isNormal ? 'hidden' : 'visible',
       }}
@@ -156,7 +126,7 @@ function HealthIndicator({ state, thresholdLabel }) {
       aria-hidden={isNormal ? true : undefined}
     >
       <Icon />
-      <span className="type-meta" style={{ color: isNormal ? undefined : color }}>
+      <span className="type-meta" style={{ color: isNormal ? undefined : 'inherit' }}>
         {isNormal ? '\u00A0' : label}
       </span>
     </div>
@@ -169,8 +139,6 @@ function KpiCard({ config, onClick, isSelected }) {
   const health = getHealthState(config.key, config.value)
   const delta = config.value - config.previous
   const deltaSign = delta >= 0 ? '+' : ''
-  const deltaColor = 'var(--color-text-secondary)'
-  const valueColor = 'var(--color-text-primary)'
 
   const threshold = PLANT.thresholds?.[config.key]
   const thresholdLabel = health === 'critical'
@@ -178,43 +146,30 @@ function KpiCard({ config, onClick, isSelected }) {
     : `Below ${threshold.warning}%`
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <div className="flex flex-col relative">
       <button
-        className="card card-accent-top card-interactive"
+        className="card card-accent-top card-interactive text-left w-full flex-1 flex flex-col"
         onClick={() => onClick(config.key)}
         aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
         aria-expanded={isSelected}
-        style={{
-          textAlign: 'left',
-          width: '100%',
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
       >
-        {/* Label + info */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
+        <div className="flex items-center justify-between mb-[var(--gap-stack)]">
           <span className="type-card-title">{config.label}</span>
           <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
         </div>
 
-        {/* Value */}
-        <span className="type-kpi" style={{ color: valueColor, display: 'block' }}>
-          {config.value}%
-        </span>
+        <span className="type-kpi block">{config.value}%</span>
 
-        {/* Health indicator -- always below value for consistent card height */}
         <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
 
-        {/* Delta */}
-        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}>
-          <span className="type-meta" style={{ color: deltaColor }}>
+        <div className="hide-mobile items-center gap-4 mt-[var(--gap-stack)]">
+          <span className="type-meta text-[var(--color-text-secondary)]">
             {deltaSign}{delta.toFixed(1)}% vs yesterday
           </span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
             {delta >= 0
-              ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
-              : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: deltaColor }} />
+              ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             }
           </svg>
         </div>
@@ -223,22 +178,15 @@ function KpiCard({ config, onClick, isSelected }) {
       {/* Dropdown popover */}
       {isSelected && (
         <div
-          className="card"
+          className="card absolute left-0 right-0 flex flex-col gap-[var(--gap-stack)]"
           style={{
-            position: 'absolute',
             top: 'calc(100% + 4px)',
-            left: 0,
-            right: 0,
             zIndex: 10,
             padding: 'var(--spacing-12) var(--spacing-16)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--gap-stack)',
             animation: 'fadeIn var(--motion-fast) var(--ease-productive)',
             boxShadow: 'var(--shadow-overlay)',
           }}
         >
-          {/* Sparkline -- last 24 hours */}
           <Sparkline
             data={KPI_24H}
             dataKey={config.key}
@@ -247,26 +195,23 @@ function KpiCard({ config, onClick, isSelected }) {
             label={config.label}
           />
 
-          {/* Time range with event marker */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[0].time}</span>
-            <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>K-101 Trip 2:03 AM</span>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>{KPI_24H[KPI_24H.length - 1].time}</span>
+          <div className="flex justify-between items-center">
+            <span className="type-meta text-[var(--color-text-helper)]">{KPI_24H[0].time}</span>
+            <span className="type-meta text-[var(--color-text-secondary)]">K-101 Trip 2:03 AM</span>
+            <span className="type-meta text-[var(--color-text-helper)]">{KPI_24H[KPI_24H.length - 1].time}</span>
           </div>
 
-          {/* Before / After */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-              Before: <strong style={{ color: 'var(--color-text-primary)' }}>{config.previous}%</strong>
+          <div className="flex justify-between gap-8">
+            <span className="type-meta text-[var(--color-text-helper)]">
+              Before: <strong className="text-[var(--color-text-primary)]">{config.previous}%</strong>
             </span>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-              After: <strong style={{ color: 'var(--color-text-primary)' }}>{config.value}%</strong>
+            <span className="type-meta text-[var(--color-text-helper)]">
+              After: <strong className="text-[var(--color-text-primary)]">{config.value}%</strong>
             </span>
           </div>
 
-          {/* Go to Trends */}
-          <div style={{ textAlign: 'right', paddingTop: 'var(--spacing-4)' }}>
-            <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>Go to Trends &rarr;</span>
+          <div className="text-right pt-4">
+            <span className="type-link text-12">Go to Trends &rarr;</span>
           </div>
         </div>
       )}
@@ -274,7 +219,7 @@ function KpiCard({ config, onClick, isSelected }) {
   )
 }
 
-// ── Sparkline (pure SVG, 12-month trend) ─────────────────────────────────────
+// ── Sparkline (pure SVG, 24-hour trend) ─────────────────────────────────────
 
 function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
   if (!data || data.length === 0) return null
@@ -298,79 +243,51 @@ function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
   const lastX = px + (values.length - 1) * stepX
   const lastY = toY(values[values.length - 1])
   const lastValue = values[values.length - 1]
-
-  // Percentage positions for HTML overlays
   const lastDotLeftPct = (lastX / vbWidth) * 100
   const lastDotTopPct = (lastY / vbHeight) * 100
 
-  // Aria label for accessibility
   const ariaText = label
     ? `${label} trend: ${values[0]}% to ${lastValue}%${threshold ? `, warning threshold at ${threshold}%` : ''}`
     : undefined
 
   return (
     <div
-      style={{ position: 'relative', width: '100%', height: 56 }}
+      className="relative w-full"
+      style={{ height: 56 }}
       role="img"
       aria-label={ariaText}
     >
       <svg
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
         preserveAspectRatio="none"
-        style={{ display: 'block', width: '100%', height: '100%' }}
+        className="block w-full h-full"
         aria-hidden="true"
       >
-        {/* Normal range band -- everything above threshold is safe */}
         {threshold && (
-          <rect
-            x={0}
-            y={0}
-            width={vbWidth}
-            height={toY(threshold)}
-            fill="var(--color-accent)"
-            opacity={0.06}
-          />
+          <rect x={0} y={0} width={vbWidth} height={toY(threshold)} fill="var(--color-accent)" opacity={0.06} />
         )}
-
-        {/* Event marker -- subtle vertical line at the drop point */}
         {eventIndex != null && (
           <line
-            x1={px + eventIndex * stepX}
-            y1={0}
-            x2={px + eventIndex * stepX}
-            y2={vbHeight}
-            stroke="var(--color-text-helper)"
-            strokeWidth={1}
-            strokeDasharray="2 2"
-            opacity={0.3}
-            vectorEffect="non-scaling-stroke"
+            x1={px + eventIndex * stepX} y1={0}
+            x2={px + eventIndex * stepX} y2={vbHeight}
+            stroke="var(--color-text-helper)" strokeWidth={1} strokeDasharray="2 2" opacity={0.3} vectorEffect="non-scaling-stroke"
           />
         )}
-
-        {/* Trend line -- dominant element */}
         <polyline
           points={points}
-          fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
+          fill="none" stroke="var(--color-accent)" strokeWidth={1.5}
+          strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke"
         />
       </svg>
 
-      {/* Current value dot */}
       <span
+        className="absolute rounded-full bg-[var(--color-accent)] pointer-events-none"
         style={{
-          position: 'absolute',
           left: `${lastDotLeftPct}%`,
           top: `${lastDotTopPct}%`,
           transform: 'translate(-3px, -3px)',
           width: 6,
           height: 6,
-          borderRadius: 'var(--radius-full)',
-          background: 'var(--color-accent)',
-          pointerEvents: 'none',
         }}
       />
     </div>
@@ -388,13 +305,10 @@ export default function KpiBar({ onKpiClick }) {
     onKpiClick?.(key)
   }
 
-  // Close dropdown on outside click or Escape
   useEffect(() => {
     if (!selectedKpi) return
     function handleClick(e) {
-      if (barRef.current && !barRef.current.contains(e.target)) {
-        setSelectedKpi(null)
-      }
+      if (barRef.current && !barRef.current.contains(e.target)) setSelectedKpi(null)
     }
     function handleKeyDown(e) {
       if (e.key === 'Escape') setSelectedKpi(null)
@@ -409,52 +323,45 @@ export default function KpiBar({ onKpiClick }) {
 
   return (
     <div ref={barRef}>
-    <div className="kpi-grid">
-      {KPI_CONFIG.map((config) => (
-        <KpiCard key={config.key} config={config} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />
-      ))}
+      <div className="kpi-grid">
+        {KPI_CONFIG.map((config) => (
+          <KpiCard key={config.key} config={config} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />
+        ))}
 
-      {/* Trains */}
-      <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
-          <span className="type-card-title">Trains</span>
-          <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.trains} /></span>
+        {/* Trains */}
+        <div className="card text-left flex flex-col">
+          <div className="flex items-center justify-between mb-[var(--gap-stack)]">
+            <span className="type-card-title">Trains</span>
+            <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.trains} /></span>
+          </div>
+          <span className="type-kpi block">{PLANT.trains}</span>
+          <div className="hide-mobile invisible" aria-hidden="true">
+            <div className="items-center gap-4"><span className="type-meta">&nbsp;</span></div>
+            <div className="items-center gap-4 mt-[var(--gap-stack)]"><span className="type-meta">&nbsp;</span></div>
+          </div>
         </div>
-        <span className="type-kpi" style={{ display: 'block' }}>
-          {PLANT.trains}
-        </span>
-        {/* Placeholder rows to match KPI card height */}
-        <div className="hide-mobile" style={{ visibility: 'hidden' }} aria-hidden="true">
-          <div style={{ alignItems: 'center', gap: 'var(--spacing-4)' }}><span className="type-meta">&nbsp;</span></div>
-          <div style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}><span className="type-meta">&nbsp;</span></div>
-        </div>
-      </div>
 
-      {/* Active Assets */}
-      <div className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--gap-stack)' }}>
-          <span className="type-card-title">Active Assets</span>
-          <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.activeAssets} /></span>
-        </div>
-        <span style={{ display: 'block' }}>
-          <span className="type-kpi">{PLANT.activeAssets}</span>
-          <span className="type-kpi" style={{ color: 'var(--color-text-secondary)' }}>/{PLANT.totalAssets}</span>
-        </span>
-        {/* Placeholder health indicator row to match KPI card height */}
-        <div className="hide-mobile" style={{ visibility: 'hidden' }} aria-hidden="true">
-          <span className="type-meta">&nbsp;</span>
-        </div>
-        <div className="hide-mobile" style={{ alignItems: 'center', gap: 'var(--spacing-4)', marginTop: 'var(--gap-stack)' }}>
-          <span className="type-meta" style={{ color: 'var(--color-text-secondary)' }}>
-            -4 vs yesterday
+        {/* Active Assets */}
+        <div className="card text-left flex flex-col">
+          <div className="flex items-center justify-between mb-[var(--gap-stack)]">
+            <span className="type-card-title">Active Assets</span>
+            <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.activeAssets} /></span>
+          </div>
+          <span className="block">
+            <span className="type-kpi">{PLANT.activeAssets}</span>
+            <span className="type-kpi text-[var(--color-text-secondary)]">/{PLANT.totalAssets}</span>
           </span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-            <path d="M2 2L10 10M10 10H4M10 10V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-text-secondary)' }} />
-          </svg>
+          <div className="hide-mobile invisible" aria-hidden="true">
+            <span className="type-meta">&nbsp;</span>
+          </div>
+          <div className="hide-mobile items-center gap-4 mt-[var(--gap-stack)]">
+            <span className="type-meta text-[var(--color-text-secondary)]">-4 vs yesterday</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
+              <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
-
     </div>
   )
 }

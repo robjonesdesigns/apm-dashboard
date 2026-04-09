@@ -52,26 +52,14 @@ function buildNarrative(incident) {
 
 function EventCard({ label, event }) {
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-      <span className="type-card-title" style={{ color: 'var(--color-card-title)' }}>
-        {label}
-      </span>
-      <p className="type-meta" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-        {event.time}
-      </p>
-      <p className="type-body" style={{ margin: 0, color: 'var(--color-text-primary)' }}>
-        {event.name}
-      </p>
-      <p className="type-meta" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-        {event.asset}
-      </p>
-      <p className="type-meta" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-        {event.event}
-      </p>
+    <div className="card flex flex-col gap-[var(--gap-stack)]">
+      <span className="type-card-title">{label}</span>
+      <p className="type-meta">{event.time}</p>
+      <p className="type-body">{event.name}</p>
+      <p className="type-meta">{event.asset}</p>
+      <p className="type-meta">{event.event}</p>
       {event.kpiImpact && (
-        <p className="type-label" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-          {event.kpiImpact}
-        </p>
+        <p className="type-label">{event.kpiImpact}</p>
       )}
     </div>
   )
@@ -90,10 +78,10 @@ export default function ImpactStrip() {
       <p className="section-header">What Happened?</p>
 
       {narratives.map(({ incident, acts }) => (
-        <div key={incident.id} style={{ marginBottom: narratives.length > 1 ? 'var(--spacing-16)' : 0 }}>
+        <div key={incident.id} className={narratives.length > 1 ? 'mb-16' : ''}>
           {/* Incident label -- only show when multiple incidents */}
           {narratives.length > 1 && (
-            <p className="type-label" style={{ marginBottom: 'var(--gap-stack)', color: 'var(--color-text-secondary)' }}>
+            <p className="type-label mb-[var(--gap-stack)] text-[var(--color-text-secondary)]">
               {incident.name}
             </p>
           )}
@@ -110,7 +98,7 @@ export default function ImpactStrip() {
         </div>
       ))}
 
-      <div style={{ marginTop: 'var(--gap-stack)', textAlign: 'right' }}>
+      <div className="mt-[var(--gap-stack)] text-right">
         <span className="type-link">Go to Events &rarr;</span>
       </div>
     </section>

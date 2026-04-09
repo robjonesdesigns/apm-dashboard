@@ -61,26 +61,20 @@ const ROW_STYLE = {
 }
 
 function AssetRow({ asset, onAssetClick }) {
-  const [hovered, setHovered] = useState(false)
   const clickable = !!onAssetClick
 
   return (
     <div
       data-row
       role="row"
+      className="row-hover"
       tabIndex={clickable ? 0 : undefined}
       aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}, OEE ${asset.oee}%`}
       onClick={clickable ? () => onAssetClick(asset) : undefined}
       onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick(asset) } } : undefined}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
       style={{
         ...ROW_STYLE,
         cursor: clickable ? 'pointer' : 'default',
-        background:  hovered ? 'var(--color-hover-01)' : 'transparent',
-        borderLeft:  hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
       }}
     >
       {/* Status */}
@@ -90,12 +84,7 @@ function AssetRow({ asset, onAssetClick }) {
 
       {/* Asset name + type */}
       <div role="cell" style={{ ...COL_STYLES.asset, flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-        <div
-          className="type-body"
-          style={{
-            color: 'var(--color-accent)',
-          }}
-        >
+        <div className="type-body" style={{ color: 'var(--color-accent)' }}>
           {asset.name}
         </div>
         <div className="type-meta">{asset.type}</div>
@@ -143,53 +132,43 @@ function AssetRow({ asset, onAssetClick }) {
 // ── Mobile row (stacked: status+name, type+criticality) ─────────────────────
 
 function MobileAssetRow({ asset, onAssetClick }) {
-  const [hovered, setHovered] = useState(false)
   const clickable = !!onAssetClick
 
   return (
     <div
       data-row
       role="row"
+      className="row-hover flex flex-col gap-[var(--gap-stack)]"
       tabIndex={clickable ? 0 : undefined}
       aria-label={`${asset.name}, ${statusLabel(asset.status)}, criticality ${asset.criticality}`}
       onClick={clickable ? () => onAssetClick(asset) : undefined}
       onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAssetClick(asset) } } : undefined}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--gap-stack)',
         padding: 'var(--spacing-12)',
         cursor: clickable ? 'pointer' : 'default',
-        transition: 'all var(--motion-fast) var(--ease-productive)',
         borderBottom: '1px solid var(--color-border-subtle)',
-        borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
-        background: hovered ? 'var(--color-hover-01)' : 'transparent',
       }}
     >
       {/* Row 1: status dot + asset name */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+      <div className="flex items-center gap-8">
         <StatusIndicator status={asset.status} compact />
-        <span className="type-body" style={{ color: 'var(--color-accent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+        <span className="type-body flex-1 truncate" style={{ color: 'var(--color-accent)' }}>
           {asset.name}
         </span>
       </div>
 
       {/* Row 2: asset type */}
-      <span className="type-meta" style={{ color: 'var(--color-text-secondary)', paddingLeft: 'var(--spacing-16)' }}>
+      <span className="type-meta pl-16" style={{ color: 'var(--color-text-secondary)' }}>
         {asset.type}
       </span>
 
       {/* Row 3: criticality + events */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-12)', paddingLeft: 'var(--spacing-16)' }}>
+      <div className="flex items-center gap-12 pl-16">
         <CriticalityIndicator level={asset.criticality} />
         {asset.activeEvents > 0 && (
           <>
-            <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-            <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+            <span className="divider-v" />
+            <span className="flex items-center gap-4">
               {worstSeverityByAsset[asset.id] && <SeverityBadge severity={worstSeverityByAsset[asset.id]} compact />}
               <span className="type-meta">{asset.activeEvents} {asset.activeEvents === 1 ? 'Event' : 'Events'}</span>
             </span>
@@ -255,10 +234,8 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-label="Filter and sort"
+        className="flex items-center justify-center shrink-0"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           width: 32,
           height: 32,
           borderRadius: 'var(--radius-4)',
@@ -267,13 +244,11 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
           color: activeCount > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)',
           cursor: 'pointer',
           position: 'relative',
-          flexShrink: 0,
         }}
       >
         <SlidersIcon />
         {activeCount > 0 && (
-          <span style={{
-            position: 'absolute',
+          <span className="flex items-center justify-center absolute" style={{
             top: -4,
             right: -4,
             width: 14,
@@ -283,9 +258,6 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             color: 'var(--color-layer-01)',
             fontSize: 'var(--text-12)',
             fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}>
             {activeCount}
           </span>
@@ -296,12 +268,8 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
       {open && (
         <div
           onClick={() => setOpen(false)}
+          className="fixed inset-0"
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
             background: 'var(--color-overlay)',
             zIndex: 9998,
           }}
@@ -316,41 +284,31 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
           aria-modal="true"
           aria-label="Filter and sort assets"
           tabIndex={-1}
+          className="fixed inset-x-0 bottom-0 flex flex-col"
           style={{
-            position: 'fixed',
-            left: 0,
-            right: 0,
-            bottom: 0,
             maxHeight: '80vh',
             background: 'var(--color-layer-01)',
             borderTop: '1px solid var(--color-border-subtle)',
             borderRadius: '12px 12px 0 0',
             zIndex: 9999,
-            display: 'flex',
-            flexDirection: 'column',
             animation: 'slideUp var(--motion-moderate) var(--ease-productive)',
           }}
         >
           {/* Drawer handle + header */}
-          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)', flexShrink: 0 }}>
+          <div className="shrink-0" style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)' }}>
             {/* Drag handle */}
             <div style={{ width: 32, height: 4, borderRadius: 2, background: 'var(--color-border-strong)', margin: '0 auto var(--spacing-12)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="flex items-center justify-between">
               <span className="type-card-title">Filter & Sort</span>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close"
+                className="btn-reset flex items-center justify-center"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   width: 28,
                   height: 28,
                   borderRadius: 'var(--radius-4)',
-                  border: 'none',
-                  background: 'transparent',
                   color: 'var(--color-text-helper)',
-                  cursor: 'pointer',
                 }}
               >
                 <CloseIconSmall />
@@ -359,18 +317,18 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
           </div>
 
           {/* Scrollable content */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-16)' }}>
+          <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-16)' }}>
             {/* Sort section */}
             <div style={{ marginBottom: 'var(--spacing-16)' }}>
-              <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--gap-stack)' }}>Sort by</span>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-8)' }}>
+              <span className="type-label block" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', marginBottom: 'var(--gap-stack)' }}>Sort by</span>
+              <div className="flex flex-wrap gap-8">
                 {MOBILE_SORT_OPTIONS.map(s => {
                   const isActive = sortKey === s.key
                   return (
                     <button
                       key={s.key}
                       onClick={() => onSort(s.key)}
-                      className="type-body"
+                      className="type-body flex items-center gap-4"
                       style={{
                         background: isActive ? 'var(--color-accent-bg)' : 'var(--color-layer-02)',
                         border: `1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border-subtle)'}`,
@@ -379,9 +337,6 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
                         color: isActive ? 'var(--color-accent)' : 'var(--color-text-primary)',
                         cursor: 'pointer',
                         font: 'inherit',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--spacing-4)',
                       }}
                     >
                       {s.label}
@@ -398,20 +353,16 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
             {/* Filter sections */}
             {categories.map((cat, i) => (
               <div key={cat.key} style={{ marginBottom: i < categories.length - 1 ? 'var(--spacing-16)' : 0 }}>
-                <span className="type-label" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', display: 'block', marginBottom: 'var(--gap-stack)' }}>{cat.label}</span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
+                <span className="type-label block" style={{ textTransform: 'uppercase', color: 'var(--color-text-helper)', marginBottom: 'var(--gap-stack)' }}>{cat.label}</span>
+                <div className="flex flex-col" style={{ gap: 'var(--gap-stack)' }}>
                   {cat.options.map(opt => {
                     const checked = filters[cat.key]?.includes(opt)
                     return (
                       <label
                         key={opt}
-                        className="type-body"
+                        className="type-body flex items-center gap-12 cursor-pointer"
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--spacing-12)',
                           padding: 'var(--spacing-8) var(--spacing-12)',
-                          cursor: 'pointer',
                           borderRadius: 'var(--radius-4)',
                           background: checked ? 'var(--color-accent-bg)' : 'transparent',
                           transition: 'background var(--motion-fast) var(--ease-productive)',
@@ -435,11 +386,11 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
           </div>
 
           {/* Footer buttons */}
-          <div style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderTop: '1px solid var(--color-border-subtle)', flexShrink: 0, display: 'flex', gap: 'var(--spacing-8)' }}>
+          <div className="shrink-0 flex gap-8" style={{ padding: 'var(--spacing-12) var(--spacing-16)', borderTop: '1px solid var(--color-border-subtle)' }}>
             <button
               onClick={() => { onReset?.(); setOpen(false) }}
+              className="flex-1 cursor-pointer"
               style={{
-                flex: 1,
                 padding: 'var(--spacing-12)',
                 borderRadius: 'var(--radius-4)',
                 border: '1px solid var(--color-border-subtle)',
@@ -447,15 +398,14 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
                 color: 'var(--color-text-secondary)',
                 fontSize: 'var(--text-14)',
                 fontWeight: 600,
-                cursor: 'pointer',
               }}
             >
               Clear All
             </button>
             <button
               onClick={() => setOpen(false)}
+              className="flex-1 cursor-pointer"
               style={{
-                flex: 1,
                 padding: 'var(--spacing-12)',
                 borderRadius: 'var(--radius-4)',
                 border: 'none',
@@ -463,7 +413,6 @@ function MobileFilterSort({ filters, onToggle, sortKey, sortDir, onSort, categor
                 color: 'var(--color-layer-01)',
                 fontSize: 'var(--text-14)',
                 fontWeight: 600,
-                cursor: 'pointer',
               }}
             >
               Done
@@ -534,7 +483,7 @@ function SortIndicator({ isActive, direction }) {
   const activeDown = isActive && direction === 'desc'
 
   return (
-    <span style={{ display: 'inline-flex', flexDirection: 'column', lineHeight: 0, marginLeft: 2, gap: 1 }}>
+    <span className="inline-flex flex-col" style={{ lineHeight: 0, marginLeft: 2, gap: 1 }}>
       <svg width="8" height="5" viewBox="0 0 8 5" style={{ opacity: activeUp ? 1 : 0.3 }}>
         <path d="M4 0L8 5H0z" fill={activeUp ? 'var(--color-accent)' : 'var(--color-text-helper)'} />
       </svg>
@@ -547,16 +496,13 @@ function SortIndicator({ isActive, direction }) {
 
 function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style, title }) {
   const isActive = activeSort === sortKey
-  const [hovered, setHovered] = useState(false)
   const ariaSort = isActive ? (activeDir === 'asc' ? 'ascending' : 'descending') : 'none'
 
   return (
     <button
-      className="type-table-header"
+      className="btn-reset type-table-header"
       role="columnheader"
       onClick={() => onSort(sortKey)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       aria-sort={ariaSort}
       title={title}
       aria-label={title || label}
@@ -566,10 +512,8 @@ function SortableHeader({ label, sortKey, activeSort, activeDir, onSort, style, 
         userSelect: 'none',
         gap: 2,
         whiteSpace: 'nowrap',
-        color: isActive ? 'var(--color-accent)' : hovered ? 'var(--color-text-primary)' : undefined,
+        color: isActive ? 'var(--color-accent)' : undefined,
         transition: 'color var(--motion-fast) var(--ease-productive)',
-        background: 'none',
-        font: 'inherit',
       }}
     >
       {label}
@@ -646,16 +590,13 @@ function AssetSearch({ value, onChange, onAssetClick }) {
   }, [])
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ position: 'relative' }}>
-        <span style={{
-          position: 'absolute',
+    <div className="relative">
+      <div className="relative">
+        <span className="absolute flex pointer-events-none" style={{
           left: 'var(--spacing-8)',
           top: '50%',
           transform: 'translateY(-50%)',
           color: 'var(--color-text-helper)',
-          pointerEvents: 'none',
-          display: 'flex',
         }}>
           <SearchIcon />
         </span>
@@ -672,6 +613,7 @@ function AssetSearch({ value, onChange, onAssetClick }) {
           aria-haspopup="listbox"
           aria-autocomplete="list"
           role="combobox"
+          className="w-full outline-none"
           style={{
             background: 'var(--color-layer-02)',
             border: `1px solid ${focused ? 'var(--color-border-interactive)' : 'var(--color-border-subtle)'}`,
@@ -680,8 +622,6 @@ function AssetSearch({ value, onChange, onAssetClick }) {
             fontSize: 'var(--text-12)',
             padding: '0 var(--spacing-12) 0 var(--spacing-32)',
             height: 32,
-            width: '100%',
-            outline: 'none',
             transition: 'border-color var(--motion-fast) var(--ease-productive)',
           }}
         />
@@ -692,8 +632,8 @@ function AssetSearch({ value, onChange, onAssetClick }) {
           role="listbox"
           aria-live="polite"
           aria-label={`${suggestions.length} asset suggestions`}
+          className="absolute overflow-hidden"
           style={{
-            position: 'absolute',
             top: '100%',
             left: 0,
             right: 0,
@@ -703,7 +643,6 @@ function AssetSearch({ value, onChange, onAssetClick }) {
             borderRadius: 'var(--radius-8)',
             boxShadow: 'var(--shadow-tooltip)',
             zIndex: 20,
-            overflow: 'hidden',
             animation: 'fadeInOnly var(--motion-fast) var(--ease-productive)',
           }}
         >
@@ -716,9 +655,9 @@ function AssetSearch({ value, onChange, onAssetClick }) {
                 aria-selected={isHighlighted}
                 onMouseEnter={() => setHighlightIdx(i)}
                 onMouseDown={(e) => { e.preventDefault(); handleSelect(asset) }}
+                className="cursor-pointer"
                 style={{
                   padding: 'var(--spacing-8) var(--spacing-12)',
-                  cursor: 'pointer',
                   background: isHighlighted ? 'var(--color-accent-bg)' : 'transparent',
                   borderLeft: isHighlighted ? '2px solid var(--color-accent)' : '2px solid transparent',
                   transition: 'background var(--motion-fast) var(--ease-productive)',
@@ -841,7 +780,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
     <div className="grid-12">
       <div className="card col-full">
         {/* Card header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 'var(--spacing-12)', borderBottom: '1px solid var(--color-border-subtle)' }}>
+        <div className="flex items-center justify-between" style={{ paddingBottom: 'var(--spacing-12)', borderBottom: '1px solid var(--color-border-subtle)' }}>
           <span className="type-card-title">All Assets</span>
           {hasAnyFilter && (
             <span className="type-label" style={{ color: 'var(--color-text-helper)' }}>
@@ -854,8 +793,8 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
         {isMobile ? (
           /* ── Mobile toolbar: search + combined filter/sort icon ───── */
           <div style={{ padding: 'var(--spacing-12) 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-              <div style={{ flex: 1 }}>
+            <div className="flex items-center gap-8">
+              <div className="flex-1">
                 <AssetSearch
                   value={search}
                   onChange={val => { setSearch(val); setPage(0) }}
@@ -881,7 +820,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
             </div>
             {/* Active chips below search */}
             {(activeChipCount > 0 || riskFilter || alarmFilter || actorFilter) && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', marginTop: 'var(--gap-stack)' }}>
+              <div className="flex items-center gap-8 flex-wrap" style={{ marginTop: 'var(--gap-stack)' }}>
                 {riskFilter && (
                   <>
                     <FilterChip label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} onClear={onClearRiskFilter} />
@@ -896,8 +835,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
                 {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
                   <button
                     onClick={() => { onClearAllFilters?.(); setFilters({ criticality: [], status: [], processUnit: [] }); setSearch(''); setPage(0) }}
-                    className="type-link"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}
+                    className="btn-reset type-link"
                   >
                     Clear all
                   </button>
@@ -907,15 +845,9 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
           </div>
         ) : (
           /* ── Desktop toolbar: chips left, search + filter right ───── */
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 'var(--spacing-12)',
-            padding: 'var(--spacing-12) 0',
-          }}>
+          <div className="flex items-center justify-between gap-12" style={{ padding: 'var(--spacing-12) 0' }}>
             {/* Left: active filter chips */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexWrap: 'wrap', flex: 1, minHeight: 28 }}>
+            <div className="flex items-center gap-8 flex-wrap flex-1" style={{ minHeight: 28 }}>
               {riskFilter && (
                 <>
                   <FilterChip label={CRIT_LABELS[riskFilter.criticality] || riskFilter.criticality} onClear={onClearRiskFilter} />
@@ -930,15 +862,14 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
               {[riskFilter, alarmFilter, actorFilter].filter(Boolean).length + activeChipCount >= 2 && (
                 <button
                   onClick={() => { onClearAllFilters?.(); setFilters({ criticality: [], status: [], processUnit: [] }); setSearch(''); setPage(0) }}
-                  className="type-link"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0, flexShrink: 0 }}
+                  className="btn-reset type-link shrink-0"
                 >
                   Clear all
                 </button>
               )}
             </div>
             {/* Right: search + filter button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', flexShrink: 0 }}>
+            <div className="flex items-center gap-8 shrink-0">
               <AssetSearch value={search} onChange={val => { setSearch(val); setPage(0) }} onAssetClick={onAssetClick} />
               <FilterButton categories={FILTER_CATEGORIES} filters={filters} onToggle={toggleFilter} />
             </div>
@@ -954,7 +885,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
                 <MobileAssetRow key={asset.id} asset={asset} onAssetClick={onAssetClick} />
               ))}
               {totalRows === 0 && (
-                <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
+                <div className="text-center" style={{ padding: 'var(--spacing-32) var(--spacing-16)' }}>
                   <span className="type-meta">No assets match the current filters</span>
                 </div>
               )}
@@ -962,7 +893,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
           </div>
         ) : (
           /* ── Desktop: full data table with horizontal scroll ────── */
-          <div style={{ position: 'relative' }}>
+          <div className="relative">
           <div
             ref={scrollRef}
             onScroll={handleScroll}
@@ -973,9 +904,8 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
             {/* Fixed header */}
             <div
               role="row"
+              className="flex items-center"
               style={{
-                display:         'flex',
-                alignItems:      'center',
                 gap:             0,
                 padding:         'var(--spacing-8) var(--spacing-12)',
                 background:      'var(--color-layer-02)',
@@ -1007,7 +937,7 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
                 />
               ))}
               {totalRows === 0 && (
-                <div style={{ padding: 'var(--spacing-32) var(--spacing-16)', textAlign: 'center' }}>
+                <div className="text-center" style={{ padding: 'var(--spacing-32) var(--spacing-16)' }}>
                   <span className="type-meta">No assets match the current filters</span>
                 </div>
               )}
@@ -1016,14 +946,10 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
           {/* Scroll fade hint — visible when table overflows right */}
           {showScrollHint && (
             <div
+              className="absolute top-0 right-0 bottom-0 pointer-events-none"
               style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                bottom: 0,
                 width: 48,
                 background: 'linear-gradient(to right, transparent, var(--color-layer-01))',
-                pointerEvents: 'none',
                 zIndex: 2,
               }}
             />
@@ -1033,25 +959,17 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
 
         {/* Pagination */}
         {totalRows > 0 && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: 'var(--gap-intra)',
-            marginTop: 'var(--gap-stack)',
-          }}>
+          <div className="flex items-center justify-between" style={{ paddingTop: 'var(--gap-intra)', marginTop: 'var(--gap-stack)' }}>
             <span className="type-meta">
               {startIdx + 1}--{Math.min(startIdx + rowsPerPage, totalRows)} of {totalRows} assets
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+            <div className="flex items-center gap-8">
               <button
                 onClick={() => setPage(p => Math.max(0, p - 1))}
                 disabled={safePage === 0}
                 aria-label="Previous page"
+                className="inline-flex items-center justify-center"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   width: 32,
                   height: 32,
                   borderRadius: 'var(--radius-4)',
@@ -1066,17 +984,15 @@ export default function AssetTable({ onAssetClick, riskFilter, alarmFilter, acto
                   <path d="M10 4L6 8l4 4" />
                 </svg>
               </button>
-              <span className="type-body" style={{ fontVariantNumeric: 'tabular-nums', minWidth: 48, textAlign: 'center' }}>
+              <span className="type-body text-center" style={{ fontVariantNumeric: 'tabular-nums', minWidth: 48 }}>
                 {safePage + 1} / {totalPages}
               </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                 disabled={safePage >= totalPages - 1}
                 aria-label="Next page"
+                className="inline-flex items-center justify-center"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   width: 32,
                   height: 32,
                   borderRadius: 'var(--radius-4)',

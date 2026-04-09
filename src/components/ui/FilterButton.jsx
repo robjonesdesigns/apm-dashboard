@@ -46,64 +46,25 @@ export default function FilterButton({ categories, filters, onToggle }) {
   }, [open])
 
   return (
-    <div ref={ref} style={{ position: 'relative' }}>
+    <div ref={ref} className="relative">
       <button
+        className={`filter-btn${activeCount > 0 ? ' filter-btn-active' : ''}`}
         onClick={() => setOpen(prev => !prev)}
         aria-label="Filter"
         aria-expanded={open}
         aria-haspopup="listbox"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 'var(--spacing-4)',
-          padding: '0 var(--spacing-12)',
-          height: 32,
-          borderRadius: 'var(--radius-4)',
-          border: `1px solid ${activeCount > 0 ? 'var(--color-accent)' : 'var(--color-border-subtle)'}`,
-          background: activeCount > 0 ? 'var(--color-accent-bg)' : 'var(--color-layer-02)',
-          color: activeCount > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-          fontSize: 'var(--text-12)',
-          cursor: 'pointer',
-          transition: 'all var(--motion-fast) var(--ease-productive)',
-        }}
       >
         <FilterIcon />
         <span>Filter</span>
         {activeCount > 0 && (
-          <span style={{
-            background: 'var(--color-accent)',
-            color: 'var(--color-text-inverse)',
-            borderRadius: '50%',
-            width: 16,
-            height: 16,
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 'var(--text-12)',
-            fontWeight: 600,
-          }}>
-            {activeCount}
-          </span>
+          <span className="count-badge">{activeCount}</span>
         )}
       </button>
       {open && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          right: 0,
-          marginTop: 4,
-          width: 240,
-          background: 'var(--color-layer-01)',
-          border: '1px solid var(--color-border-strong)',
-          borderRadius: 'var(--radius-8)',
-          boxShadow: 'var(--shadow-tooltip)',
-          zIndex: 20,
-          padding: 'var(--spacing-8) 0',
-          animation: 'fadeInOnly var(--motion-fast) var(--ease-productive)',
-        }}>
+        <div className="filter-dropdown">
           {categories.map(cat => (
-            <div key={cat.key} style={{ padding: 'var(--spacing-8) var(--spacing-16)' }}>
-              <span className="type-label" style={{ color: 'var(--color-text-helper)', marginBottom: 4, display: 'block' }}>
+            <div key={cat.key} className="px-16 py-8">
+              <span className="type-label block mb-4">
                 {cat.label}
               </span>
               {cat.options.map(opt => {
@@ -111,15 +72,7 @@ export default function FilterButton({ categories, filters, onToggle }) {
                 return (
                   <label
                     key={opt}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--spacing-8)',
-                      padding: '4px 0',
-                      cursor: 'pointer',
-                      fontSize: 'var(--text-12)',
-                      color: 'var(--color-text-secondary)',
-                    }}
+                    className="flex items-center gap-8 py-1 cursor-pointer text-12 text-[var(--color-text-secondary)]"
                   >
                     <input
                       type="checkbox"

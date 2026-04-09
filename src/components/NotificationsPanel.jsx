@@ -1,7 +1,6 @@
 // ── NotificationsPanel ────────────────────────────────────────────────────────
 // Push panel (320px). Compresses the content viewport when open.
 // Two-panel drill-in: notification list → event details.
-// Adapted from Forge Right Rail documentation for Carbon g100 dark theme.
 // ADR-009: mutually exclusive with expanded sidebar.
 
 import { useState, useEffect, useRef } from 'react'
@@ -11,7 +10,6 @@ import SeverityBadge from './ui/SeverityBadge'
 import CriticalityIndicator from './ui/CriticalityIndicator'
 import FilterButton from './ui/FilterButton'
 
-// Lookup asset criticality by assetId
 const critByAsset = {}
 ASSETS.forEach(a => { critByAsset[a.id] = a.criticality })
 
@@ -29,11 +27,6 @@ const BackIcon = () => (
   </svg>
 )
 
-
-
-// Event types now match badge levels directly (ADR-016)
-// critical → critical, high → high, medium → medium, low → low
-
 const TYPE_DOT_CLASS = {
   critical: 'status-dot dot-critical',
   high:     'status-dot dot-high',
@@ -41,89 +34,51 @@ const TYPE_DOT_CLASS = {
   low:      'status-dot dot-low',
 }
 
-// ── Filter chips ─────────────────────────────────────────────────────────────
-
 const SEVERITY_OPTIONS = ['critical', 'high', 'medium', 'low']
 const SEVERITY_LABELS = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' }
 
 // ── Notification row ─────────────────────────────────────────────────────────
 
 function NotificationItem({ notification, isNew, onSelect }) {
-  const [hovered, setHovered] = useState(false)
-
   return (
     <button
+      className={`notification-item row-hover btn-reset${isNew ? ' notification-item-new' : ''}`}
       onClick={() => onSelect(notification)}
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 'var(--spacing-12)',
-        padding: 'var(--spacing-16)',
-        borderBottom: '1px solid var(--color-border-subtle)',
-        borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
-        borderRadius: hovered ? 'var(--radius-4)' : '0',
-        background: isNew
-          ? (hovered ? 'var(--color-accent-bg-strong)' : 'var(--color-accent-bg-subtle)')
-          : (hovered ? 'var(--color-hover-01)' : 'transparent'),
-        cursor: 'pointer',
-        transition: `all var(--motion-fast) var(--ease-productive)`,
-        width: '100%',
-        textAlign: 'left',
-        border: 'none',
-        borderBottom: '1px solid var(--color-border-subtle)',
-        borderLeft: hovered ? '2px solid var(--color-accent)' : '2px solid transparent',
-        color: 'inherit',
-        font: 'inherit',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
-      {/* Unread indicator -- always present for consistent alignment */}
-      <div style={{ paddingTop: '6px', flexShrink: 0, width: '8px' }}>
-        <div style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: 'var(--radius-full)',
-          background: isNew ? 'var(--color-accent)' : 'transparent',
-        }} />
+      {/* Unread indicator */}
+      <div className="pt-[6px] shrink-0" style={{ width: 8 }}>
+        <div
+          className="rounded-full"
+          style={{
+            width: 6, height: 6,
+            background: isNew ? 'var(--color-accent)' : 'transparent',
+          }}
+        />
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)', minWidth: 0, flex: 1 }}>
-        {/* Row 1: severity badge + timestamp */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+      <div className="flex flex-col gap-[var(--gap-stack)] min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-8">
           <SeverityBadge severity={notification.severity} />
-          <span className="type-meta" style={{ flexShrink: 0 }}>{notification.time}</span>
+          <span className="type-meta shrink-0">{notification.time}</span>
         </div>
 
-        {/* Row 2: event name */}
-        <span
-          className="type-card-title"
-          style={{
-            lineHeight: 1.3,
-            fontWeight: isNew ? 700 : 600,
-          }}
-        >
+        <span className="type-card-title" style={{ lineHeight: 1.3, fontWeight: isNew ? 700 : 600 }}>
           {notification.name}
         </span>
 
-        {/* Row 3: asset name + criticality */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-          <span className="type-label" style={{ color: 'var(--color-accent)' }}>
-            {notification.asset}
-          </span>
+        <div className="flex items-center gap-8">
+          <span className="type-label text-[var(--color-accent)]">{notification.asset}</span>
           {critByAsset[notification.assetId] && (
             <>
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
+              <span className="divider-v" />
               <CriticalityIndicator level={critByAsset[notification.assetId]} />
             </>
           )}
         </div>
 
-        {/* Row 4: description (preview, max 2 lines) */}
         <span
-          className="type-body"
+          className="type-body text-[var(--color-text-secondary)]"
           style={{
-            color: 'var(--color-text-secondary)',
             lineHeight: 1.4,
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -135,186 +90,6 @@ function NotificationItem({ notification, isNew, onSelect }) {
         </span>
       </div>
     </button>
-  )
-}
-
-// ── Event Details (2nd panel drill-in) ───────────────────────────────────────
-
-function EventDetails({ notification, onBack, onClose }) {
-  // Derive cause/consequence/recommendation from the event type and message
-  const details = getEventDetails(notification)
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header: Back + Close */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 'var(--spacing-16)',
-        borderBottom: '1px solid var(--color-border-subtle)',
-        flexShrink: 0,
-      }}>
-        <button
-          onClick={onBack}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--spacing-4)',
-            background: 'none',
-            border: 'none',
-            color: 'var(--color-accent)',
-            cursor: 'pointer',
-            font: 'inherit',
-            fontSize: 'var(--text-14)',
-            fontWeight: 600,
-          }}
-        >
-          <BackIcon />
-          Back
-        </button>
-        <button
-          onClick={onClose}
-          aria-label="Close notifications"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '32px',
-            height: '32px',
-            borderRadius: 'var(--radius-4)',
-            border: 'none',
-            background: 'transparent',
-            color: 'var(--color-text-helper)',
-            cursor: 'pointer',
-          }}
-        >
-          <CloseIcon />
-        </button>
-      </div>
-
-      {/* Notification summary (repeated from list for identification) */}
-      <div style={{ padding: 'var(--spacing-16)', borderBottom: '1px solid var(--color-border-subtle)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', marginBottom: 'var(--gap-stack)' }}>
-          <SeverityBadge severity={notification.severity} />
-          <span className="type-meta">{notification.time}</span>
-        </div>
-        <p className="type-card-title" style={{ margin: 0, marginBottom: 'var(--gap-stack)' }}>
-          {notification.name}
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)', margin: '0 0 var(--gap-stack) 0' }}>
-          <span className="type-label" style={{ color: 'var(--color-accent)' }}>
-            {notification.asset}
-          </span>
-          {critByAsset[notification.assetId] && (
-            <>
-              <span style={{ width: 1, height: 12, background: 'var(--color-border-strong)', flexShrink: 0 }} />
-              <CriticalityIndicator level={critByAsset[notification.assetId]} />
-            </>
-          )}
-        </div>
-        <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-          {notification.message}
-        </p>
-      </div>
-
-      {/* Event details */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-16)' }}>
-        <p className="type-card-title" style={{ margin: '0 0 var(--spacing-16) 0' }}>Event Details</p>
-
-        {details.map((section) => (
-          <div key={section.label} style={{ marginBottom: 'var(--spacing-24)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
-              {section.label}
-            </p>
-            <p className="type-body" style={{ margin: 0, color: 'var(--color-text-secondary)' }}>
-              {section.value}
-            </p>
-            <ProvenanceLine provenance={section.provenance} />
-          </div>
-        ))}
-
-        {/* Incident membership */}
-        {notification.incidentId && (
-          <div style={{
-            marginBottom: 'var(--spacing-16)',
-            padding: 'var(--spacing-8) var(--spacing-12)',
-            background: 'var(--color-accent-bg-subtle)',
-            borderRadius: 'var(--radius-4)',
-          }}>
-            <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-              Part of{' '}
-              <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>
-                {getIncidentName(notification.incidentId)}
-              </span>
-              {' '}incident
-            </span>
-          </div>
-        )}
-
-        {/* Related Events */}
-        {notification.relationships && notification.relationships.length > 0 && (
-          <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
-              Related Events
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-              {notification.relationships.map((rel) => (
-                <span key={`${rel.type}-${rel.eventId}`} className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-                  {REL_LABELS[rel.type] || rel.type}:{' '}
-                  <span className="type-link" style={{ fontSize: 'var(--text-12)' }}>
-                    {rel.eventId} {getEventName(rel.eventId)}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Linked Work Orders */}
-        {notification.workOrderIds && notification.workOrderIds.length > 0 && (
-          <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
-              Linked Work Orders
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-              {notification.workOrderIds.map((wo) => (
-                <span key={wo} className="type-link">
-                  {wo}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Linked Investigations */}
-        {notification.investigationIds && notification.investigationIds.length > 0 && (
-          <div style={{ marginBottom: 'var(--spacing-16)' }}>
-            <p className="type-label" style={{ margin: '0 0 var(--gap-stack) 0', textTransform: 'uppercase' }}>
-              Linked Investigations
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-stack)' }}>
-              {notification.investigationIds.map((inv) => (
-                <span key={inv} className="type-link">
-                  {inv}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Divider */}
-        <div style={{ height: '1px', background: 'var(--color-border-subtle)', margin: 'var(--spacing-16) 0' }} />
-
-        {/* Quick Access links */}
-        <p className="type-card-title" style={{ margin: '0 0 var(--gap-stack) 0' }}>Quick Access</p>
-        {['Asset Inspection', 'Trends', 'Fault Tree'].map((link) => (
-          <p key={link} style={{ margin: '0 0 var(--gap-stack) 0' }}>
-            <span className="type-link">{link}</span>
-          </p>
-        ))}
-      </div>
-    </div>
   )
 }
 
@@ -332,11 +107,8 @@ function getEventName(eventId) {
 
 const REL_LABELS = { caused_by: 'Caused by', cascaded_to: 'Cascaded to', related_to: 'Related to' }
 
-// ── Provenance line (subtle annotation under each metadata section) ──────────
-
 function ProvenanceLine({ provenance }) {
   if (!provenance) return null
-
   let label
   if (provenance.source === 'human') {
     label = `Confirmed by ${provenance.updatedBy}, ${provenance.updatedAt}`
@@ -350,44 +122,126 @@ function ProvenanceLine({ provenance }) {
       ? `System detected, ${provenance.updatedAt}`
       : `System detected`
   }
-
   return (
-    <span
-      className="type-meta"
-      style={{
-        display: 'block',
-        marginTop: 'var(--gap-stack)',
-        color: 'var(--color-text-helper)',
-        fontStyle: 'italic',
-      }}
-    >
+    <span className="type-meta block mt-[var(--gap-stack)] text-[var(--color-text-helper)] italic">
       {label}
     </span>
   )
 }
 
-// ── Event detail content (reads structured metadata from notification) ────────
-
 function getEventDetails(notification) {
   const details = []
-
   details.push({ label: 'Description', value: notification.message })
-
   if (notification.subAsset) {
     details.push({ label: 'Sub-Asset', value: `${notification.subAsset} (${notification.subAssetId})` })
   }
-
-  if (notification.cause) {
-    details.push({ label: 'Cause', value: notification.cause.text, provenance: notification.cause })
-  }
-  if (notification.consequence) {
-    details.push({ label: 'Consequence', value: notification.consequence.text, provenance: notification.consequence })
-  }
-  if (notification.recommendation) {
-    details.push({ label: 'Recommendation', value: notification.recommendation.text, provenance: notification.recommendation })
-  }
-
+  if (notification.cause) details.push({ label: 'Cause', value: notification.cause.text, provenance: notification.cause })
+  if (notification.consequence) details.push({ label: 'Consequence', value: notification.consequence.text, provenance: notification.consequence })
+  if (notification.recommendation) details.push({ label: 'Recommendation', value: notification.recommendation.text, provenance: notification.recommendation })
   return details
+}
+
+// ── Event Details (2nd panel drill-in) ───────────────────────────────────────
+
+function EventDetails({ notification, onBack, onClose }) {
+  const details = getEventDetails(notification)
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between p-16 border-b border-[var(--color-border-subtle)] shrink-0">
+        <button className="btn-reset flex items-center gap-4 text-[var(--color-accent)] font-semibold" onClick={onBack}>
+          <BackIcon /> Back
+        </button>
+        <button
+          className="btn-reset flex items-center justify-center rounded-[var(--radius-4)] text-[var(--color-text-helper)]"
+          onClick={onClose}
+          aria-label="Close notifications"
+          style={{ width: 32, height: 32 }}
+        >
+          <CloseIcon />
+        </button>
+      </div>
+
+      {/* Summary */}
+      <div className="p-16 border-b border-[var(--color-border-subtle)]">
+        <div className="flex items-center gap-8 mb-[var(--gap-stack)]">
+          <SeverityBadge severity={notification.severity} />
+          <span className="type-meta">{notification.time}</span>
+        </div>
+        <p className="type-card-title mb-[var(--gap-stack)]">{notification.name}</p>
+        <div className="flex items-center gap-8 mb-[var(--gap-stack)]">
+          <span className="type-label text-[var(--color-accent)]">{notification.asset}</span>
+          {critByAsset[notification.assetId] && (
+            <>
+              <span className="divider-v" />
+              <CriticalityIndicator level={critByAsset[notification.assetId]} />
+            </>
+          )}
+        </div>
+        <p className="type-body text-[var(--color-text-secondary)]">{notification.message}</p>
+      </div>
+
+      {/* Details */}
+      <div className="flex-1 overflow-y-auto p-16">
+        <p className="type-card-title mb-16">Event Details</p>
+
+        {details.map((section) => (
+          <div key={section.label} className="mb-24">
+            <p className="type-label mb-[var(--gap-stack)] uppercase">{section.label}</p>
+            <p className="type-body text-[var(--color-text-secondary)]">{section.value}</p>
+            <ProvenanceLine provenance={section.provenance} />
+          </div>
+        ))}
+
+        {notification.incidentId && (
+          <div className="mb-16 py-8 px-12 bg-[var(--color-accent-bg-subtle)] rounded-[var(--radius-4)]">
+            <span className="type-meta text-[var(--color-text-helper)]">
+              Part of <span className="type-link text-12">{getIncidentName(notification.incidentId)}</span> incident
+            </span>
+          </div>
+        )}
+
+        {notification.relationships?.length > 0 && (
+          <div className="mb-16">
+            <p className="type-label mb-[var(--gap-stack)] uppercase">Related Events</p>
+            <div className="flex flex-col gap-[var(--gap-stack)]">
+              {notification.relationships.map((rel) => (
+                <span key={`${rel.type}-${rel.eventId}`} className="type-meta text-[var(--color-text-helper)]">
+                  {REL_LABELS[rel.type] || rel.type}: <span className="type-link text-12">{rel.eventId} {getEventName(rel.eventId)}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {notification.workOrderIds?.length > 0 && (
+          <div className="mb-16">
+            <p className="type-label mb-[var(--gap-stack)] uppercase">Linked Work Orders</p>
+            <div className="flex flex-col gap-[var(--gap-stack)]">
+              {notification.workOrderIds.map((wo) => <span key={wo} className="type-link">{wo}</span>)}
+            </div>
+          </div>
+        )}
+
+        {notification.investigationIds?.length > 0 && (
+          <div className="mb-16">
+            <p className="type-label mb-[var(--gap-stack)] uppercase">Linked Investigations</p>
+            <div className="flex flex-col gap-[var(--gap-stack)]">
+              {notification.investigationIds.map((inv) => <span key={inv} className="type-link">{inv}</span>)}
+            </div>
+          </div>
+        )}
+
+        <div className="h-px bg-[var(--color-border-subtle)] my-16" />
+
+        <p className="type-card-title mb-[var(--gap-stack)]">Quick Access</p>
+        {['Asset Inspection', 'Trends', 'Fault Tree'].map((link) => (
+          <p key={link} className="mb-[var(--gap-stack)]"><span className="type-link">{link}</span></p>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 // ── Panel header ─────────────────────────────────────────────────────────────
@@ -397,49 +251,20 @@ const NOTIF_FILTER_CATEGORIES = [
 ]
 
 function PanelHeader({ onClose, activeFilters, onToggleFilter }) {
-  const filtersObj = { severity: activeFilters }
-
-  function handleToggle(_key, value) {
-    onToggleFilter(value)
-  }
-
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: 'var(--spacing-12) var(--spacing-16)',
-      borderBottom: '1px solid var(--color-border-subtle)',
-      flexShrink: 0,
-    }}>
-      <span className="section-header" style={{ margin: 0 }}>
-        Event Feed
-      </span>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
+    <div className="flex items-center justify-between px-16 py-12 border-b border-[var(--color-border-subtle)] shrink-0">
+      <span className="section-header" style={{ margin: 0 }}>Event Feed</span>
+      <div className="flex items-center gap-8">
         <FilterButton
           categories={NOTIF_FILTER_CATEGORIES}
-          filters={filtersObj}
-          onToggle={handleToggle}
+          filters={{ severity: activeFilters }}
+          onToggle={(_key, value) => onToggleFilter(value)}
         />
-
-        {/* Close button */}
         <button
+          className="btn-reset flex items-center justify-center rounded-[var(--radius-4)] text-[var(--color-text-helper)]"
           onClick={onClose}
           aria-label="Close notifications"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '28px',
-            height: '28px',
-            borderRadius: 'var(--radius-4)',
-            border: 'none',
-            background: 'transparent',
-            color: 'var(--color-text-helper)',
-            cursor: 'pointer',
-            transition: `all var(--motion-fast) var(--ease-productive)`,
-          }}
+          style={{ width: 28, height: 28 }}
         >
           <CloseIcon />
         </button>
@@ -456,42 +281,25 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
   const panelRef = useRef(null)
   useFocusTrap(panelRef, open && isMobile)
 
-  // Focus management: move focus into panel on open, trap Escape
   useEffect(() => {
     if (!open) return
-    // Focus the panel container on open
     const timer = setTimeout(() => panelRef.current?.focus(), 50)
     function handleKeyDown(e) {
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        onClose()
-      }
+      if (e.key === 'Escape') { e.stopPropagation(); onClose() }
     }
     document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      clearTimeout(timer)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
+    return () => { clearTimeout(timer); document.removeEventListener('keydown', handleKeyDown) }
   }, [open, onClose])
 
   function toggleSeverity(level) {
-    setSeverityFilters(prev =>
-      prev.includes(level) ? prev.filter(l => l !== level) : [...prev, level]
-    )
+    setSeverityFilters(prev => prev.includes(level) ? prev.filter(l => l !== level) : [...prev, level])
   }
 
-  // Apply asset filter (from Asset Inspection screen)
-  let notifications = assetFilter
-    ? NOTIFICATIONS.filter(n => n.asset === assetFilter)
-    : NOTIFICATIONS
-
-  // Apply severity filter (multi-select: show any checked levels, empty = all)
+  let notifications = assetFilter ? NOTIFICATIONS.filter(n => n.asset === assetFilter) : NOTIFICATIONS
   if (severityFilters.length > 0) {
     notifications = notifications.filter(n => severityFilters.includes(n.severity))
   }
 
-  // Track read state -- first 3 start as unread, clicking marks as read
-  // Persisted to localStorage so read state survives page reloads
   const [readIds, setReadIds] = useState(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('apm-notifications-read'))
@@ -500,7 +308,6 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
   })
   const initialNewIds = new Set(NOTIFICATIONS.slice(0, 3).map(n => n.id))
 
-  // Persist read state on every change
   useEffect(() => {
     localStorage.setItem('apm-notifications-read', JSON.stringify([...readIds]))
   }, [readIds])
@@ -519,27 +326,19 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
       aria-label="Event Feed"
       aria-modal={isMobile ? true : undefined}
       tabIndex={-1}
+      className="flex flex-col bg-[var(--color-layer-01)]"
       style={isMobile ? {
-        // Mobile: full-screen overlay
         position: 'fixed',
         top: 'var(--header-height)',
-        left: 0,
-        right: 0,
-        bottom: 0,
+        left: 0, right: 0, bottom: 0,
         zIndex: 9998,
-        background: 'var(--color-layer-01)',
         display: open ? 'flex' : 'none',
-        flexDirection: 'column',
       } : {
-        // Desktop: 320px push panel
-        width: open ? '320px' : '0px',
-        minWidth: open ? '320px' : '0px',
+        width: open ? 320 : 0,
+        minWidth: open ? 320 : 0,
         overflow: 'hidden',
         transition: `width var(--motion-moderate) var(--ease-productive), min-width var(--motion-moderate) var(--ease-productive)`,
         borderLeft: open ? '1px solid var(--color-border-subtle)' : 'none',
-        background: 'var(--color-layer-01)',
-        display: 'flex',
-        flexDirection: 'column',
         height: '100%',
       }}
     >
@@ -551,59 +350,31 @@ export default function NotificationsPanel({ open, onClose, assetFilter, isMobil
         />
       ) : (
         <>
-          <PanelHeader
-            onClose={onClose}
-            activeFilters={severityFilters}
-            onToggleFilter={toggleSeverity}
-          />
+          <PanelHeader onClose={onClose} activeFilters={severityFilters} onToggleFilter={toggleSeverity} />
 
-          {/* Asset filter indicator */}
           {assetFilter && (
-            <div style={{
-              padding: 'var(--spacing-8) var(--spacing-16)',
-              background: 'var(--color-accent-bg)',
-              borderBottom: '1px solid var(--color-border-subtle)',
-              flexShrink: 0,
-            }}>
+            <div className="px-16 py-8 bg-[var(--color-accent-bg)] border-b border-[var(--color-border-subtle)] shrink-0">
               <span className="type-label">
-                Filtered to <strong style={{ color: 'var(--color-accent)' }}>{assetFilter}</strong>
+                Filtered to <strong className="text-[var(--color-accent)]">{assetFilter}</strong>
               </span>
             </div>
           )}
 
-          {/* Notification list */}
-          <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div className="flex-1 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                padding: 'var(--spacing-24)',
-              }}>
-                <span className="type-body" style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="flex items-center justify-center h-full p-24">
+                <span className="type-body text-[var(--color-text-secondary)]">
                   No {severityFilters.length > 0 ? 'matching ' : ''}notifications{assetFilter ? ` for ${assetFilter}` : ''}
                 </span>
               </div>
             ) : (
               notifications.map(n => (
-                <NotificationItem
-                  key={n.id}
-                  notification={n}
-                  isNew={newIds.has(n.id)}
-                  onSelect={handleSelect}
-                />
+                <NotificationItem key={n.id} notification={n} isNew={newIds.has(n.id)} onSelect={handleSelect} />
               ))
             )}
           </div>
 
-          {/* Footer */}
-          <div style={{
-            padding: 'var(--spacing-12) var(--spacing-16)',
-            borderTop: '1px solid var(--color-border-subtle)',
-            textAlign: 'right',
-            flexShrink: 0,
-          }}>
+          <div className="px-16 py-12 border-t border-[var(--color-border-subtle)] text-right shrink-0">
             <span className="type-link">Go to Event Log &rarr;</span>
           </div>
         </>

@@ -63,29 +63,17 @@ function DonutTooltip({ segment, total, x, y }) {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        left: x + 12,
-        top: y - 8,
-        background: 'var(--color-tooltip-bg)',
-        borderRadius: 'var(--radius-4)',
-        padding: 'var(--spacing-8) var(--spacing-12)',
-        boxShadow: 'var(--shadow-tooltip)',
-        whiteSpace: 'nowrap',
-        zIndex: 100,
-        pointerEvents: 'none',
-        animation: 'fadeInOnly var(--motion-moderate) var(--ease-productive)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--gap-stack)',
-      }}
+      className="tooltip-fixed"
+      style={{ left: x + 12, top: y - 8 }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-8)' }}>
-        <div style={{ width: 10, height: 10, borderRadius: 2, background: segment.color, flexShrink: 0 }} />
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>{segment.label}</span>
-        <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', fontWeight: 600 }}>{segment.value} ({pct}%)</span>
+      <div className="tooltip-bubble flex flex-col gap-[var(--gap-stack)] rounded-[var(--radius-4)] py-8 px-12 whitespace-nowrap">
+        <div className="flex items-center gap-8">
+          <div className="shrink-0 rounded-sm" style={{ width: 10, height: 10, background: segment.color }} />
+          <span className="type-meta">{segment.label}</span>
+          <span className="type-meta font-semibold">{segment.value} ({pct}%)</span>
+        </div>
+        <span className="type-meta opacity-60">Click to filter Asset Table</span>
       </div>
-      <span className="type-meta" style={{ color: 'var(--color-tooltip-text)', opacity: 0.6 }}>Click to filter Asset Table</span>
     </div>
   )
 }
@@ -115,7 +103,7 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
   })
 
   return (
-    <div style={{ position: 'relative', width: svgSize, height: svgSize, margin: '0 auto' }}>
+    <div className="relative mx-auto" style={{ width: svgSize, height: svgSize }}>
       <svg width={svgSize} height={svgSize} role="group" aria-label="Alarm quality donut chart">
         <g transform={`translate(${(svgSize - size) / 2}, ${(svgSize - size) / 2})`}>
           {/* Background ring */}
@@ -182,17 +170,8 @@ function Donut({ segments, total, size = 160, ringWidth = 18, hoveredKey, select
       </svg>
 
       {/* Center label */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          textAlign: 'center',
-          pointerEvents: 'none',
-        }}
-      >
-        <span className="type-kpi-hero" style={{ lineHeight: 1 }}>{total}</span>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+        <span className="type-kpi-hero leading-none">{total}</span>
         <br />
         <span className="type-meta">Events</span>
       </div>
@@ -262,8 +241,8 @@ function AlarmQualityView({ selectedSegment, onSegmentClick }) {
 
 export default function AlarmQuality({ selectedSegment, onSegmentClick, onClearFilter }) {
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-16)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-8)' }}>
+    <div className="card flex flex-col gap-16">
+      <div className="flex items-center justify-between gap-8">
         <span className="type-card-title">Alarm Quality</span>
         {selectedSegment && (
           <FilterChip
