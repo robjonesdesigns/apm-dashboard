@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { EVENT_SUMMARY } from '../../data/baytown'
 import useIsMobile from '../../hooks/useIsMobile'
-import { colors, chartStyle } from '../../styles/tokens'
+import { colors } from '../../styles/tokens'
 import Legend from './Legend'
 
 const SEGMENTS = [
@@ -26,8 +26,8 @@ function CustomTooltip({ active, payload }) {
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center gap-8 mb-4">
           <div className="status-dot" style={{ background: entry.fill }} />
-          <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont }}>{entry.name}</span>
-          <span style={{ color: chartStyle.tooltipText, fontSize: chartStyle.axisFont, fontWeight: 600 }}>{entry.value}</span>
+          <span className="type-meta">{entry.name}</span>
+          <span className="type-meta font-semibold">{entry.value}</span>
         </div>
       ))}
     </div>

@@ -148,7 +148,7 @@ function KpiCard({ config, onClick, isSelected }) {
   return (
     <div className="flex flex-col relative">
       <button
-        className="card card-accent-top card-interactive text-left w-full flex-1 flex flex-col"
+        className="card card-interactive text-left w-full flex-1 flex flex-col"
         onClick={() => onClick(config.key)}
         aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
         aria-expanded={isSelected}

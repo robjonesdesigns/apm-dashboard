@@ -223,7 +223,7 @@ function Sparkline({ data, threshold, label, unit, isMobile }) {
           }}
         >
           <div className="tooltip-bubble" style={{ padding: '4px 8px', borderRadius: 'var(--radius-4)' }}>
-            <span className="type-meta" style={{ color: 'var(--color-tooltip-text)' }}>
+            <span className="type-meta">
               {WEEK_LABELS[hover.idx]}: <strong>{data[hover.idx]}{unit || ''}</strong>
             </span>
           </div>

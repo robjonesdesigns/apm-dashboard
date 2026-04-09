@@ -301,34 +301,26 @@
   }
 
   /* ── Card ──────────────────────────────────────────────────────── */
+  /* Background elevation only -- no borders. Layering and separation */
+  /* via background color (layer-01 on bg) and whitespace.            */
   .card {
     background: var(--color-layer-01);
-    border: 1px solid var(--color-border-subtle);
+    border: none;
     border-radius: 10px;
     padding: var(--spacing-16);
-    transition: border-color var(--motion-fast) var(--ease-productive);
   }
   @media (min-width: 672px) {
     .card {
       padding: var(--spacing-24);
     }
   }
-  .card-accent-top {
-  border-top: 3px solid var(--color-accent);
-}
 
 .card-interactive {
   cursor: pointer;
-  transition: border-color var(--motion-fast) var(--ease-productive),
-              background var(--motion-fast) var(--ease-productive);
+  transition: background var(--motion-fast) var(--ease-productive);
 }
 .card-interactive:hover {
   background: var(--color-hover-01);
-  border-color: var(--color-accent);
-}
-/* When accent-top + interactive, keep the 3px top on hover */
-.card-accent-top.card-interactive:hover {
-  border-top: 3px solid var(--color-accent);
 }
 
   /* ── Status dots ───────────────────────────────────────────────── */
@@ -688,11 +680,14 @@
     outline-color: Highlight;
   }
   .card {
-    border-color: CanvasText;
+    border: 1px solid CanvasText;
   }
   .card-interactive:hover,
   .card-interactive:focus-visible {
     border-color: Highlight;
+  }
+  .card-interactive {
+    border: 1px solid CanvasText;
   }
   .status-dot {
     forced-color-adjust: none;
@@ -913,6 +908,16 @@
   padding: var(--spacing-12) var(--spacing-16);
   border-radius: var(--radius-8);
   box-shadow: var(--shadow-tooltip);
+}
+/* Force all type classes inside tooltips to inherit the inverted color */
+.tooltip-bubble .type-body,
+.tooltip-bubble .type-meta,
+.tooltip-bubble .type-label,
+.tooltip-bubble .type-card-title,
+.tooltip-bubble .type-kpi,
+.tooltip-bubble .type-kpi-hero,
+.tooltip-bubble .type-heading {
+  color: var(--color-tooltip-text);
 }
 
 /* ─── Notification item ──────────────────────────────────────────────── */

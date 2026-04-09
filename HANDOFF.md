@@ -1,84 +1,65 @@
-# APM Dashboard Handoff -- Session 22 End
+# APM Dashboard Handoff -- Session 28 End
 
 ## START HERE
-Navigation architecture rethink. Trends, Fault Tree, and Performance are NOT sections embedded in Asset Inspection. They are their own dedicated pages with multiple entry points (drill-downs from Asset Inspection, Events, or potentially plant-level). Asset Inspection shows preview snapshots of these with contextual links to the full page. Next: hiring manager onboarding, then build this navigation model, then refine Asset Inspection flow.
+
+Full design system overhaul. ~170 static inline styles eliminated across 20 files. 14 reusable CSS component classes added. JS hover migrated to CSS :hover in 4 components. Tufte-informed visual refinements: donut replaced with horizontal bars, card borders removed (background elevation only), KPI accent-top border removed, dense mode defaults to on, unified hover pattern across Needs Action cards, Risk Matrix cells now solid fills. Tooltip text fixed (type classes inherit inverted color inside tooltip-bubble).
 
 ## Deployed
 - **APM Dashboard**: https://apm.designedbyrob.com
 - **Portfolio case study**: https://designedbyrob.com/projects/honeywell-apm
 
-## Next session priorities
+## Session 28 Changes
 
-### 1. Hiring manager onboarding walkthrough
-Guided tour for non-engineers landing on the demo. Explains context: "You're a reliability engineer at a refinery. This is your morning view." Turns a confusing demo into a story they can follow.
+### Design System Overhaul
+- **14 CSS component classes** in global.css: btn-reset, divider-v, row-hover, tooltip-fixed, tooltip-bubble, filter-chip, filter-btn, filter-dropdown, count-badge, icon-btn, modal-overlay, breadcrumb-link, col-right-100, notification-item
+- **Base reset moved to @layer base** so Tailwind utilities override correctly
+- **--spacing: 1px** base multiplier added so numeric Tailwind utilities (gap-8, p-16, etc.) map to project pixel tokens
+- **WhatChanged.jsx deleted** (dead code)
+- **JS bundle -20KB** (468 -> 448), **CSS +5KB** (26 -> 31, new classes)
 
-### 2. Navigation architecture -- drill-down model
-**Current (wrong):** Trends, Fault Tree, Performance embedded as scrollable sections in Asset Inspection.
+### Tufte-Informed Refinements
+- **Alarm Quality:** donut chart replaced with horizontal bar chart (matches Watch List pattern). Stacked bar removed in favor of individual bars per segment.
+- **Card borders removed:** .card uses border: none, relies on background elevation (layer-01 on bg) + whitespace. Borders restored in forced-colors mode for accessibility.
+- **KPI accent-top border removed:** card-accent-top no longer applied to KPI cards. Hover state already signals interactivity.
+- **Dense mode defaults to on:** localStorage check flipped from === 'true' to !== 'false'. Engineers want density.
+- **Unified hover pattern (Needs Action):** All three cards (Risk Matrix, Alarm Quality, Watch List) use the same interaction: hover dims siblings to 0.35, no accent border on hover. Accent border + accent-bg only on selected/pressed state.
+- **Risk Matrix cells:** solid status color fills (100% opacity) with dark text. Previously 24% alpha.
+- **Tooltip text fix:** .tooltip-bubble overrides all type classes (type-body, type-meta, etc.) to use --color-tooltip-text. No more invisible light text on white tooltip backgrounds.
 
-**Correct model:** These are their own pages. Asset Inspection and Events show preview cards with links to drill deeper.
+### File Size Results
+| File | Before | After |
+|------|--------|-------|
+| AssetInspection | 1148 | 994 |
+| AssetTable | 1100 | 1016 |
+| NotificationsPanel | 613 | 384 |
+| KpiBar | 460 | 367 |
+| TopBar | 419 | 227 |
+| InProgress | 362 | 293 |
+| Sidebar | 302 | 185 |
+| HelpPanel | 140 | 96 |
 
-```
-Sidebar (plant-level):
-  Overview → Asset Table → Asset Inspection
-  Events → Event Detail → Fault Tree
-  Trends (plant-wide or asset-filtered)
-  Performance (plant-wide or asset-filtered)
+### What Remains (not structural, polish)
+- **AssetInspection (994 lines)** and **AssetTable (1016 lines)** still over 400-line limit. Sub-component extraction deferred.
+- **DesignSystem.jsx (524 lines)** -- token showcase, low priority.
+- **Inline sparklines** -- Tufte critique suggested showing sparklines inline beneath KPI values instead of behind a click. Deferred (mobile layout concern).
+- **PlantOverview.jsx** -- 6 remaining inline styles in MobileCardCarousel (carousel mechanics).
 
-Cross-links (contextual, not sidebar):
-  Asset Inspection → Fault Tree (preview + link)
-  Asset Inspection → Trends (preview + link)
-  Asset Inspection → Performance (preview + link)
-  Event Detail → Fault Tree (for this event's root cause)
-```
+## Architecture Notes
 
-**Key principles:**
-- Sidebar stays plant-scoped
-- Deep views are reached by drilling in, not from the sidebar
-- Fault Tree is reachable from Asset Inspection OR Events (both lead to root cause)
-- Asset Inspection surfaces just enough to answer "should I go deeper?" -- preview cards, not full sections
-- Engineers drill down into specific data, they don't look at all trends at once
+### CSS Layer Order
+Tailwind v4 layers: `@layer theme` -> `@layer base` -> `@layer components` -> `@layer utilities`. The global reset (`* { margin: 0; padding: 0 }`) MUST be in `@layer base` or it overrides all Tailwind utilities (unlayered CSS wins over layered).
 
-### 3. Asset Inspection flow review
-After extracting deep views, Asset Inspection becomes a narrative:
-1. How bad is it right now? (status, criticality, KPIs)
-2. What's causing it? (sub-asset tree with problem sensor highlighted)
-3. What's already being done? (active work orders, investigations)
-4. What happened before? (event history, collapsed)
-5. Go deeper: preview cards linking to Trends, Fault Tree, Performance
+### Spacing System
+`--spacing: 1px` in @theme means Tailwind numeric utilities map 1:1 to pixels: `gap-8` = 8px, `p-24` = 24px. Named tokens (`--spacing-24: 24px`) are used by `var()` references in CSS classes; the numeric utilities use the base multiplier.
 
-### 4. Triage heuristic audit (HEURISTIC-AUDIT.md)
-24 findings: 0 catastrophic, 4 major, 12 minor, 8 cosmetic.
+### Hover Pattern (Needs Action Cards)
+All three cards use opacity dimming for hover focus:
+- **Rest:** full opacity, no border
+- **Hover:** hovered element full opacity, siblings 0.35
+- **Selected:** accent border + accent-bg, siblings 0.35
 
-**The 4 major findings:**
-1. No data freshness timestamp -- `PLANT.lastRefreshed` exists in data but never rendered
-2. Sidebar icon-only rail forces recall -- native title tooltip has ~500ms delay, too slow
-3. No keyboard shortcuts -- daily-use tool with zero accelerators
-4. Help button is non-functional -- no onClick handler, no help resources
-
-**Bug found:** NotificationsPanel.jsx line 575 references undefined `filter` variable.
-
-### 5. Potential Tailwind v4 migration
-Same pattern as Keytrn: tokens.js -> @theme block in global.css. Could be applied here.
-
-## What was completed this session (21)
-
-### Nielsen Heuristic Audit
-- HEURISTICS.md doctrine (547-line reference) added to project root
-- HEURISTIC-AUDIT.md written (24 findings)
-- CLAUDE.md updated with doctrine pointer
-- No code fixes yet -- waiting for triage
-
-### Strongest areas noted in audit
-- H2 (domain language alignment) -- ISA-101 terminology correct for reliability engineers
-- H5 (error prevention) -- filter design prevents invalid states
-- H8 (information architecture) -- five-icon-system differentiation, triage-ordered section layout
-
-## ADRs
-28 total. No new ADRs this session.
-
-## Previous sessions
-See git log for sessions 1-20. Key milestones:
-- Session 13: Plant Overview complete
-- Session 17: Data layer overhaul, Asset Inspection research + planning
-- Session 18: Asset Inspection header, spacing system (ADR-027)
-- Session 19: Asset Inspection full build (9 sections), navigation architecture (ADR-028)
+## Pending (from Session 23, unchanged)
+- ADR-029 Role-based toggle
+- ADR-030 AI assistant architecture
+- ADR-031 Data model expansion
+- Full platform page structure for both personas

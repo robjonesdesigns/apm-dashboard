@@ -6,9 +6,9 @@ import Legend from './Legend'
 import useIsMobile from '../../hooks/useIsMobile'
 
 const CRITICALITY_CONFIG = [
-  { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error-bg-strong)' },
-  { key: 'B', label: 'B (Production)', color: 'var(--color-warning)', bg: 'var(--color-warning-bg-strong)' },
-  { key: 'C', label: 'C (Support)',    color: 'var(--color-info)',    bg: 'var(--color-info-bg-strong)' },
+  { key: 'A', label: 'A (Safety)',      color: 'var(--color-error)',   bg: 'var(--color-error)' },
+  { key: 'B', label: 'B (Production)', color: 'var(--color-warning)', bg: 'var(--color-warning)' },
+  { key: 'C', label: 'C (Support)',    color: 'var(--color-info)',    bg: 'var(--color-info)' },
 ]
 
 const STATUSES = ['New', 'In Progress']
@@ -17,11 +17,7 @@ function cellKey(criticality, status) {
   return `${criticality}-${status}`
 }
 
-function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, onMouseLeave, onFocus, onBlur, label }) {
-  const borderColor = isSelected || isHovered
-    ? 'var(--color-accent)'
-    : 'transparent'
-
+function MatrixCell({ count, bg, isHovered, isSelected, isDimmed, onClick, onMouseEnter, onMouseLeave, onFocus, onBlur, label }) {
   const background = isSelected ? 'var(--color-accent-bg)' : bg
 
   return (
@@ -36,15 +32,16 @@ function MatrixCell({ count, bg, isHovered, isSelected, onClick, onMouseEnter, o
       aria-pressed={isSelected}
       style={{
         background,
-        border: `2px solid ${borderColor}`,
+        border: isSelected ? '2px solid var(--color-accent)' : '2px solid transparent',
         padding: 'var(--spacing-12)',
         transition: 'all var(--motion-fast) var(--ease-productive)',
         minHeight: 48,
+        opacity: isDimmed ? 0.35 : 1,
       }}
     >
       <span
         className="type-body font-semibold tabular-nums"
-        style={{ color: isSelected ? 'var(--color-accent)' : 'var(--color-text-primary)' }}
+        style={{ color: isSelected ? 'var(--color-accent)' : 'var(--color-bg)' }}
       >
         {count}
       </span>
@@ -162,6 +159,7 @@ export default function RiskMatrix({ onCellClick, selectedCell, onClearFilter })
                       bg={c.bg}
                       isHovered={hoveredCell === key}
                       isSelected={isSelected(c.key, status)}
+                      isDimmed={(hoveredCell !== null && hoveredCell !== key) || (selectedCell && !isSelected(c.key, status))}
                       onClick={() => handleClick(c.key, status)}
                       onMouseEnter={() => setHoveredCell(key)}
                       onMouseLeave={() => setHoveredCell(null)}

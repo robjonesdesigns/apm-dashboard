@@ -37,7 +37,7 @@ export default function App() {
   const [selectedAttribute, setSelectedAttribute] = useState(null)
   const [helpOpen, setHelpOpen]              = useState(false)
   const [sidebarOpen, setSidebarOpen]       = useState(false)
-  const [dense, setDense]                   = useState(() => localStorage.getItem('apm-dense') === 'true')
+  const [dense, setDense]                   = useState(() => localStorage.getItem('apm-dense') !== 'false')
   const isMobile = useIsMobile()
 
   useEffect(() => {

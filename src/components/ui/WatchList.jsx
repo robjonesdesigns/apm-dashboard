@@ -74,7 +74,7 @@ function BarRow({ item, isHovered, isSelected, isDimmed, onHover, onLeave, onCli
       style={{
         opacity: isDimmed ? 0.35 : 1,
         transition: 'all var(--motion-fast) var(--ease-productive)',
-        border: showBorder ? '1.5px solid var(--color-accent)' : '1.5px solid transparent',
+        border: isSelected ? '1.5px solid var(--color-accent)' : '1.5px solid transparent',
         background: isSelected ? 'var(--color-accent-bg)' : 'transparent',
       }}
     >
