@@ -1,16 +1,18 @@
 # APM Dashboard -- Claude Context
 
-Portfolio demo. Rob's APM platform built from first principles. Dark theme only.
+Commercial midmarket APM platform (not a portfolio demo). Rob's vision of what APM should be, built from first principles. Dark theme only.
 
 **Path:** `~/Documents/Dev/apm-dashboard/`
-**Dev:** `npx vite` (port 5173)
-**Stack:** React 19 + Recharts (Watch List removed) + Tailwind v4 + Vite
-**Data:** `src/data/baytown.js` -- Baytown Refinery, 10 assets, 36 events in TIMELINE
+**Dev:** `npx vite` (port 5173). API routes: `vercel dev` once Track A lands.
+**Stack (frontend):** React 19 + Recharts (Watch List removed) + Tailwind v4 + Vite + React Router (screen-scoped) + React Flow (Fault Tree) + Tanstack Query (planned).
+**Stack (backend):** Vercel Functions (API routes under `api/`) + Supabase Auth (identity, cookie-based SSR sessions via `@supabase/ssr`) + Timescale Cloud (time-series data, hypertables, continuous aggregates).
+**Data (legacy):** `src/data/baytown.js` -- Baytown Refinery, 10 assets, 36 events in TIMELINE. Still used by all screens until wired to live data screen-by-screen. Removed after each migration.
+**Data (live):** Timescale Cloud `tsdb`. Schema + simulator in `commercial/`. See `commercial/scripts/seed.mjs` for the 28-day K-101 failure simulation.
 **Tokens:** `src/styles/global.css` @theme block. `src/styles/tokens.js` for Recharts.
 **Figma:** https://www.figma.com/design/5CBDKKR3S9zTmCNWqJzSYK/Asset-Health
 
 **Doctrine:** `VECTOR.md`, `ARCHITECTURE.md`, `HANDOFF.md`, `HEURISTICS.md` (Nielsen's 10 heuristic evaluation reference)
-**Direction:** Rob's APM platform built from first principles with Honeywell domain expertise (not a recreation).
+**Direction:** Commercial midmarket APM platform targeting operators with 50-200 assets where SAP/AspenTech/GE price out and CMMS vendors don't reach. Portfolio case study is a secondary output.
 
 ---
 
@@ -62,8 +64,16 @@ All code generation must adhere to VECTOR.md. Before writing code:
 
 ## Screens
 
-**Sidebar (plant-level):** Plant Overview | Events | Work Orders | Investigations
-**Asset-scoped (inside Asset Inspection):** Reached via Asset Table row click, not sidebar. See ADR-028.
+Three tiers. Each screen gets a full spec (purpose, user, entry points, core
+question, data contract, Timescale mapping, visual hierarchy, components)
+before any React code. Defined in VECTOR.md "Screen Architecture" section.
+
+**Sidebar (plant-level):** Plant Overview | Events Management | Inspection Management | Work Order Management | Investigations
+**Asset-scoped drill-in (reached via Asset Table row click, not sidebar):** Asset Inspection | Trends | Performance | Fault Tree | Attribute Overview
+**Special / experimental:** HMI Graphic (research pending)
+**Utility:** DesignSystem | HelpPanel
+
+ADR-028 navigation model holds: sidebar is plant-scope only; asset-scope is drill-down.
 
 ### Asset Inspection Layout (grouped by question)
 - **Group A (full width):** Header + KPI Strip (OEE/RUL/Downtime with sparklines)
@@ -146,9 +156,21 @@ STORY-002 Asset narratives (all 10 assets with sub-assets, sensors, thresholds, 
 - `FilterChip.jsx` -- dismissable filter tag (Event Triage + Asset Table). `whiteSpace: nowrap`, `flexShrink: 0`.
 - `FilterButton.jsx` -- filter button + checkbox dropdown (Asset Table desktop + Notifications).
 
+## Commercial Backend
+
+- **DB:** Timescale Cloud (AWS us-east-1, real-time analytics preset). Host/port/creds in `commercial/.env` -> `DATABASE_URL`. TimescaleDB 2.18+ columnstore API.
+- **Auth:** Supabase project (Virginia region, RLS on by default). Env vars in repo root `.env.local`: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (client-exposed by design). `SUPABASE_SERVICE_KEY` server-only (Vercel env var, never in client bundle).
+- **API routes:** `api/*.js` -> Vercel Functions. Each route verifies Supabase session, extracts tenant_id, queries Timescale via `api/_lib/db.js` pool. Shared auth helper in `api/_lib/auth.js`.
+- **Simulator:** `commercial/scripts/seed.mjs` -- 10-phase physics pipeline, deterministic via seeded PRNG. K-101 4-stage bearing failure, 28-day window, 1-min tick rate. Commands: `npm run seed` (or `npm run seed:reset`).
+- **Migrations:** `commercial/supabase/migrations/*.sql` (dir name pre-dates the Supabase-vs-Timescale split; will rename to `commercial/db/`). Apply via `node scripts/apply-migration.mjs <file>` or direct in TablePlus.
+- **Schema:** 16 tables + 2 continuous aggregates + 10 enums. RLS on all tenant tables except `sensor_readings` hypertable (incompatible with columnstore + caggs -- app-layer tenant isolation via query guards).
+- **RLS note:** Supabase Auth handles identity; Timescale RLS is separate (policies written directly in migrations since Supabase cloud doesn't support TimescaleDB). For `sensor_readings` specifically, tenant_id filtering happens in every API query, not at the DB level.
+
 ## Handoff
 
 See `HANDOFF.md` for session 23 end state. Deployed to https://apm.designedbyrob.com. 28 ADRs (3 pending), 21 desk research docs, 2 interviews, 2 personas, 2 stories.
+
+Commercial pivot happened post-handoff (session 34, 2026-04-11). Track A wires Plant Overview to live Timescale data. HANDOFF.md not yet updated for commercial direction.
 
 ## Hooks
 
@@ -164,3 +186,11 @@ See `HANDOFF.md` for session 23 end state. Deployed to https://apm.designedbyrob
 - `slideUp` keyframe for bottom-sheet drawers
 - Tooltips suppressed on mobile (all chart components)
 - Filter/sort: full-screen bottom drawer pattern (not dropdown)
+
+## Pre-Hire: TypeScript Migration
+
+**Status:** Do not start until the first engineer is about to write code in this repo.
+
+A second developer touching Timescale queries, sensor data transforms, and API routes without knowing the data shape is where bugs happen. TypeScript catches these at write-time.
+
+**Migration approach:** Incremental. Add `tsconfig.json` with `allowJs: true`. Rename files to `.tsx` as touched. Type the data layer first (sensor readings, alarm events, RUL predictions). New files always `.tsx`.

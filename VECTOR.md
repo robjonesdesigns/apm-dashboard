@@ -2,15 +2,17 @@
 project:
   name: APM Dashboard
   description: >
-    Rob's vision of what APM should be, built from first principles with
-    Honeywell domain expertise. Dark-themed enterprise monitoring UI built
-    with React and Tailwind. Five screens: PlantOverview (plant-wide health),
-    AssetInspection (single asset deep dive), Trends (attribute analysis),
-    DesignSystem (token reference), and HelpPanel (contextual help).
-    Strategic reframe in session 23 from unbranded recreation to Rob's
-    own APM platform.
+    Commercial midmarket APM platform built from first principles with
+    Honeywell domain expertise. Dark-themed enterprise monitoring product
+    targeting midmarket operators (50-200 assets) where SAP/AspenTech/GE
+    price out and CMMS vendors don't reach. Live time-series data on
+    Timescale Cloud, Supabase Auth for identity, Vercel Functions for
+    APIs. Strategic reframe in session 34: production-grade product to
+    sell, not a portfolio demo. Early development also feeds portfolio
+    case study videos.
   stage: development
   started: 2026-03-25
+  commercialPivot: 2026-04-11
   repo: https://github.com/robjonesdesigns/apm-dashboard
 owner:
   name: Rob Jones
@@ -21,10 +23,11 @@ knowledge:
 
 # VECTOR -- APM Dashboard
 
-> Rob's APM platform built from first principles with Honeywell domain expertise.
-> Not a recreation -- Rob's vision of what APM should be, informed by three years
-> of designing the original product. Built for portfolio case study videos,
-> hiring manager demos, and potential commercial exploration.
+> Commercial midmarket APM platform built from first principles with Honeywell
+> domain expertise. Not a recreation -- Rob's vision of what APM should be,
+> informed by three years of designing the original product. Primary purpose:
+> production-grade product to sell. Secondary: portfolio case study videos and
+> hiring manager demos during early development.
 
 ---
 
@@ -38,25 +41,28 @@ the unbranded recreation based on Rob's descriptions and design decisions.
 
 ## What This Project Is
 
-Rob's vision of what APM should be, built from first principles with three years
-of Honeywell domain expertise. Dark-themed enterprise monitoring platform built
-in React with Tailwind for layout. Uses realistic industrial data (compressors,
-pumps, turbines, heat exchangers) but no Honeywell branding, client names, or
-proprietary data.
+Commercial midmarket APM platform built from first principles with three years
+of Honeywell domain expertise. Dark-themed enterprise monitoring product built
+in React with Tailwind for layout. Live time-series data from Timescale Cloud,
+identity via Supabase Auth, APIs via Vercel Functions. Uses realistic industrial
+data (compressors, pumps, turbines, heat exchangers) but no Honeywell branding,
+client names, or proprietary data.
 
-The project serves three purposes:
-1. Portfolio case study screenshots and video recordings
-2. GitHub repository demonstrating Rob's technical and design capability
-3. Foundation for potential commercial APM product
+The project serves three purposes in priority order:
+1. Production-grade commercial product targeting midmarket operators (50-200 assets)
+2. Portfolio case study screenshots and video recordings during early development
+3. GitHub repository demonstrating Rob's technical and design capability
 
 ---
 
 ## What This Is Not
 
-- Not a production monitoring tool (yet -- commercial viability under exploration)
+- Not a portfolio demo. Architectural decisions default to "what does a real
+  midmarket SaaS need," not "what impresses a recruiter."
 - Not Honeywell's actual product (Rob's own platform, informed by domain expertise)
 - Not a design system (uses tokens but is a single-purpose platform)
 - Not attempting to replicate the exact Honeywell Forge design system
+- Not an enterprise-tier product (SAP/AspenTech/GE serve >500-asset operators)
 
 ---
 
@@ -104,6 +110,47 @@ like Shell were target customers.
 - The navigation decision (tabs vs left panel) was made late and created downstream
   problems rather than being designed holistically from the start.
   In the recreation, this is resolved: plant-level sidebar + asset drill-down (ADR-028).
+
+---
+
+## Screen Architecture
+
+Three tiers of screens. Each screen gets a dedicated spec (purpose, primary
+user, entry points, core question answered, data contract, Timescale mapping,
+visual hierarchy, component inventory) before implementation. No shotgun
+screens.
+
+### Plant-level (left sidebar navigation)
+- **Plant Overview** -- morning entry, plant-wide health. KPI bar, What Happened,
+  In Progress, Needs Action, Asset Table. Built (live data via Track A).
+- **Events Management** -- full event list with filter, triage, drill-down.
+  Landing target for "See more events" from Plant Overview.
+- **Inspection Management** -- full inspection list with drill-down to individual
+  inspection deep-dives. Landing target for "See more inspections" from PO.
+- **Work Order Management** -- full WO queue (status, priority, assignment, SLA).
+  Landing target for "See more work orders" from PO.
+- **Investigations** -- RCA / investigation list and drill-down. Existing nav entry.
+
+### Asset-scoped (drill-in from Asset Table row click, not sidebar)
+- **Asset Inspection** -- synthesizes everything about a single asset. Needs
+  rework as part of full spec.
+- **Trends** -- attribute time-series analysis (discharge pressure, vibration,
+  surge margin). Per attribute or multi-attribute overlay.
+- **Performance** -- context-dependent performance analysis. Scope varies:
+  plant / fleet / asset. Definition pending.
+- **Fault Tree** -- dedicated pan/zoom canvas (React Flow) showing asset failure
+  modes with lazy-expanding nodes (sub-assets, events, attributes). URL encodes
+  zoom/expanded state for deep-links.
+- **Attribute Overview** -- definition pending. Likely a summary view of all
+  sensor attributes for an asset with current values + health.
+
+### Special / experimental
+- **HMI Graphic** -- P&ID / SCADA-style process view. Research pending. Role
+  TBD: live sensor overlay on process diagram vs. static reference vs. control
+  room bridge.
+
+Navigation model from ADR-028 holds: plant-level sidebar + asset drill-down
+from Asset Table. Sidebar does not include asset-scoped screens.
 
 ---
 
@@ -166,12 +213,20 @@ on dark surfaces. Raw Tailwind colors are too saturated for dark mode.
 ## Constraints
 
 - **NDA:** Cannot use Honeywell branding, Forge design system components, or real
-  client data. Everything is recreated from memory with realistic sample data.
+  client data. Everything is recreated from memory with realistic simulated data.
 - **Recharts:** Limited to what Recharts can render. Custom visualizations (Run
-  Status timeline) built as plain React components.
-- **Portfolio context:** Must look polished enough for case study screenshots and
-  video recordings on the portfolio homepage.
-- **No backend:** All data is static sample data in JavaScript files.
+  Status timeline, Fault Tree) built as plain React or dedicated libraries
+  (React Flow for Fault Tree).
+- **Polish bar:** Must look polished enough for case study screenshots and video
+  recordings on the portfolio homepage AND for midmarket SaaS buyer demos.
+- **Backend architecture:** Live time-series data on Timescale Cloud (hypertables
+  + continuous aggregates). Identity on Supabase Auth with cookie-based SSR
+  sessions. APIs via Vercel Functions (verify Supabase session, extract tenant_id,
+  query Timescale). Legacy `src/data/baytown.js` retained during migration and
+  will be removed screen-by-screen as each is wired to live data.
+- **Simulator:** `commercial/scripts/seed.mjs` generates physics-based
+  deterministic sample data (K-101 4-stage bearing failure, 28-day window, 1-min
+  tick rate). Used for development and sales demos.
 
 ---
 

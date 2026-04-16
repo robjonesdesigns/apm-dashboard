@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { PLANT, KPI_24H } from '../../data/baytown'
 
+// Accepts an optional `kpis` prop fed by the Plant Overview route loader.
+// Falls back to the static baytown.js PLANT snapshot so pre-live-data
+// consumers (tests, any not-yet-migrated callers) keep working.
+
 // ── KPI descriptions (info tooltip content) ──────────────────────────────────
 
 const KPI_DESCRIPTIONS = {
@@ -14,22 +18,23 @@ const KPI_DESCRIPTIONS = {
 
 // ── Thresholds from PLANT data (configurable per plant) ─────────────────────
 
-function getHealthState(key, value) {
-  const t = PLANT.thresholds?.[key]
+function getHealthState(key, value, thresholds) {
+  if (value == null) return 'normal'
+  const t = thresholds?.[key]
   if (!t) return 'normal'
   if (value < t.critical) return 'critical'
   if (value < t.warning) return 'warning'
   return 'normal'
 }
 
-// ── KPI card config ─────────────────────────────────────────────────────────
-
-const KPI_CONFIG = [
-  { key: 'oee',          label: 'OEE',          value: PLANT.oee,          previous: PLANT.previousOee },
-  { key: 'availability', label: 'Availability',  value: PLANT.availability, previous: PLANT.previousAvailability },
-  { key: 'performance',  label: 'Performance',   value: PLANT.performance,  previous: PLANT.previousPerformance },
-  { key: 'quality',      label: 'Quality',       value: PLANT.quality,      previous: PLANT.previousQuality },
-]
+function buildKpiConfig(kpis) {
+  return [
+    { key: 'oee',          label: 'OEE',          value: kpis.oee,          previous: kpis.previousOee },
+    { key: 'availability', label: 'Availability', value: kpis.availability, previous: kpis.previousAvailability },
+    { key: 'performance',  label: 'Performance',  value: kpis.performance,  previous: kpis.previousPerformance },
+    { key: 'quality',      label: 'Quality',      value: kpis.quality,      previous: kpis.previousQuality },
+  ]
+}
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -135,12 +140,14 @@ function HealthIndicator({ state, thresholdLabel }) {
 
 // ── KPI card ─────────────────────────────────────────────────────────────────
 
-function KpiCard({ config, onClick, isSelected }) {
-  const health = getHealthState(config.key, config.value)
-  const delta = config.value - config.previous
-  const deltaSign = delta >= 0 ? '+' : ''
+function KpiCard({ config, thresholds, onClick, isSelected }) {
+  const hasValue = config.value != null
+  const hasPrev = config.previous != null
+  const health = getHealthState(config.key, config.value, thresholds)
+  const delta = hasValue && hasPrev ? config.value - config.previous : null
+  const deltaSign = delta != null && delta >= 0 ? '+' : ''
 
-  const threshold = PLANT.thresholds?.[config.key]
+  const threshold = thresholds?.[config.key]
   const thresholdLabel = health === 'critical'
     ? `Below ${threshold.critical}%`
     : `Below ${threshold.warning}%`
@@ -150,7 +157,7 @@ function KpiCard({ config, onClick, isSelected }) {
       <button
         className="card card-interactive text-left w-full flex-1 flex flex-col"
         onClick={() => onClick(config.key)}
-        aria-label={`${config.label}: ${config.value}%. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
+        aria-label={`${config.label}: ${hasValue ? config.value + '%' : 'no data'}. ${health !== 'normal' ? health + '.' : ''} Click to view trend.`}
         aria-expanded={isSelected}
       >
         <div className="flex items-center justify-between mb-[var(--gap-stack)]">
@@ -158,21 +165,23 @@ function KpiCard({ config, onClick, isSelected }) {
           <InfoButton description={KPI_DESCRIPTIONS[config.key]} />
         </div>
 
-        <span className="type-kpi block">{config.value}%</span>
+        <span className="type-kpi block">{hasValue ? `${config.value}%` : '—'}</span>
 
         <HealthIndicator state={health} thresholdLabel={thresholdLabel} />
 
         <div className="hide-mobile flex items-center justify-between gap-4 mt-[var(--gap-stack)]">
           <div className="flex items-center gap-4">
             <span className="type-meta text-[var(--color-text-secondary)]">
-              {deltaSign}{delta.toFixed(1)}% vs yesterday
+              {delta != null ? `${deltaSign}${delta.toFixed(1)}% vs yesterday` : 'No prior comparison'}
             </span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
-              {delta >= 0
-                ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              }
-            </svg>
+            {delta != null && (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="shrink-0">
+                {delta >= 0
+                  ? <path d="M2 10L10 2M10 2H4M10 2v6" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  : <path d="M2 2L10 10M10 10H4M10 10V4" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                }
+              </svg>
+            )}
           </div>
           <svg
             width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
@@ -202,7 +211,7 @@ function KpiCard({ config, onClick, isSelected }) {
           <Sparkline
             data={KPI_24H}
             dataKey={config.key}
-            threshold={PLANT.thresholds?.[config.key]?.warning}
+            threshold={thresholds?.[config.key]?.warning}
             eventIndex={7}
             label={config.label}
           />
@@ -215,10 +224,10 @@ function KpiCard({ config, onClick, isSelected }) {
 
           <div className="flex justify-between gap-8">
             <span className="type-meta text-[var(--color-text-helper)]">
-              Before: <strong className="text-[var(--color-text-primary)]">{config.previous}%</strong>
+              Before: <strong className="text-[var(--color-text-primary)]">{hasPrev ? `${config.previous}%` : '—'}</strong>
             </span>
             <span className="type-meta text-[var(--color-text-helper)]">
-              After: <strong className="text-[var(--color-text-primary)]">{config.value}%</strong>
+              After: <strong className="text-[var(--color-text-primary)]">{hasValue ? `${config.value}%` : '—'}</strong>
             </span>
           </div>
 
@@ -316,9 +325,22 @@ function Sparkline({ data, dataKey, threshold, eventIndex, label }) {
 
 // ── KpiBar ───────────────────────────────────────────────────────────────────
 
-export default function KpiBar({ onKpiClick }) {
+export default function KpiBar({ kpis, onKpiClick }) {
   const [selectedKpi, setSelectedKpi] = useState(null)
   const barRef = useRef(null)
+
+  const source = kpis ?? PLANT
+  const thresholds = source.thresholds ?? PLANT.thresholds
+  const kpiConfig = buildKpiConfig({
+    oee: source.oee,
+    availability: source.availability,
+    performance: source.performance,
+    quality: source.quality,
+    previousOee: source.previousOee,
+    previousAvailability: source.previousAvailability,
+    previousPerformance: source.previousPerformance,
+    previousQuality: source.previousQuality,
+  })
 
   function handleKpiClick(key) {
     setSelectedKpi(prev => prev === key ? null : key)
@@ -344,8 +366,8 @@ export default function KpiBar({ onKpiClick }) {
   return (
     <div ref={barRef}>
       <div className="kpi-grid">
-        {KPI_CONFIG.map((config) => (
-          <KpiCard key={config.key} config={config} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />
+        {kpiConfig.map((config) => (
+          <KpiCard key={config.key} config={config} thresholds={thresholds} onClick={handleKpiClick} isSelected={selectedKpi === config.key} />
         ))}
 
         {/* Trains */}
@@ -354,7 +376,7 @@ export default function KpiBar({ onKpiClick }) {
             <span className="type-card-title">Trains</span>
             <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.trains} /></span>
           </div>
-          <span className="type-kpi block">{PLANT.trains}</span>
+          <span className="type-kpi block">{source.trains}</span>
           <div className="hide-mobile invisible" aria-hidden="true">
             <div className="items-center gap-4"><span className="type-meta">&nbsp;</span></div>
             <div className="items-center gap-4 mt-[var(--gap-stack)]"><span className="type-meta">&nbsp;</span></div>
@@ -368,8 +390,8 @@ export default function KpiBar({ onKpiClick }) {
             <span className="hide-mobile"><InfoButton description={KPI_DESCRIPTIONS.activeAssets} /></span>
           </div>
           <span className="block">
-            <span className="type-kpi">{PLANT.activeAssets}</span>
-            <span className="type-kpi text-[var(--color-text-secondary)]">/{PLANT.totalAssets}</span>
+            <span className="type-kpi">{source.activeAssets}</span>
+            <span className="type-kpi text-[var(--color-text-secondary)]">/{source.totalAssets}</span>
           </span>
           <div className="hide-mobile invisible" aria-hidden="true">
             <span className="type-meta">&nbsp;</span>

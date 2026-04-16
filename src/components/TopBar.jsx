@@ -2,7 +2,10 @@
 // 48px fixed top bar. Spans full width above the sidebar.
 // Props: view, selectedAsset, onNavigate, onToggleNotifications, notificationsOpen, onToggleSidebar
 
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router'
 import { PLANT, NOTIFICATIONS } from '../data/baytown.js'
+import { useAuth } from '../contexts/AuthContext'
 
 // Maps view ID → human-readable label
 const VIEW_LABELS = {
@@ -67,6 +70,102 @@ function IconButton({ onClick, ariaLabel, ariaExpanded, active, children }) {
     >
       {children}
     </button>
+  )
+}
+
+function UserMenu() {
+  const { user, supabase } = useAuth()
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClickOutside(e) {
+      if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false)
+    }
+    function handleEsc(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEsc)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [open])
+
+  async function handleSignOut() {
+    setOpen(false)
+    await supabase.auth.signOut()
+    navigate('/signin', { replace: true })
+  }
+
+  return (
+    <div ref={rootRef} style={{ position: 'relative' }}>
+      <IconButton
+        onClick={() => setOpen((p) => !p)}
+        ariaLabel="User menu"
+        ariaExpanded={open}
+        active={open}
+      >
+        <AvatarIcon />
+      </IconButton>
+      {open && (
+        <div
+          role="menu"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            minWidth: 200,
+            maxWidth: 360,
+            background: 'var(--color-layer-01)',
+            border: '1px solid var(--color-border-subtle, #3e3e3e)',
+            borderRadius: 8,
+            boxShadow: 'var(--shadow-overlay)',
+            padding: 'var(--spacing-8)',
+            zIndex: 100,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <div
+            className="type-meta"
+            style={{
+              padding: '6px 10px',
+              color: 'var(--color-text-helper)',
+              borderBottom: '1px solid var(--color-border-subtle, #3e3e3e)',
+              marginBottom: 'var(--spacing-4)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {user?.email || 'Signed in'}
+          </div>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={handleSignOut}
+            style={{
+              width: '100%',
+              textAlign: 'left',
+              padding: '8px 10px',
+              background: 'transparent',
+              color: 'var(--color-text-primary)',
+              border: 'none',
+              borderRadius: 4,
+              fontSize: 13,
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-hover-01)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -200,11 +299,7 @@ export default function TopBar({
           </IconButton>
         )}
 
-        {!isMobile && (
-          <IconButton ariaLabel="User profile">
-            <AvatarIcon />
-          </IconButton>
-        )}
+        {!isMobile && <UserMenu />}
 
         <IconButton
           onClick={onToggleNotifications}

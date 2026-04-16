@@ -18,6 +18,7 @@ import RiskMatrix from './ui/RiskMatrix'
 import AlarmQuality from './ui/AlarmQuality'
 import WatchList from './ui/WatchList'
 import AssetTable from './ui/AssetTable'
+import LastRefreshed from './ui/LastRefreshed'
 import useIsMobile from '../hooks/useIsMobile'
 import { PLANT } from '../data/baytown'
 
@@ -103,7 +104,7 @@ function MobileCardCarousel({ children }) {
   )
 }
 
-export default function PlantOverview({ onNavigate }) {
+export default function PlantOverview({ onNavigate, kpis }) {
   const isMobile = useIsMobile()
   // Independent filter states -- stack as AND filters on the Asset Table
   const [riskFilter, setRiskFilter] = useState(null)        // { criticality, status }
@@ -161,15 +162,13 @@ export default function PlantOverview({ onNavigate }) {
 
       {/* Last updated */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <span className="type-meta" style={{ color: 'var(--color-text-helper)' }}>
-          Last updated: {PLANT.lastRefreshed}
-        </span>
+        <LastRefreshed timestamp={kpis?.lastRefreshed} />
       </div>
 
       {/* 1. System Health — "How's my plant?" */}
       <section>
         <p className="section-header">System Health</p>
-        <KpiBar onKpiClick={(metric) => console.log('KPI clicked:', metric)} />
+        <KpiBar kpis={kpis} onKpiClick={(metric) => console.log('KPI clicked:', metric)} />
       </section>
 
       {/* 2. What Happened — "What caused the KPI change?" (ADR-013 Layer 1) */}
